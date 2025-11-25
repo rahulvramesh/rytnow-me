@@ -4,13 +4,15 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type Project } from '@/types/project';
 import { type Task } from '@/types/task';
 import { Head, Link, router } from '@inertiajs/react';
-import { Calendar, Clock, Edit, Mic, Pause, Play, Plus, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Calendar, Clock, Edit, Mic, Pause, Play, Plus, Search, Trash2, X } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 
 function formatDuration(seconds: number): string {
     const hours = Math.floor(seconds / 3600);
@@ -76,6 +78,34 @@ interface Props {
 }
 
 export default function ProjectShow({ project }: Props) {
+    const [taskSearch, setTaskSearch] = useState('');
+    const [taskStatusFilter, setTaskStatusFilter] = useState<string>('all');
+    const [taskPriorityFilter, setTaskPriorityFilter] = useState<string>('all');
+
+    const filteredTasks = useMemo(() => {
+        if (!project.tasks) return [];
+
+        return project.tasks.filter((task) => {
+            const matchesSearch =
+                !taskSearch ||
+                task.title.toLowerCase().includes(taskSearch.toLowerCase()) ||
+                task.description?.toLowerCase().includes(taskSearch.toLowerCase());
+
+            const matchesStatus = taskStatusFilter === 'all' || task.status === taskStatusFilter;
+            const matchesPriority = taskPriorityFilter === 'all' || task.priority === taskPriorityFilter;
+
+            return matchesSearch && matchesStatus && matchesPriority;
+        });
+    }, [project.tasks, taskSearch, taskStatusFilter, taskPriorityFilter]);
+
+    const hasTaskFilters = taskSearch || taskStatusFilter !== 'all' || taskPriorityFilter !== 'all';
+
+    const clearTaskFilters = () => {
+        setTaskSearch('');
+        setTaskStatusFilter('all');
+        setTaskPriorityFilter('all');
+    };
+
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: '/dashboard' },
         { title: 'Projects', href: '/projects' },
@@ -179,13 +209,62 @@ export default function ProjectShow({ project }: Props) {
                         </Button>
                     </CardHeader>
                     <CardContent>
+                        {project.tasks && project.tasks.length > 0 && (
+                            <div className="mb-4 flex flex-wrap items-center gap-3">
+                                <div className="relative flex-1 min-w-[150px] max-w-xs">
+                                    <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                                    <Input
+                                        placeholder="Search tasks..."
+                                        value={taskSearch}
+                                        onChange={(e) => setTaskSearch(e.target.value)}
+                                        className="pl-9 h-9"
+                                    />
+                                </div>
+                                <Select value={taskStatusFilter} onValueChange={setTaskStatusFilter}>
+                                    <SelectTrigger className="w-[130px] h-9">
+                                        <SelectValue placeholder="Status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All status</SelectItem>
+                                        <SelectItem value="todo">To Do</SelectItem>
+                                        <SelectItem value="in_progress">In Progress</SelectItem>
+                                        <SelectItem value="done">Done</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <Select value={taskPriorityFilter} onValueChange={setTaskPriorityFilter}>
+                                    <SelectTrigger className="w-[130px] h-9">
+                                        <SelectValue placeholder="Priority" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All priority</SelectItem>
+                                        <SelectItem value="high">High</SelectItem>
+                                        <SelectItem value="medium">Medium</SelectItem>
+                                        <SelectItem value="low">Low</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                {hasTaskFilters && (
+                                    <Button variant="ghost" size="sm" onClick={clearTaskFilters}>
+                                        <X className="size-4" />
+                                        Clear
+                                    </Button>
+                                )}
+                            </div>
+                        )}
+
                         {!project.tasks || project.tasks.length === 0 ? (
                             <p className="text-muted-foreground py-8 text-center">
                                 No tasks yet. Add your first task to get started!
                             </p>
+                        ) : filteredTasks.length === 0 ? (
+                            <div className="text-center py-8">
+                                <p className="text-muted-foreground mb-2">No tasks match your filters</p>
+                                <Button variant="outline" size="sm" onClick={clearTaskFilters}>
+                                    Clear filters
+                                </Button>
+                            </div>
                         ) : (
                             <div className="space-y-2">
-                                {project.tasks.map((task) => {
+                                {filteredTasks.map((task) => {
                                     const isRunning = !!task.running_time_entry;
                                     const totalTime = task.total_time || 0;
                                     const hasRecordings = task.audio_recordings && task.audio_recordings.length > 0;

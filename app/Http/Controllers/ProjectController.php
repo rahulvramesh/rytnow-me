@@ -15,13 +15,27 @@ class ProjectController extends Controller
 
     public function index(Request $request): Response
     {
-        $projects = $request->user()
-            ->projects()
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = $request->user()->projects();
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status = $request->input('status')) {
+            $query->where('status', $status);
+        }
+
+        $projects = $query->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('projects/index', [
             'projects' => $projects,
+            'filters' => [
+                'search' => $request->input('search'),
+                'status' => $request->input('status'),
+            ],
         ]);
     }
 
