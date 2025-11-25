@@ -50,6 +50,10 @@ class ProjectController extends Controller
     {
         $this->authorize('view', $project);
 
+        $project->load(['tasks' => function ($query) {
+            $query->orderBy('position');
+        }]);
+
         return Inertia::render('projects/show', [
             'project' => $project,
         ]);

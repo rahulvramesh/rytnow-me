@@ -1,3 +1,5 @@
+import { type Task } from './task';
+
 export interface Project {
     id: number;
     user_id: number;
@@ -8,4 +10,5 @@ export interface Project {
     due_date: string | null;
     created_at: string;
     updated_at: string;
+    tasks?: Task[];
 }

@@ -1,11 +1,13 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type Project } from '@/types/project';
+import { type Task } from '@/types/task';
 import { Head, Link, router } from '@inertiajs/react';
-import { Calendar, Edit, Trash2 } from 'lucide-react';
+import { Calendar, Edit, Plus, Trash2 } from 'lucide-react';
 
 const statusColors: Record<Project['status'], string> = {
     active: 'bg-green-500/10 text-green-600 border-green-500/20',
@@ -19,6 +21,18 @@ const statusLabels: Record<Project['status'], string> = {
     on_hold: 'On Hold',
     completed: 'Completed',
     archived: 'Archived',
+};
+
+const taskPriorityColors: Record<Task['priority'], string> = {
+    low: 'bg-gray-500/10 text-gray-600 border-gray-500/20',
+    medium: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+    high: 'bg-red-500/10 text-red-600 border-red-500/20',
+};
+
+const taskStatusLabels: Record<Task['status'], string> = {
+    todo: 'To Do',
+    in_progress: 'In Progress',
+    done: 'Done',
 };
 
 interface Props {
@@ -112,12 +126,89 @@ export default function ProjectShow({ project }: Props) {
                 </div>
 
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Tasks</CardTitle>
-                        <CardDescription>Tasks will appear here once you add them</CardDescription>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <div>
+                            <CardTitle>Tasks</CardTitle>
+                            <CardDescription>
+                                {project.tasks && project.tasks.length > 0
+                                    ? `${project.tasks.filter((t) => t.status === 'done').length} of ${project.tasks.length} completed`
+                                    : 'No tasks yet'}
+                            </CardDescription>
+                        </div>
+                        <Button asChild>
+                            <Link href={`/projects/${project.id}/tasks/create`}>
+                                <Plus className="size-4" />
+                                Add Task
+                            </Link>
+                        </Button>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-muted-foreground py-8 text-center">No tasks yet. Task feature coming soon!</p>
+                        {!project.tasks || project.tasks.length === 0 ? (
+                            <p className="text-muted-foreground py-8 text-center">
+                                No tasks yet. Add your first task to get started!
+                            </p>
+                        ) : (
+                            <div className="space-y-2">
+                                {project.tasks.map((task) => (
+                                    <div
+                                        key={task.id}
+                                        className="flex items-center gap-4 rounded-lg border p-4 transition-colors hover:bg-muted/50"
+                                    >
+                                        <Checkbox
+                                            checked={task.status === 'done'}
+                                            onCheckedChange={(checked) => {
+                                                router.patch(
+                                                    `/projects/${project.id}/tasks/${task.id}/status`,
+                                                    { status: checked ? 'done' : 'todo' },
+                                                    { preserveScroll: true }
+                                                );
+                                            }}
+                                        />
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2">
+                                                <span
+                                                    className={`font-medium ${task.status === 'done' ? 'line-through text-muted-foreground' : ''}`}
+                                                >
+                                                    {task.title}
+                                                </span>
+                                                <Badge className={taskPriorityColors[task.priority]} variant="outline">
+                                                    {task.priority}
+                                                </Badge>
+                                                {task.status === 'in_progress' && (
+                                                    <Badge variant="secondary">{taskStatusLabels[task.status]}</Badge>
+                                                )}
+                                            </div>
+                                            {task.due_date && (
+                                                <div className="text-muted-foreground mt-1 flex items-center gap-1 text-sm">
+                                                    <Calendar className="size-3" />
+                                                    Due: {new Date(task.due_date).toLocaleDateString()}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="flex gap-1">
+                                            <Button variant="ghost" size="icon" asChild>
+                                                <Link href={`/projects/${project.id}/tasks/${task.id}/edit`}>
+                                                    <Edit className="size-4" />
+                                                </Link>
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => {
+                                                    if (confirm('Delete this task?')) {
+                                                        router.delete(`/projects/${project.id}/tasks/${task.id}`, {
+                                                            preserveScroll: true,
+                                                        });
+                                                    }
+                                                }}
+                                            >
+                                                <Trash2 className="size-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </div>
