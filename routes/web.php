@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TimeEntryController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -25,6 +26,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('{task}', [TaskController::class, 'update'])->name('update');
         Route::delete('{task}', [TaskController::class, 'destroy'])->name('destroy');
         Route::patch('{task}/status', [TaskController::class, 'updateStatus'])->name('status');
+
+        // Time tracking
+        Route::post('{task}/time/start', [TimeEntryController::class, 'start'])->name('time.start');
+        Route::post('{task}/time/stop', [TimeEntryController::class, 'stop'])->name('time.stop');
+        Route::post('{task}/time', [TimeEntryController::class, 'store'])->name('time.store');
+        Route::delete('{task}/time/{timeEntry}', [TimeEntryController::class, 'destroy'])->name('time.destroy');
     });
 });
 

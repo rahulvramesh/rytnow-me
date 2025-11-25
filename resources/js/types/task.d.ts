@@ -1,3 +1,5 @@
+import { type TimeEntry } from './time-entry';
+
 export interface Task {
     id: number;
     project_id: number;
@@ -9,4 +11,7 @@ export interface Task {
     position: number;
     created_at: string;
     updated_at: string;
+    running_time_entry?: TimeEntry | null;
+    time_entries?: TimeEntry[];
+    total_time?: number;
 }

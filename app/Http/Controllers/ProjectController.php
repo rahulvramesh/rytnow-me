@@ -51,7 +51,11 @@ class ProjectController extends Controller
         $this->authorize('view', $project);
 
         $project->load(['tasks' => function ($query) {
-            $query->orderBy('position');
+            $query->orderBy('position')
+                ->with('runningTimeEntry')
+                ->withSum(['timeEntries as total_time' => function ($query) {
+                    $query->whereNotNull('stopped_at');
+                }], 'duration');
         }]);
 
         return Inertia::render('projects/show', [

@@ -5,7 +5,16 @@ import { type BreadcrumbItem } from '@/types';
 import { type Project } from '@/types/project';
 import { type Task } from '@/types/task';
 import { Head, Link } from '@inertiajs/react';
-import { Calendar, CheckCircle2, FolderOpen, ListTodo, TrendingUp } from 'lucide-react';
+import { Calendar, CheckCircle2, Clock, FolderOpen, ListTodo, TrendingUp } from 'lucide-react';
+
+function formatDuration(seconds: number): string {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    if (hours > 0) {
+        return `${hours}h ${minutes}m`;
+    }
+    return `${minutes}m`;
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -31,6 +40,7 @@ interface Props {
         active_projects: number;
         total_tasks: number;
         completed_tasks: number;
+        total_time_tracked: number;
     };
 }
 
@@ -47,7 +57,7 @@ export default function Dashboard({ projects, upcomingTasks, stats }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 p-4">
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
@@ -96,6 +106,19 @@ export default function Dashboard({ projects, upcomingTasks, stats }: Props) {
                                     style={{ width: `${completionRate}%` }}
                                 />
                             </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Time Tracked</CardTitle>
+                            <Clock className="text-muted-foreground size-4" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">
+                                {stats.total_time_tracked > 0 ? formatDuration(stats.total_time_tracked) : '0m'}
+                            </div>
+                            <p className="text-muted-foreground text-xs">total logged</p>
                         </CardContent>
                     </Card>
                 </div>

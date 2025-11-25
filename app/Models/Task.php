@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Task extends Model
 {
@@ -30,5 +32,20 @@ class Task extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function timeEntries(): HasMany
+    {
+        return $this->hasMany(TimeEntry::class);
+    }
+
+    public function runningTimeEntry(): HasOne
+    {
+        return $this->hasOne(TimeEntry::class)->whereNull('stopped_at');
+    }
+
+    public function totalTimeInSeconds(): int
+    {
+        return $this->timeEntries()->whereNotNull('stopped_at')->sum('duration');
     }
 }

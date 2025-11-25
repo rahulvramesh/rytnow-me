@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TimeEntry;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -34,6 +35,10 @@ class DashboardController extends Controller
             ->take(5)
             ->values();
 
+        $totalTimeTracked = TimeEntry::whereHas('task.project', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->whereNotNull('stopped_at')->sum('duration');
+
         $stats = [
             'total_projects' => $user->projects()->count(),
             'active_projects' => $user->projects()->where('status', 'active')->count(),
@@ -44,6 +49,7 @@ class DashboardController extends Controller
                 }])
                 ->get()
                 ->sum('done_count'),
+            'total_time_tracked' => $totalTimeTracked,
         ];
 
         return Inertia::render('dashboard', [
