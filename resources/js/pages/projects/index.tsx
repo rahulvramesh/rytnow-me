@@ -1,6 +1,4 @@
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
@@ -15,18 +13,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Projects', href: '/projects' },
 ];
 
-const statusColors: Record<Project['status'], string> = {
-    active: 'bg-green-500/10 text-green-600 border-green-500/20',
-    on_hold: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20',
-    completed: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
-    archived: 'bg-gray-500/10 text-gray-600 border-gray-500/20',
-};
-
-const statusLabels: Record<Project['status'], string> = {
-    active: 'Active',
-    on_hold: 'On Hold',
-    completed: 'Completed',
-    archived: 'Archived',
+const statusConfig: Record<Project['status'], { label: string; color: string; bg: string }> = {
+    active: { label: 'Active', color: 'text-green-600', bg: 'bg-green-500' },
+    on_hold: { label: 'On Hold', color: 'text-yellow-600', bg: 'bg-yellow-500' },
+    completed: { label: 'Completed', color: 'text-blue-600', bg: 'bg-blue-500' },
+    archived: { label: 'Archived', color: 'text-gray-500', bg: 'bg-gray-400' },
 };
 
 interface Props {
@@ -61,19 +52,28 @@ export default function ProjectsIndex({ projects, filters }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Projects" />
-            <div className="flex h-full flex-1 flex-col gap-4 p-4">
-                <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Projects</h1>
-                    <Button asChild>
-                        <Link href="/projects/create">
-                            <Plus className="size-4" />
-                            New Project
-                        </Link>
-                    </Button>
+            <div className="flex h-full flex-1 flex-col">
+                {/* Header */}
+                <div className="border-b px-6 py-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-xl font-semibold">Projects</h1>
+                            <p className="text-sm text-muted-foreground mt-1">
+                                {projects.length} project{projects.length !== 1 ? 's' : ''}
+                            </p>
+                        </div>
+                        <Button asChild>
+                            <Link href="/projects/create">
+                                <Plus className="size-4 mr-1.5" />
+                                New Project
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3">
-                    <div className="relative flex-1 min-w-[200px] max-w-sm">
+                {/* Filters */}
+                <div className="border-b px-6 py-3 flex items-center gap-3">
+                    <div className="relative flex-1 max-w-xs">
                         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             placeholder="Search projects..."
@@ -84,14 +84,14 @@ export default function ProjectsIndex({ projects, filters }: Props) {
                                     applyFilters({ search });
                                 }
                             }}
-                            className="pl-9"
+                            className="pl-9 h-9"
                         />
                     </div>
                     <Select
                         value={filters.status || 'all'}
                         onValueChange={(value) => applyFilters({ status: value })}
                     >
-                        <SelectTrigger className="w-[150px]">
+                        <SelectTrigger className="w-[140px] h-9">
                             <SelectValue placeholder="All statuses" />
                         </SelectTrigger>
                         <SelectContent>
@@ -102,79 +102,90 @@ export default function ProjectsIndex({ projects, filters }: Props) {
                             <SelectItem value="archived">Archived</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => applyFilters({ search })}
-                    >
-                        <Search className="size-4" />
-                        Search
-                    </Button>
                     {hasFilters && (
                         <Button variant="ghost" size="sm" onClick={clearFilters}>
-                            <X className="size-4" />
+                            <X className="size-4 mr-1" />
                             Clear
                         </Button>
                     )}
                 </div>
 
-                {projects.length === 0 ? (
-                    <Card className="flex flex-1 flex-col items-center justify-center py-12">
-                        <FolderOpen className="text-muted-foreground mb-4 size-12" />
-                        <CardTitle className="mb-2">
-                            {hasFilters ? 'No projects found' : 'No projects yet'}
-                        </CardTitle>
-                        <CardDescription className="mb-4">
-                            {hasFilters
-                                ? 'Try adjusting your search or filters'
-                                : 'Get started by creating your first project'}
-                        </CardDescription>
-                        {hasFilters ? (
-                            <Button variant="outline" onClick={clearFilters}>
-                                Clear filters
-                            </Button>
-                        ) : (
-                            <Button asChild>
-                                <Link href="/projects/create">
-                                    <Plus className="size-4" />
-                                    Create Project
-                                </Link>
-                            </Button>
-                        )}
-                    </Card>
-                ) : (
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        {projects.map((project) => (
-                            <Link key={project.id} href={`/projects/${project.id}`} className="group">
-                                <Card className="h-full transition-shadow hover:shadow-md">
-                                    <CardHeader>
-                                        <div className="flex items-start justify-between">
-                                            <CardTitle className="group-hover:text-primary transition-colors">
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto">
+                    {projects.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center h-full text-center px-6">
+                            <div className="size-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                                <FolderOpen className="size-8 text-muted-foreground" />
+                            </div>
+                            <h2 className="text-lg font-medium mb-1">
+                                {hasFilters ? 'No projects found' : 'No projects yet'}
+                            </h2>
+                            <p className="text-sm text-muted-foreground mb-4 max-w-sm">
+                                {hasFilters
+                                    ? 'Try adjusting your search or filters'
+                                    : 'Get started by creating your first project to organize your work'}
+                            </p>
+                            {hasFilters ? (
+                                <Button variant="outline" onClick={clearFilters}>
+                                    Clear filters
+                                </Button>
+                            ) : (
+                                <Button asChild>
+                                    <Link href="/projects/create">
+                                        <Plus className="size-4 mr-1.5" />
+                                        Create Project
+                                    </Link>
+                                </Button>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="divide-y">
+                            {projects.map((project) => (
+                                <Link
+                                    key={project.id}
+                                    href={`/projects/${project.id}`}
+                                    className="flex items-center gap-4 px-6 py-4 hover:bg-muted/50 transition-colors group"
+                                >
+                                    <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-base font-semibold text-primary flex-shrink-0">
+                                        {project.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-medium truncate group-hover:text-primary transition-colors">
                                                 {project.name}
-                                            </CardTitle>
-                                            <Badge className={statusColors[project.status]} variant="outline">
-                                                {statusLabels[project.status]}
-                                            </Badge>
+                                            </span>
+                                            <span className={`size-2 rounded-full ${statusConfig[project.status].bg}`} />
+                                            <span className={`text-xs ${statusConfig[project.status].color}`}>
+                                                {statusConfig[project.status].label}
+                                            </span>
                                         </div>
                                         {project.description && (
-                                            <CardDescription className="line-clamp-2">
+                                            <p className="text-sm text-muted-foreground truncate mt-0.5">
                                                 {project.description}
-                                            </CardDescription>
+                                            </p>
                                         )}
-                                    </CardHeader>
-                                    <CardContent>
+                                    </div>
+                                    <div className="flex items-center gap-6 text-sm text-muted-foreground flex-shrink-0">
                                         {project.due_date && (
-                                            <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                                                <Calendar className="size-4" />
-                                                Due: {new Date(project.due_date).toLocaleDateString()}
+                                            <div className="flex items-center gap-1.5">
+                                                <Calendar className="size-3.5" />
+                                                <span className="tabular-nums">
+                                                    {new Date(project.due_date).toLocaleDateString(undefined, {
+                                                        month: 'short',
+                                                        day: 'numeric',
+                                                    })}
+                                                </span>
                                             </div>
                                         )}
-                                    </CardContent>
-                                </Card>
-                            </Link>
-                        ))}
-                    </div>
-                )}
+                                        <span className="tabular-nums w-16 text-right">
+                                            {project.tasks?.length || 0} tasks
+                                        </span>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
         </AppLayout>
     );

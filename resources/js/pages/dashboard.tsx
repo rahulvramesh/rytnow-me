@@ -1,11 +1,19 @@
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type Project } from '@/types/project';
 import { type Task } from '@/types/task';
 import { Head, Link } from '@inertiajs/react';
-import { Calendar, CheckCircle2, Clock, FolderOpen, ListTodo, TrendingUp } from 'lucide-react';
+import {
+    ArrowRight,
+    Calendar,
+    CheckCircle2,
+    Circle,
+    Clock,
+    FolderOpen,
+    Loader2,
+    Plus,
+    TrendingUp,
+} from 'lucide-react';
 
 function formatDuration(seconds: number): string {
     const hours = Math.floor(seconds / 3600);
@@ -17,10 +25,7 @@ function formatDuration(seconds: number): string {
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-    },
+    { title: 'Dashboard', href: '/dashboard' },
 ];
 
 interface ProjectWithCounts extends Project {
@@ -44,11 +49,22 @@ interface Props {
     };
 }
 
-const priorityColors: Record<Task['priority'], string> = {
-    low: 'bg-gray-500/10 text-gray-600 border-gray-500/20',
-    medium: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
-    high: 'bg-red-500/10 text-red-600 border-red-500/20',
+const priorityConfig = {
+    low: { color: 'text-gray-500', bg: 'bg-gray-500' },
+    medium: { color: 'text-yellow-500', bg: 'bg-yellow-500' },
+    high: { color: 'text-red-500', bg: 'bg-red-500' },
 };
+
+function StatusIcon({ status }: { status: Task['status'] }) {
+    switch (status) {
+        case 'done':
+            return <CheckCircle2 className="size-4 text-green-500" />;
+        case 'in_progress':
+            return <Loader2 className="size-4 text-blue-500" />;
+        default:
+            return <Circle className="size-4 text-gray-400" />;
+    }
+}
 
 export default function Dashboard({ projects, upcomingTasks, stats }: Props) {
     const completionRate = stats.total_tasks > 0 ? Math.round((stats.completed_tasks / stats.total_tasks) * 100) : 0;
@@ -56,150 +72,191 @@ export default function Dashboard({ projects, upcomingTasks, stats }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="flex h-full flex-1 flex-col gap-4 p-4">
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
-                            <FolderOpen className="text-muted-foreground size-4" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.total_projects}</div>
-                            <p className="text-muted-foreground text-xs">{stats.active_projects} active</p>
-                        </CardContent>
-                    </Card>
+            <div className="flex h-full flex-1 flex-col">
+                {/* Header */}
+                <div className="border-b px-6 py-4">
+                    <h1 className="text-xl font-semibold">Dashboard</h1>
+                    <p className="text-sm text-muted-foreground mt-1">Overview of your projects and tasks</p>
+                </div>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Tasks</CardTitle>
-                            <ListTodo className="text-muted-foreground size-4" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.total_tasks}</div>
-                            <p className="text-muted-foreground text-xs">
+                <div className="flex-1 overflow-y-auto p-6">
+                    {/* Stats Grid */}
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 mb-8">
+                        <div className="rounded-lg border bg-card p-4">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm text-muted-foreground">Projects</span>
+                                <FolderOpen className="size-4 text-muted-foreground" />
+                            </div>
+                            <div className="text-2xl font-semibold tabular-nums">{stats.total_projects}</div>
+                            <p className="text-xs text-muted-foreground mt-1">{stats.active_projects} active</p>
+                        </div>
+
+                        <div className="rounded-lg border bg-card p-4">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm text-muted-foreground">Tasks</span>
+                                <Circle className="size-4 text-muted-foreground" />
+                            </div>
+                            <div className="text-2xl font-semibold tabular-nums">{stats.total_tasks}</div>
+                            <p className="text-xs text-muted-foreground mt-1">
                                 {stats.total_tasks - stats.completed_tasks} pending
                             </p>
-                        </CardContent>
-                    </Card>
+                        </div>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Completed</CardTitle>
-                            <CheckCircle2 className="text-muted-foreground size-4" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.completed_tasks}</div>
-                            <p className="text-muted-foreground text-xs">tasks done</p>
-                        </CardContent>
-                    </Card>
+                        <div className="rounded-lg border bg-card p-4">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm text-muted-foreground">Completed</span>
+                                <CheckCircle2 className="size-4 text-green-500" />
+                            </div>
+                            <div className="text-2xl font-semibold tabular-nums">{stats.completed_tasks}</div>
+                            <p className="text-xs text-muted-foreground mt-1">tasks done</p>
+                        </div>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
-                            <TrendingUp className="text-muted-foreground size-4" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{completionRate}%</div>
-                            <div className="bg-secondary mt-2 h-2 w-full rounded-full">
+                        <div className="rounded-lg border bg-card p-4">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm text-muted-foreground">Progress</span>
+                                <TrendingUp className="size-4 text-muted-foreground" />
+                            </div>
+                            <div className="text-2xl font-semibold tabular-nums">{completionRate}%</div>
+                            <div className="h-1.5 w-full rounded-full bg-secondary mt-2">
                                 <div
-                                    className="bg-primary h-2 rounded-full transition-all"
+                                    className="h-1.5 rounded-full bg-primary transition-all"
                                     style={{ width: `${completionRate}%` }}
                                 />
                             </div>
-                        </CardContent>
-                    </Card>
+                        </div>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Time Tracked</CardTitle>
-                            <Clock className="text-muted-foreground size-4" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">
+                        <div className="rounded-lg border bg-card p-4">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm text-muted-foreground">Time</span>
+                                <Clock className="size-4 text-muted-foreground" />
+                            </div>
+                            <div className="text-2xl font-semibold tabular-nums">
                                 {stats.total_time_tracked > 0 ? formatDuration(stats.total_time_tracked) : '0m'}
                             </div>
-                            <p className="text-muted-foreground text-xs">total logged</p>
-                        </CardContent>
-                    </Card>
-                </div>
+                            <p className="text-xs text-muted-foreground mt-1">tracked</p>
+                        </div>
+                    </div>
 
-                <div className="grid gap-4 md:grid-cols-2">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Recent Projects</CardTitle>
-                            <CardDescription>Your most recently updated projects</CardDescription>
-                        </CardHeader>
-                        <CardContent>
+                    <div className="grid gap-6 lg:grid-cols-2">
+                        {/* Projects */}
+                        <div>
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-sm font-medium">Recent Projects</h2>
+                                <Link
+                                    href="/projects"
+                                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                                >
+                                    View all <ArrowRight className="size-3" />
+                                </Link>
+                            </div>
+
                             {projects.length === 0 ? (
-                                <p className="text-muted-foreground py-4 text-center">
-                                    No projects yet.{' '}
-                                    <Link href="/projects/create" className="text-primary hover:underline">
-                                        Create one
+                                <div className="rounded-lg border border-dashed p-8 text-center">
+                                    <FolderOpen className="size-8 mx-auto text-muted-foreground/50 mb-3" />
+                                    <p className="text-sm text-muted-foreground mb-3">No projects yet</p>
+                                    <Link
+                                        href="/projects/create"
+                                        className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+                                    >
+                                        <Plus className="size-3.5" />
+                                        Create your first project
                                     </Link>
-                                </p>
+                                </div>
                             ) : (
-                                <div className="space-y-4">
-                                    {projects.map((project) => (
-                                        <Link
-                                            key={project.id}
-                                            href={`/projects/${project.id}`}
-                                            className="block rounded-lg border p-3 transition-colors hover:bg-muted/50"
-                                        >
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-medium">{project.name}</span>
-                                                <span className="text-muted-foreground text-sm">
-                                                    {project.completed_tasks_count}/{project.tasks_count} tasks
-                                                </span>
-                                            </div>
-                                            {project.tasks_count > 0 && (
-                                                <div className="bg-secondary mt-2 h-1.5 w-full rounded-full">
-                                                    <div
-                                                        className="bg-primary h-1.5 rounded-full transition-all"
-                                                        style={{
-                                                            width: `${(project.completed_tasks_count / project.tasks_count) * 100}%`,
-                                                        }}
-                                                    />
+                                <div className="space-y-2">
+                                    {projects.map((project) => {
+                                        const progress = project.tasks_count > 0
+                                            ? (project.completed_tasks_count / project.tasks_count) * 100
+                                            : 0;
+
+                                        return (
+                                            <Link
+                                                key={project.id}
+                                                href={`/projects/${project.id}`}
+                                                className="flex items-center gap-4 rounded-lg border p-3 hover:bg-muted/50 transition-colors group"
+                                            >
+                                                <div className="size-9 rounded-md bg-primary/10 flex items-center justify-center text-sm font-medium text-primary">
+                                                    {project.name.charAt(0).toUpperCase()}
                                                 </div>
-                                            )}
-                                        </Link>
-                                    ))}
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-medium truncate group-hover:text-primary transition-colors">
+                                                            {project.name}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-3 mt-1">
+                                                        <span className="text-xs text-muted-foreground">
+                                                            {project.completed_tasks_count}/{project.tasks_count} tasks
+                                                        </span>
+                                                        {project.tasks_count > 0 && (
+                                                            <div className="flex-1 max-w-24 h-1 rounded-full bg-secondary">
+                                                                <div
+                                                                    className="h-1 rounded-full bg-primary transition-all"
+                                                                    style={{ width: `${progress}%` }}
+                                                                />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <ArrowRight className="size-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            </Link>
+                                        );
+                                    })}
                                 </div>
                             )}
-                        </CardContent>
-                    </Card>
+                        </div>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Upcoming Tasks</CardTitle>
-                            <CardDescription>Tasks with upcoming due dates</CardDescription>
-                        </CardHeader>
-                        <CardContent>
+                        {/* Upcoming Tasks */}
+                        <div>
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-sm font-medium">Upcoming Tasks</h2>
+                            </div>
+
                             {upcomingTasks.length === 0 ? (
-                                <p className="text-muted-foreground py-4 text-center">No upcoming tasks</p>
+                                <div className="rounded-lg border border-dashed p-8 text-center">
+                                    <Calendar className="size-8 mx-auto text-muted-foreground/50 mb-3" />
+                                    <p className="text-sm text-muted-foreground">No upcoming tasks</p>
+                                </div>
                             ) : (
-                                <div className="space-y-3">
-                                    {upcomingTasks.map((task) => (
-                                        <div key={task.id} className="flex items-center gap-3 rounded-lg border p-3">
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="truncate font-medium">{task.title}</span>
-                                                    <Badge className={priorityColors[task.priority]} variant="outline">
-                                                        {task.priority}
-                                                    </Badge>
+                                <div className="space-y-1">
+                                    {upcomingTasks.map((task) => {
+                                        const isOverdue = task.due_date && new Date(task.due_date) < new Date();
+
+                                        return (
+                                            <Link
+                                                key={task.id}
+                                                href={`/projects/${task.project_id}/tasks/${task.id}`}
+                                                className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-muted/50 transition-colors group"
+                                            >
+                                                <StatusIcon status={task.status} />
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className={`text-sm truncate ${task.status === 'done' ? 'line-through text-muted-foreground' : ''}`}>
+                                                            {task.title}
+                                                        </span>
+                                                        <span className={`size-1.5 rounded-full ${priorityConfig[task.priority].bg}`} />
+                                                    </div>
+                                                    {task.project && (
+                                                        <span className="text-xs text-muted-foreground">
+                                                            {task.project.name}
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 {task.due_date && (
-                                                    <div className="text-muted-foreground mt-1 flex items-center gap-1 text-sm">
-                                                        <Calendar className="size-3" />
-                                                        {new Date(task.due_date).toLocaleDateString()}
-                                                    </div>
+                                                    <span className={`text-xs tabular-nums ${isOverdue ? 'text-red-500' : 'text-muted-foreground'}`}>
+                                                        {new Date(task.due_date).toLocaleDateString(undefined, {
+                                                            month: 'short',
+                                                            day: 'numeric',
+                                                        })}
+                                                    </span>
                                                 )}
-                                            </div>
-                                        </div>
-                                    ))}
+                                            </Link>
+                                        );
+                                    })}
                                 </div>
                             )}
-                        </CardContent>
-                    </Card>
+                        </div>
+                    </div>
                 </div>
             </div>
         </AppLayout>

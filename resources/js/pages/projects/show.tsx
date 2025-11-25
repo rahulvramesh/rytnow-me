@@ -1,17 +1,26 @@
 import { AudioRecorder } from '@/components/audio-recorder';
-import { AudioRecordingsList } from '@/components/audio-recordings-list';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type Project } from '@/types/project';
-import { type Task } from '@/types/task';
 import { Head, Link, router } from '@inertiajs/react';
-import { Calendar, Clock, Edit, Mic, Pause, Play, Plus, Search, Trash2, X } from 'lucide-react';
+import {
+    Calendar,
+    CheckCircle2,
+    Circle,
+    Clock,
+    Loader2,
+    Mic,
+    Pause,
+    Play,
+    Plus,
+    Search,
+    Settings,
+    Trash2,
+    X,
+} from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 function formatDuration(seconds: number): string {
@@ -41,36 +50,29 @@ function RunningTimer({ startedAt }: { startedAt: string }) {
     }, [startedAt]);
 
     return (
-        <span className="font-mono text-sm text-green-600 dark:text-green-400">
+        <span className="font-mono text-xs tabular-nums text-green-600 dark:text-green-400">
             {formatDuration(elapsed)}
         </span>
     );
 }
 
-const statusColors: Record<Project['status'], string> = {
-    active: 'bg-green-500/10 text-green-600 border-green-500/20',
-    on_hold: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20',
-    completed: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
-    archived: 'bg-gray-500/10 text-gray-600 border-gray-500/20',
+const statusConfig: Record<Project['status'], { label: string; color: string; bg: string }> = {
+    active: { label: 'Active', color: 'text-green-600', bg: 'bg-green-500' },
+    on_hold: { label: 'On Hold', color: 'text-yellow-600', bg: 'bg-yellow-500' },
+    completed: { label: 'Completed', color: 'text-blue-600', bg: 'bg-blue-500' },
+    archived: { label: 'Archived', color: 'text-gray-500', bg: 'bg-gray-400' },
 };
 
-const statusLabels: Record<Project['status'], string> = {
-    active: 'Active',
-    on_hold: 'On Hold',
-    completed: 'Completed',
-    archived: 'Archived',
+const priorityConfig = {
+    low: { label: 'Low', color: 'text-gray-500', dot: 'bg-gray-400' },
+    medium: { label: 'Medium', color: 'text-yellow-600', dot: 'bg-yellow-500' },
+    high: { label: 'High', color: 'text-red-600', dot: 'bg-red-500' },
 };
 
-const taskPriorityColors: Record<Task['priority'], string> = {
-    low: 'bg-gray-500/10 text-gray-600 border-gray-500/20',
-    medium: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
-    high: 'bg-red-500/10 text-red-600 border-red-500/20',
-};
-
-const taskStatusLabels: Record<Task['status'], string> = {
-    todo: 'To Do',
-    in_progress: 'In Progress',
-    done: 'Done',
+const columnConfig = {
+    todo: { label: 'Todo', icon: Circle, color: 'text-gray-500', border: 'border-t-gray-400' },
+    in_progress: { label: 'In Progress', icon: Loader2, color: 'text-blue-500', border: 'border-t-blue-500' },
+    done: { label: 'Done', icon: CheckCircle2, color: 'text-green-500', border: 'border-t-green-500' },
 };
 
 interface Props {
@@ -79,7 +81,6 @@ interface Props {
 
 export default function ProjectShow({ project }: Props) {
     const [taskSearch, setTaskSearch] = useState('');
-    const [taskStatusFilter, setTaskStatusFilter] = useState<string>('all');
     const [taskPriorityFilter, setTaskPriorityFilter] = useState<string>('all');
 
     const filteredTasks = useMemo(() => {
@@ -91,18 +92,16 @@ export default function ProjectShow({ project }: Props) {
                 task.title.toLowerCase().includes(taskSearch.toLowerCase()) ||
                 task.description?.toLowerCase().includes(taskSearch.toLowerCase());
 
-            const matchesStatus = taskStatusFilter === 'all' || task.status === taskStatusFilter;
             const matchesPriority = taskPriorityFilter === 'all' || task.priority === taskPriorityFilter;
 
-            return matchesSearch && matchesStatus && matchesPriority;
+            return matchesSearch && matchesPriority;
         });
-    }, [project.tasks, taskSearch, taskStatusFilter, taskPriorityFilter]);
+    }, [project.tasks, taskSearch, taskPriorityFilter]);
 
-    const hasTaskFilters = taskSearch || taskStatusFilter !== 'all' || taskPriorityFilter !== 'all';
+    const hasTaskFilters = taskSearch || taskPriorityFilter !== 'all';
 
     const clearTaskFilters = () => {
         setTaskSearch('');
-        setTaskStatusFilter('all');
         setTaskPriorityFilter('all');
     };
 
@@ -118,285 +117,228 @@ export default function ProjectShow({ project }: Props) {
         }
     };
 
+    const totalTasks = project.tasks?.length || 0;
+    const completedTasks = project.tasks?.filter((t) => t.status === 'done').length || 0;
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={project.name} />
-            <div className="flex h-full flex-1 flex-col gap-4 p-4">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <h1 className="text-2xl font-bold">{project.name}</h1>
-                        <Badge className={statusColors[project.status]} variant="outline">
-                            {statusLabels[project.status]}
-                        </Badge>
-                    </div>
-                    <div className="flex gap-2">
-                        <Button variant="outline" asChild>
-                            <Link href={`/projects/${project.id}/edit`}>
-                                <Edit className="size-4" />
-                                Edit
-                            </Link>
-                        </Button>
-                        <Button variant="destructive" onClick={handleDelete}>
-                            <Trash2 className="size-4" />
-                            Delete
-                        </Button>
-                    </div>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-2">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Details</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            {project.description ? (
-                                <div>
-                                    <h4 className="text-muted-foreground mb-1 text-sm font-medium">Description</h4>
-                                    <p className="whitespace-pre-wrap">{project.description}</p>
-                                </div>
-                            ) : (
-                                <p className="text-muted-foreground italic">No description provided</p>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Timeline</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="grid gap-4 sm:grid-cols-2">
-                                <div>
-                                    <h4 className="text-muted-foreground mb-1 text-sm font-medium">Start Date</h4>
-                                    <div className="flex items-center gap-2">
-                                        <Calendar className="text-muted-foreground size-4" />
-                                        {project.start_date
-                                            ? new Date(project.start_date).toLocaleDateString()
-                                            : 'Not set'}
-                                    </div>
-                                </div>
-                                <div>
-                                    <h4 className="text-muted-foreground mb-1 text-sm font-medium">Due Date</h4>
-                                    <div className="flex items-center gap-2">
-                                        <Calendar className="text-muted-foreground size-4" />
-                                        {project.due_date ? new Date(project.due_date).toLocaleDateString() : 'Not set'}
-                                    </div>
-                                </div>
+            <div className="flex h-full flex-1 flex-col">
+                {/* Header */}
+                <div className="border-b px-6 py-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-base font-semibold text-primary">
+                                {project.name.charAt(0).toUpperCase()}
                             </div>
                             <div>
-                                <h4 className="text-muted-foreground mb-1 text-sm font-medium">Created</h4>
-                                <p>{new Date(project.created_at).toLocaleDateString()}</p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <div>
-                            <CardTitle>Tasks</CardTitle>
-                            <CardDescription>
-                                {project.tasks && project.tasks.length > 0
-                                    ? `${project.tasks.filter((t) => t.status === 'done').length} of ${project.tasks.length} completed`
-                                    : 'No tasks yet'}
-                            </CardDescription>
-                        </div>
-                        <Button asChild>
-                            <Link href={`/projects/${project.id}/tasks/create`}>
-                                <Plus className="size-4" />
-                                Add Task
-                            </Link>
-                        </Button>
-                    </CardHeader>
-                    <CardContent>
-                        {project.tasks && project.tasks.length > 0 && (
-                            <div className="mb-4 flex flex-wrap items-center gap-3">
-                                <div className="relative flex-1 min-w-[150px] max-w-xs">
-                                    <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                                    <Input
-                                        placeholder="Search tasks..."
-                                        value={taskSearch}
-                                        onChange={(e) => setTaskSearch(e.target.value)}
-                                        className="pl-9 h-9"
-                                    />
+                                <div className="flex items-center gap-2">
+                                    <h1 className="text-xl font-semibold">{project.name}</h1>
+                                    <span className={`size-2 rounded-full ${statusConfig[project.status].bg}`} />
+                                    <span className={`text-sm ${statusConfig[project.status].color}`}>
+                                        {statusConfig[project.status].label}
+                                    </span>
                                 </div>
-                                <Select value={taskStatusFilter} onValueChange={setTaskStatusFilter}>
-                                    <SelectTrigger className="w-[130px] h-9">
-                                        <SelectValue placeholder="Status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All status</SelectItem>
-                                        <SelectItem value="todo">To Do</SelectItem>
-                                        <SelectItem value="in_progress">In Progress</SelectItem>
-                                        <SelectItem value="done">Done</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <Select value={taskPriorityFilter} onValueChange={setTaskPriorityFilter}>
-                                    <SelectTrigger className="w-[130px] h-9">
-                                        <SelectValue placeholder="Priority" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All priority</SelectItem>
-                                        <SelectItem value="high">High</SelectItem>
-                                        <SelectItem value="medium">Medium</SelectItem>
-                                        <SelectItem value="low">Low</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                {hasTaskFilters && (
-                                    <Button variant="ghost" size="sm" onClick={clearTaskFilters}>
-                                        <X className="size-4" />
-                                        Clear
-                                    </Button>
+                                {project.description && (
+                                    <p className="text-sm text-muted-foreground mt-0.5 max-w-xl truncate">
+                                        {project.description}
+                                    </p>
                                 )}
                             </div>
-                        )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                            {project.due_date && (
+                                <div className="flex items-center gap-1.5 text-sm text-muted-foreground mr-2">
+                                    <Calendar className="size-4" />
+                                    <span>Due {new Date(project.due_date).toLocaleDateString()}</span>
+                                </div>
+                            )}
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href={`/projects/${project.id}/edit`}>
+                                    <Settings className="size-4 mr-1.5" />
+                                    Settings
+                                </Link>
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="size-8 text-destructive hover:text-destructive"
+                                onClick={handleDelete}
+                            >
+                                <Trash2 className="size-4" />
+                            </Button>
+                        </div>
+                    </div>
+                </div>
 
-                        {!project.tasks || project.tasks.length === 0 ? (
-                            <p className="text-muted-foreground py-8 text-center">
-                                No tasks yet. Add your first task to get started!
-                            </p>
-                        ) : filteredTasks.length === 0 ? (
-                            <div className="text-center py-8">
-                                <p className="text-muted-foreground mb-2">No tasks match your filters</p>
-                                <Button variant="outline" size="sm" onClick={clearTaskFilters}>
-                                    Clear filters
-                                </Button>
-                            </div>
-                        ) : (
-                            <div className="space-y-2">
-                                {filteredTasks.map((task) => {
-                                    const isRunning = !!task.running_time_entry;
-                                    const totalTime = task.total_time || 0;
-                                    const hasRecordings = task.audio_recordings && task.audio_recordings.length > 0;
+                {/* Toolbar */}
+                <div className="border-b px-6 py-3 flex items-center gap-3">
+                    <div className="relative flex-1 max-w-xs">
+                        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                            placeholder="Search tasks..."
+                            value={taskSearch}
+                            onChange={(e) => setTaskSearch(e.target.value)}
+                            className="pl-9 h-9"
+                        />
+                    </div>
+                    <Select value={taskPriorityFilter} onValueChange={setTaskPriorityFilter}>
+                        <SelectTrigger className="w-[120px] h-9">
+                            <SelectValue placeholder="Priority" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All priority</SelectItem>
+                            <SelectItem value="high">High</SelectItem>
+                            <SelectItem value="medium">Medium</SelectItem>
+                            <SelectItem value="low">Low</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    {hasTaskFilters && (
+                        <Button variant="ghost" size="sm" onClick={clearTaskFilters}>
+                            <X className="size-4 mr-1" />
+                            Clear
+                        </Button>
+                    )}
+                    <div className="flex-1" />
+                    <span className="text-sm text-muted-foreground tabular-nums">
+                        {completedTasks}/{totalTasks} completed
+                    </span>
+                    <Button size="sm" asChild>
+                        <Link href={`/projects/${project.id}/tasks/create`}>
+                            <Plus className="size-4 mr-1" />
+                            Add Task
+                        </Link>
+                    </Button>
+                </div>
 
-                                    return (
-                                        <div
-                                            key={task.id}
-                                            className={`rounded-lg border p-4 transition-colors hover:bg-muted/50 ${isRunning ? 'border-green-500/50 bg-green-500/5' : ''}`}
-                                        >
-                                            <div className="flex items-center gap-4">
-                                                <Checkbox
-                                                    checked={task.status === 'done'}
-                                                    onCheckedChange={(checked) => {
-                                                        router.patch(
-                                                            `/projects/${project.id}/tasks/${task.id}/status`,
-                                                            { status: checked ? 'done' : 'todo' },
-                                                            { preserveScroll: true }
-                                                        );
-                                                    }}
-                                                />
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center gap-2">
-                                                        <span
-                                                            className={`font-medium ${task.status === 'done' ? 'line-through text-muted-foreground' : ''}`}
-                                                        >
-                                                            {task.title}
-                                                        </span>
-                                                        <Badge className={taskPriorityColors[task.priority]} variant="outline">
-                                                            {task.priority}
-                                                        </Badge>
-                                                        {task.status === 'in_progress' && (
-                                                            <Badge variant="secondary">{taskStatusLabels[task.status]}</Badge>
-                                                        )}
-                                                        {hasRecordings && (
-                                                            <Badge variant="outline" className="gap-1">
-                                                                <Mic className="size-3" />
-                                                                {task.audio_recordings!.length}
-                                                            </Badge>
-                                                        )}
-                                                    </div>
-                                                    <div className="text-muted-foreground mt-1 flex items-center gap-3 text-sm">
-                                                        {task.due_date && (
-                                                            <span className="flex items-center gap-1">
-                                                                <Calendar className="size-3" />
-                                                                Due: {new Date(task.due_date).toLocaleDateString()}
-                                                            </span>
-                                                        )}
-                                                        {(totalTime > 0 || isRunning) && (
-                                                            <span className="flex items-center gap-1">
-                                                                <Clock className="size-3" />
-                                                                {isRunning ? (
-                                                                    <RunningTimer startedAt={task.running_time_entry!.started_at} />
-                                                                ) : (
-                                                                    formatDuration(totalTime)
-                                                                )}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-1">
-                                                    {isRunning ? (
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className="text-red-600 border-red-200 hover:bg-red-50"
-                                                            onClick={() => {
-                                                                router.post(
-                                                                    `/projects/${project.id}/tasks/${task.id}/time/stop`,
-                                                                    {},
-                                                                    { preserveScroll: true }
-                                                                );
-                                                            }}
-                                                        >
-                                                            <Pause className="size-4" />
-                                                            Stop
-                                                        </Button>
-                                                    ) : (
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className="text-green-600 border-green-200 hover:bg-green-50"
-                                                            onClick={() => {
-                                                                router.post(
-                                                                    `/projects/${project.id}/tasks/${task.id}/time/start`,
-                                                                    {},
-                                                                    { preserveScroll: true }
-                                                                );
-                                                            }}
-                                                        >
-                                                            <Play className="size-4" />
-                                                            Start
-                                                        </Button>
-                                                    )}
-                                                    <Button variant="ghost" size="icon" asChild>
-                                                        <Link href={`/projects/${project.id}/tasks/${task.id}/edit`}>
-                                                            <Edit className="size-4" />
-                                                        </Link>
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => {
-                                                            if (confirm('Delete this task?')) {
-                                                                router.delete(`/projects/${project.id}/tasks/${task.id}`, {
-                                                                    preserveScroll: true,
-                                                                });
-                                                            }
-                                                        }}
-                                                    >
-                                                        <Trash2 className="size-4" />
-                                                    </Button>
-                                                </div>
-                                            </div>
+                {/* Kanban Board */}
+                <div className="flex-1 min-h-0 p-4 overflow-x-auto">
+                    <div className="grid grid-cols-3 gap-4 h-full min-w-[800px]">
+                        {(['todo', 'in_progress', 'done'] as const).map((status) => {
+                            const statusTasks = filteredTasks.filter((t) => t.status === status);
+                            const config = columnConfig[status];
+                            const Icon = config.icon;
 
-                                            {/* Audio section */}
-                                            <div className="mt-3 border-t pt-3">
-                                                <AudioRecorder projectId={project.id} taskId={task.id} />
-                                                {hasRecordings && (
-                                                    <AudioRecordingsList
-                                                        projectId={project.id}
-                                                        taskId={task.id}
-                                                        recordings={task.audio_recordings!}
-                                                    />
-                                                )}
-                                            </div>
+                            return (
+                                <div
+                                    key={status}
+                                    className={`flex flex-col rounded-xl border-t-2 ${config.border} bg-muted/30`}
+                                >
+                                    {/* Column Header */}
+                                    <div className="flex items-center justify-between px-4 py-3">
+                                        <div className="flex items-center gap-2">
+                                            <Icon className={`size-4 ${config.color}`} />
+                                            <span className="font-medium text-sm">{config.label}</span>
+                                            <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                                                {statusTasks.length}
+                                            </span>
                                         </div>
-                                    );
-                                })}
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
+                                    </div>
+
+                                    {/* Tasks */}
+                                    <div className="flex-1 overflow-y-auto px-2 pb-2 space-y-2">
+                                        {statusTasks.length === 0 ? (
+                                            <div className="text-center py-8 text-muted-foreground">
+                                                <p className="text-sm">No tasks</p>
+                                            </div>
+                                        ) : (
+                                            statusTasks.map((task) => {
+                                                const isRunning = !!task.running_time_entry;
+                                                const totalTime = task.total_time || 0;
+                                                const hasRecordings = task.audio_recordings && task.audio_recordings.length > 0;
+
+                                                return (
+                                                    <Link
+                                                        key={task.id}
+                                                        href={`/projects/${project.id}/tasks/${task.id}`}
+                                                        className={`block rounded-lg border bg-background p-3 transition-all hover:shadow-md hover:border-primary/20 ${isRunning ? 'ring-1 ring-green-500/50 bg-green-500/5' : ''}`}
+                                                    >
+                                                        {/* Task Title */}
+                                                        <div className="flex items-start justify-between gap-2 mb-2">
+                                                            <p className={`text-sm font-medium leading-snug ${task.status === 'done' ? 'line-through text-muted-foreground' : ''}`}>
+                                                                {task.title}
+                                                            </p>
+                                                            <span className={`size-2 rounded-full flex-shrink-0 mt-1.5 ${priorityConfig[task.priority].dot}`} />
+                                                        </div>
+
+                                                        {/* Meta */}
+                                                        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                                                            {task.due_date && (
+                                                                <span className="flex items-center gap-1">
+                                                                    <Calendar className="size-3" />
+                                                                    {new Date(task.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                                                </span>
+                                                            )}
+                                                            {(totalTime > 0 || isRunning) && (
+                                                                <span className="flex items-center gap-1">
+                                                                    <Clock className="size-3" />
+                                                                    {isRunning ? (
+                                                                        <RunningTimer startedAt={task.running_time_entry!.started_at} />
+                                                                    ) : (
+                                                                        formatDuration(totalTime)
+                                                                    )}
+                                                                </span>
+                                                            )}
+                                                            {hasRecordings && (
+                                                                <span className="flex items-center gap-1">
+                                                                    <Mic className="size-3" />
+                                                                    {task.audio_recordings!.length}
+                                                                </span>
+                                                            )}
+                                                        </div>
+
+                                                        {/* Actions */}
+                                                        <div className="flex items-center gap-1 mt-3 pt-3 border-t">
+                                                            {isRunning ? (
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="h-7 px-2 text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        router.post(
+                                                                            `/projects/${project.id}/tasks/${task.id}/time/stop`,
+                                                                            {},
+                                                                            { preserveScroll: true }
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    <Pause className="size-3 mr-1" />
+                                                                    Stop
+                                                                </Button>
+                                                            ) : (
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="h-7 px-2 text-xs text-green-600 hover:text-green-700 hover:bg-green-50"
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        router.post(
+                                                                            `/projects/${project.id}/tasks/${task.id}/time/start`,
+                                                                            {},
+                                                                            { preserveScroll: true }
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    <Play className="size-3 mr-1" />
+                                                                    Start
+                                                                </Button>
+                                                            )}
+                                                            <div className="flex-1" />
+                                                            <div onClick={(e) => e.preventDefault()}>
+                                                                <AudioRecorder projectId={project.id} taskId={task.id} />
+                                                            </div>
+                                                        </div>
+                                                    </Link>
+                                                );
+                                            })
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
             </div>
         </AppLayout>
     );

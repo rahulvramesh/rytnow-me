@@ -1,4 +1,5 @@
 import { type AudioRecording } from './audio-recording';
+import { type Comment } from './comment';
 import { type TimeEntry } from './time-entry';
 
 export interface Task {
@@ -16,4 +17,5 @@ export interface Task {
     time_entries?: TimeEntry[];
     total_time?: number;
     audio_recordings?: AudioRecording[];
+    comments?: Comment[];
 }

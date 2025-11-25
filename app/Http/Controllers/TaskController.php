@@ -44,6 +44,28 @@ class TaskController extends Controller
             ->with('success', 'Task created successfully.');
     }
 
+    public function show(Project $project, Task $task): Response
+    {
+        $this->authorize('view', $project);
+
+        $task->load(['timeEntries' => function ($query) {
+            $query->orderBy('started_at', 'desc');
+        }, 'audioRecordings' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }, 'comments' => function ($query) {
+            $query->with('user:id,name,email')->orderBy('created_at', 'desc');
+        }]);
+
+        // Get running time entry
+        $task->running_time_entry = $task->timeEntries->whereNull('stopped_at')->first();
+        $task->total_time = $task->timeEntries->whereNotNull('stopped_at')->sum('duration');
+
+        return Inertia::render('tasks/show', [
+            'project' => $project,
+            'task' => $task,
+        ]);
+    }
+
     public function edit(Project $project, Task $task): Response
     {
         $this->authorize('update', $project);

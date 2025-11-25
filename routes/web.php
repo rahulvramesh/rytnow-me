@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AudioRecordingController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
@@ -23,6 +24,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('projects/{project}/tasks')->name('tasks.')->group(function () {
         Route::get('create', [TaskController::class, 'create'])->name('create');
         Route::post('/', [TaskController::class, 'store'])->name('store');
+        Route::get('{task}', [TaskController::class, 'show'])->name('show');
         Route::get('{task}/edit', [TaskController::class, 'edit'])->name('edit');
         Route::put('{task}', [TaskController::class, 'update'])->name('update');
         Route::delete('{task}', [TaskController::class, 'destroy'])->name('destroy');
@@ -38,6 +40,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('{task}/recordings', [AudioRecordingController::class, 'store'])->name('recordings.store');
         Route::get('{task}/recordings/{audioRecording}', [AudioRecordingController::class, 'stream'])->name('recordings.stream');
         Route::delete('{task}/recordings/{audioRecording}', [AudioRecordingController::class, 'destroy'])->name('recordings.destroy');
+
+        // Comments
+        Route::post('{task}/comments', [CommentController::class, 'store'])->name('comments.store');
+        Route::put('{task}/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+        Route::delete('{task}/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     });
 });
 
