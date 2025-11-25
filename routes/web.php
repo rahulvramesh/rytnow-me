@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AudioRecordingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
@@ -32,6 +33,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('{task}/time/stop', [TimeEntryController::class, 'stop'])->name('time.stop');
         Route::post('{task}/time', [TimeEntryController::class, 'store'])->name('time.store');
         Route::delete('{task}/time/{timeEntry}', [TimeEntryController::class, 'destroy'])->name('time.destroy');
+
+        // Audio recordings
+        Route::post('{task}/recordings', [AudioRecordingController::class, 'store'])->name('recordings.store');
+        Route::get('{task}/recordings/{audioRecording}', [AudioRecordingController::class, 'stream'])->name('recordings.stream');
+        Route::delete('{task}/recordings/{audioRecording}', [AudioRecordingController::class, 'destroy'])->name('recordings.destroy');
     });
 });
 

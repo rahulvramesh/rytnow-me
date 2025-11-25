@@ -48,4 +48,9 @@ class Task extends Model
     {
         return $this->timeEntries()->whereNotNull('stopped_at')->sum('duration');
     }
+
+    public function audioRecordings(): HasMany
+    {
+        return $this->hasMany(AudioRecording::class);
+    }
 }
