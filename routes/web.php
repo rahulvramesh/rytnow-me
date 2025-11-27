@@ -6,6 +6,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\MergedTasksController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\QuickThoughtController;
+use App\Http\Controllers\QuickThoughtRecordingController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SubtaskController;
 use App\Http\Controllers\TaskController;
@@ -78,6 +80,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/', [LabelController::class, 'store'])->name('store');
         Route::put('{label}', [LabelController::class, 'update'])->name('update');
         Route::delete('{label}', [LabelController::class, 'destroy'])->name('destroy');
+    });
+
+    // Quick Thoughts
+    Route::prefix('quick-thoughts')->name('quick-thoughts.')->group(function () {
+        Route::get('/', [QuickThoughtController::class, 'index'])->name('index');
+        Route::post('/', [QuickThoughtController::class, 'store'])->name('store');
+        Route::put('{quickThought}', [QuickThoughtController::class, 'update'])->name('update');
+        Route::delete('{quickThought}', [QuickThoughtController::class, 'destroy'])->name('destroy');
+        Route::post('{quickThought}/convert', [QuickThoughtController::class, 'convertToTask'])->name('convert');
+
+        // Quick Thought Recordings
+        Route::post('{quickThought}/recordings', [QuickThoughtRecordingController::class, 'store'])->name('recordings.store');
+        Route::get('{quickThought}/recordings/{recording}', [QuickThoughtRecordingController::class, 'stream'])->name('recordings.stream');
+        Route::delete('{quickThought}/recordings/{recording}', [QuickThoughtRecordingController::class, 'destroy'])->name('recordings.destroy');
     });
 });
 

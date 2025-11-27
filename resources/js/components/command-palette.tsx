@@ -4,6 +4,7 @@ import {
     Circle,
     FolderOpen,
     Home,
+    Lightbulb,
     Loader2,
     Plus,
     Search,
@@ -74,6 +75,14 @@ export function CommandPalette({ open, onOpenChange, projectId }: CommandPalette
             icon: <Home className="size-4" />,
             shortcut: 'G D',
             action: () => router.visit('/dashboard'),
+            category: 'navigation',
+        },
+        {
+            id: 'go-quick-thoughts',
+            label: 'Go to Quick Thoughts',
+            icon: <Lightbulb className="size-4" />,
+            shortcut: 'G T',
+            action: () => router.visit('/quick-thoughts'),
             category: 'navigation',
         },
         {

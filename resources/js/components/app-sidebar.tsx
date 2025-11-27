@@ -14,13 +14,18 @@ import {
 import { WorkspaceSwitcher } from '@/components/workspace-switcher';
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
-import { BookOpen, CheckSquare, Folder, FolderKanban, LayoutGrid, Search } from 'lucide-react';
+import { BookOpen, CheckSquare, Folder, FolderKanban, LayoutGrid, Lightbulb, Search } from 'lucide-react';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Quick Thoughts',
+        href: '/quick-thoughts',
+        icon: Lightbulb,
     },
     {
         title: 'Tasks',

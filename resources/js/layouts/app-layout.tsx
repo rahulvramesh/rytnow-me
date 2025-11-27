@@ -1,4 +1,5 @@
 import { KeyboardProvider } from '@/components/keyboard-provider';
+import { QuickThoughtCaptureButton } from '@/components/quick-thought-capture-button';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { LiveblocksProvider, LIVEBLOCKS_AUTH_ENDPOINT } from '@/liveblocks.config';
 import { type BreadcrumbItem, type SharedData } from '@/types';
@@ -111,6 +112,7 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
                 <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
                     {children}
                 </AppLayoutTemplate>
+                <QuickThoughtCaptureButton />
             </KeyboardProvider>
         </LiveblocksProvider>
     );

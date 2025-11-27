@@ -659,8 +659,27 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                 </div>
 
                 {/* Toolbar */}
-                <div className="border-b px-6 py-3 flex items-center gap-3">
-                    <div className="relative flex-1 max-w-xs">
+                <div className="border-b px-4 sm:px-6 py-3 flex flex-wrap items-center gap-2 sm:gap-3">
+                    {/* View switcher - visible first on mobile */}
+                    <div className="flex items-center border rounded-lg p-0.5 order-first sm:order-none">
+                        <Button
+                            variant={viewMode === 'kanban' ? 'secondary' : 'ghost'}
+                            size="sm"
+                            className="h-7 px-2"
+                            onClick={() => setViewMode('kanban')}
+                        >
+                            <Kanban className="size-4" />
+                        </Button>
+                        <Button
+                            variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+                            size="sm"
+                            className="h-7 px-2"
+                            onClick={() => setViewMode('list')}
+                        >
+                            <List className="size-4" />
+                        </Button>
+                    </div>
+                    <div className="relative flex-1 min-w-[120px] max-w-xs order-1 sm:order-none">
                         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             placeholder="Search tasks..."
@@ -670,7 +689,7 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                         />
                     </div>
                     <Select value={taskPriorityFilter} onValueChange={setTaskPriorityFilter}>
-                        <SelectTrigger className="w-[120px] h-9">
+                        <SelectTrigger className="w-[120px] h-9 hidden sm:flex">
                             <SelectValue placeholder="Priority" />
                         </SelectTrigger>
                         <SelectContent>
@@ -682,7 +701,7 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                     </Select>
                     {project.labels && project.labels.length > 0 && (
                         <Select value={taskLabelFilter} onValueChange={setTaskLabelFilter}>
-                            <SelectTrigger className="w-[120px] h-9">
+                            <SelectTrigger className="w-[120px] h-9 hidden sm:flex">
                                 <SelectValue placeholder="Label" />
                             </SelectTrigger>
                             <SelectContent>
@@ -702,7 +721,7 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                         </Select>
                     )}
                     <Select value={taskAssigneeFilter} onValueChange={setTaskAssigneeFilter}>
-                        <SelectTrigger className="w-[120px] h-9">
+                        <SelectTrigger className="w-[120px] h-9 hidden sm:flex">
                             <SelectValue placeholder="Assignee" />
                         </SelectTrigger>
                         <SelectContent>
@@ -726,32 +745,14 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                             Clear
                         </Button>
                     )}
-                    <div className="flex-1" />
-                    <span className="text-sm text-muted-foreground tabular-nums">
+                    <div className="hidden sm:block flex-1" />
+                    <span className="hidden sm:inline text-sm text-muted-foreground tabular-nums">
                         {completedTasks}/{totalTasks} completed
                     </span>
-                    <div className="flex items-center border rounded-lg p-0.5">
-                        <Button
-                            variant={viewMode === 'kanban' ? 'secondary' : 'ghost'}
-                            size="sm"
-                            className="h-7 px-2"
-                            onClick={() => setViewMode('kanban')}
-                        >
-                            <Kanban className="size-4" />
-                        </Button>
-                        <Button
-                            variant={viewMode === 'list' ? 'secondary' : 'ghost'}
-                            size="sm"
-                            className="h-7 px-2"
-                            onClick={() => setViewMode('list')}
-                        >
-                            <List className="size-4" />
-                        </Button>
-                    </div>
-                    <Button size="sm" asChild>
+                    <Button size="sm" asChild className="ml-auto sm:ml-0">
                         <Link href={`/projects/${project.id}/tasks/create`}>
-                            <Plus className="size-4 mr-1" />
-                            Add Task
+                            <Plus className="size-4 sm:mr-1" />
+                            <span className="hidden sm:inline">Add Task</span>
                         </Link>
                     </Button>
                 </div>
