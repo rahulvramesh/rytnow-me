@@ -42,11 +42,14 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
         Route::get('workspaces/{workspace}/members', [WorkspaceController::class, 'members']);
 
         // Projects (scoped to workspace)
-        Route::apiResource('workspaces/{workspace}/projects', ProjectController::class);
+        Route::apiResource('workspaces/{workspace}/projects', ProjectController::class)
+            ->names('api.projects');
 
         // Tasks (scoped to project)
-        Route::apiResource('projects/{project}/tasks', TaskController::class);
-        Route::patch('projects/{project}/tasks/{task}/status', [TaskController::class, 'updateStatus']);
+        Route::apiResource('projects/{project}/tasks', TaskController::class)
+            ->names('api.tasks');
+        Route::patch('projects/{project}/tasks/{task}/status', [TaskController::class, 'updateStatus'])
+            ->name('api.tasks.updateStatus');
 
         // Time Entries
         Route::apiResource('tasks/{task}/time-entries', TimeEntryController::class);
@@ -57,7 +60,8 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
         Route::apiResource('tasks/{task}/comments', CommentController::class);
 
         // Labels (scoped to project)
-        Route::apiResource('projects/{project}/labels', LabelController::class);
+        Route::apiResource('projects/{project}/labels', LabelController::class)
+            ->names('api.labels');
 
         // Subtasks
         Route::apiResource('tasks/{task}/subtasks', SubtaskController::class);

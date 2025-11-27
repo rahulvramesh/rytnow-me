@@ -115,32 +115,35 @@ function ListTaskItem({ task, projectId }: { task: Task; projectId: number }) {
     return (
         <Link
             href={`/projects/${projectId}/tasks/${task.id}`}
-            className={`block bg-background border-b hover:bg-muted/50 transition-colors ${
-                isRunning ? 'bg-green-500/5' : ''
+            className={`block bg-background border border-border/50 rounded-md hover:bg-muted/50 hover:border-border transition-colors ${
+                isRunning ? 'bg-green-500/5 border-green-500/30' : ''
             }`}
         >
-            <div className="px-6 py-3">
-                <div className="flex items-center gap-4">
+            <div className="px-4 py-2.5">
+                <div className="flex items-center gap-3">
+                    {/* Priority indicator */}
+                    <div className={`w-1 h-8 rounded-full flex-shrink-0 ${priorityConfig[task.priority].dot}`} />
+
                     {/* Status indicator */}
                     <div className="flex-shrink-0">
                         {task.status === 'done' ? (
-                            <CheckCircle2 className="size-5 text-green-500" />
+                            <CheckCircle2 className="size-4 text-green-500" />
                         ) : task.status === 'in_progress' ? (
-                            <Loader2 className="size-5 text-blue-500" />
+                            <Loader2 className="size-4 text-blue-500" />
                         ) : (
-                            <Circle className="size-5 text-gray-400" />
+                            <Circle className="size-4 text-gray-400" />
                         )}
                     </div>
 
                     {/* Short code */}
-                    <span className="text-xs font-mono text-muted-foreground flex-shrink-0 w-20">
+                    <span className="text-[10px] font-mono text-muted-foreground flex-shrink-0 w-16">
                         {task.short_code}
                     </span>
 
                     {/* Title, description and labels */}
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                            <p className={`font-medium flex-shrink-0 ${task.status === 'done' ? 'line-through text-muted-foreground' : ''}`}>
+                            <p className={`text-sm font-medium flex-shrink-0 ${task.status === 'done' ? 'line-through text-muted-foreground' : ''}`}>
                                 {task.title}
                             </p>
                             {task.description && (
@@ -150,10 +153,10 @@ function ListTaskItem({ task, projectId }: { task: Task; projectId: number }) {
                             )}
                             {task.labels && task.labels.length > 0 && (
                                 <div className="flex flex-wrap gap-1 flex-shrink-0">
-                                    {task.labels.map((label) => (
+                                    {task.labels.slice(0, 3).map((label) => (
                                         <span
                                             key={label.id}
-                                            className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium"
+                                            className="inline-flex items-center px-1 py-px rounded text-[9px] font-medium"
                                             style={{
                                                 backgroundColor: `${label.color}20`,
                                                 color: label.color,
@@ -162,41 +165,44 @@ function ListTaskItem({ task, projectId }: { task: Task; projectId: number }) {
                                             {label.name}
                                         </span>
                                     ))}
+                                    {task.labels.length > 3 && (
+                                        <span className="text-[9px] text-muted-foreground">+{task.labels.length - 3}</span>
+                                    )}
                                 </div>
                             )}
                         </div>
                     </div>
 
                     {/* Metadata section - right aligned */}
-                    <div className="flex items-center gap-4 flex-shrink-0">
+                    <div className="flex items-center gap-3 flex-shrink-0">
                         {/* Subtask progress */}
                         {hasSubtasks && (
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground" title="Subtasks">
-                                <CheckSquare className="size-4" />
+                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground" title="Subtasks">
+                                <CheckSquare className="size-3.5" />
                                 <span className="tabular-nums">{task.completed_subtask_count || 0}/{subtaskCount}</span>
                             </div>
                         )}
 
                         {/* Comments count */}
                         {hasComments && (
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground" title="Comments">
-                                <MessageSquare className="size-4" />
+                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground" title="Comments">
+                                <MessageSquare className="size-3.5" />
                                 <span className="tabular-nums">{commentsCount}</span>
                             </div>
                         )}
 
                         {/* Audio recordings */}
                         {hasRecordings && (
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground" title="Audio recordings">
-                                <Mic className="size-4" />
+                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground" title="Audio recordings">
+                                <Mic className="size-3.5" />
                                 <span className="tabular-nums">{task.audio_recordings!.length}</span>
                             </div>
                         )}
 
                         {/* Time tracked */}
                         {(totalTime > 0 || isRunning) && (
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground min-w-[70px]" title="Time tracked">
-                                <Clock className="size-4" />
+                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground min-w-[60px]" title="Time tracked">
+                                <Clock className="size-3.5" />
                                 {isRunning ? (
                                     <RunningTimer startedAt={task.running_time_entry!.started_at} />
                                 ) : (
@@ -207,33 +213,31 @@ function ListTaskItem({ task, projectId }: { task: Task; projectId: number }) {
 
                         {/* Due date */}
                         {task.due_date && (
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground min-w-[80px]" title="Due date">
-                                <Calendar className="size-4" />
+                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground min-w-[70px]" title="Due date">
+                                <Calendar className="size-3.5" />
                                 <span>{new Date(task.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
                             </div>
                         )}
 
                         {/* Assignee */}
                         {task.assignee ? (
-                            <div className="flex items-center gap-2 min-w-[120px]" title={`Assigned to ${task.assignee.name}`}>
-                                <div className="size-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary">
+                            <div className="flex items-center gap-1.5 min-w-[100px]" title={`Assigned to ${task.assignee.name}`}>
+                                <div className="size-5 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-medium text-primary">
                                     {task.assignee.name.charAt(0).toUpperCase()}
                                 </div>
-                                <span className="text-xs text-muted-foreground truncate max-w-[90px]">
+                                <span className="text-[10px] text-muted-foreground truncate max-w-[75px]">
                                     {task.assignee.name}
                                 </span>
                             </div>
                         ) : (
-                            <div className="flex items-center gap-2 min-w-[120px] text-xs text-muted-foreground/50">
-                                <User className="size-4" />
+                            <div className="flex items-center gap-1.5 min-w-[100px] text-[10px] text-muted-foreground/50">
+                                <User className="size-3.5" />
                                 <span>Unassigned</span>
                             </div>
                         )}
                     </div>
                 </div>
             </div>
-            {/* Bottom color indicator */}
-            <div className={`h-0.5 ${priorityConfig[task.priority].dot}`} />
         </Link>
     );
 }
@@ -244,30 +248,69 @@ function TaskCard({ task, projectId, isDragging }: TaskCardProps) {
     const hasRecordings = task.audio_recordings && task.audio_recordings.length > 0;
     const hasSubtasks = (task.subtask_count || 0) > 0;
     const subtaskProgress = hasSubtasks ? ((task.completed_subtask_count || 0) / (task.subtask_count || 1)) * 100 : 0;
+    const commentsCount = task.comments_count || 0;
 
     return (
         <div
-            className={`rounded-lg border-l-4 border bg-background p-3 transition-all ${priorityConfig[task.priority].border} ${
-                isDragging ? 'shadow-lg ring-2 ring-primary/20 opacity-90' : 'hover:shadow-md hover:border-primary/20'
+            className={`rounded-md border-l-2 border bg-background px-2.5 py-2 transition-all ${priorityConfig[task.priority].border} ${
+                isDragging ? 'shadow-lg ring-2 ring-primary/20 opacity-90' : 'hover:shadow-sm hover:border-primary/20'
             } ${isRunning ? 'ring-1 ring-green-500/50 bg-green-500/5' : ''}`}
         >
             {/* Short code and Title */}
-            <div className="flex items-start justify-between gap-2 mb-2">
-                <div>
-                    <span className="text-[10px] font-mono text-muted-foreground">{task.short_code}</span>
-                    <p className={`text-sm font-medium leading-snug ${task.status === 'done' ? 'line-through text-muted-foreground' : ''}`}>
+            <div className="flex items-start justify-between gap-1.5 mb-1">
+                <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                        <span className="text-[9px] font-mono text-muted-foreground flex-shrink-0">{task.short_code}</span>
+                        {task.assignee && (
+                            <div
+                                className="size-4 rounded-full bg-primary/10 flex items-center justify-center text-[8px] font-medium text-primary flex-shrink-0"
+                                title={task.assignee.name}
+                            >
+                                {task.assignee.name.charAt(0).toUpperCase()}
+                            </div>
+                        )}
+                    </div>
+                    <p className={`text-xs font-medium leading-tight mt-0.5 ${task.status === 'done' ? 'line-through text-muted-foreground' : ''}`}>
                         {task.title}
                     </p>
                 </div>
+                {/* Timer controls */}
+                <div className="flex-shrink-0">
+                    {isRunning ? (
+                        <button
+                            className="size-5 flex items-center justify-center rounded text-red-600 hover:bg-red-50"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                router.post(`/projects/${projectId}/tasks/${task.id}/time/stop`, {}, { preserveScroll: true });
+                            }}
+                            title="Stop timer"
+                        >
+                            <Pause className="size-3" />
+                        </button>
+                    ) : (
+                        <button
+                            className="size-5 flex items-center justify-center rounded text-muted-foreground hover:text-green-600 hover:bg-green-50"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                router.post(`/projects/${projectId}/tasks/${task.id}/time/start`, {}, { preserveScroll: true });
+                            }}
+                            title="Start timer"
+                        >
+                            <Play className="size-3" />
+                        </button>
+                    )}
+                </div>
             </div>
 
-            {/* Labels */}
+            {/* Labels - inline, smaller */}
             {task.labels && task.labels.length > 0 && (
-                <div className="flex flex-wrap gap-1 mb-2">
-                    {task.labels.map((label) => (
+                <div className="flex flex-wrap gap-0.5 mb-1">
+                    {task.labels.slice(0, 3).map((label) => (
                         <span
                             key={label.id}
-                            className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium"
+                            className="inline-flex items-center px-1 py-px rounded text-[9px] font-medium"
                             style={{
                                 backgroundColor: `${label.color}20`,
                                 color: label.color,
@@ -276,44 +319,39 @@ function TaskCard({ task, projectId, isDragging }: TaskCardProps) {
                             {label.name}
                         </span>
                     ))}
+                    {task.labels.length > 3 && (
+                        <span className="text-[9px] text-muted-foreground">+{task.labels.length - 3}</span>
+                    )}
                 </div>
             )}
 
-            {/* Subtask Progress */}
+            {/* Subtask Progress - more compact */}
             {hasSubtasks && (
-                <div className="flex items-center gap-2 mb-2">
-                    <CheckSquare className="size-3 text-muted-foreground" />
-                    <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                <div className="flex items-center gap-1.5 mb-1">
+                    <CheckSquare className="size-2.5 text-muted-foreground" />
+                    <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
                         <div
                             className="h-full bg-green-500 transition-all duration-300"
                             style={{ width: `${subtaskProgress}%` }}
                         />
                     </div>
-                    <span className="text-[10px] text-muted-foreground tabular-nums">
+                    <span className="text-[9px] text-muted-foreground tabular-nums">
                         {task.completed_subtask_count}/{task.subtask_count}
                     </span>
                 </div>
             )}
 
-            {/* Meta */}
-            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                {task.assignee && (
-                    <span className="flex items-center gap-1" title={task.assignee.name}>
-                        <div className="size-4 rounded-full bg-primary/10 flex items-center justify-center text-[8px] font-medium text-primary">
-                            {task.assignee.name.charAt(0).toUpperCase()}
-                        </div>
-                        <span className="max-w-[60px] truncate">{task.assignee.name.split(' ')[0]}</span>
-                    </span>
-                )}
+            {/* Meta row - compact */}
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-muted-foreground">
                 {task.due_date && (
-                    <span className="flex items-center gap-1">
-                        <Calendar className="size-3" />
+                    <span className="flex items-center gap-0.5">
+                        <Calendar className="size-2.5" />
                         {new Date(task.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                     </span>
                 )}
                 {(totalTime > 0 || isRunning) && (
-                    <span className="flex items-center gap-1">
-                        <Clock className="size-3" />
+                    <span className="flex items-center gap-0.5">
+                        <Clock className="size-2.5" />
                         {isRunning ? (
                             <RunningTimer startedAt={task.running_time_entry!.started_at} />
                         ) : (
@@ -321,57 +359,18 @@ function TaskCard({ task, projectId, isDragging }: TaskCardProps) {
                         )}
                     </span>
                 )}
+                {commentsCount > 0 && (
+                    <span className="flex items-center gap-0.5">
+                        <MessageSquare className="size-2.5" />
+                        {commentsCount}
+                    </span>
+                )}
                 {hasRecordings && (
-                    <span className="flex items-center gap-1">
-                        <Mic className="size-3" />
+                    <span className="flex items-center gap-0.5">
+                        <Mic className="size-2.5" />
                         {task.audio_recordings!.length}
                     </span>
                 )}
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center gap-1 mt-3 pt-3 border-t">
-                {isRunning ? (
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 px-2 text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            router.post(
-                                `/projects/${projectId}/tasks/${task.id}/time/stop`,
-                                {},
-                                { preserveScroll: true }
-                            );
-                        }}
-                    >
-                        <Pause className="size-3 mr-1" />
-                        Stop
-                    </Button>
-                ) : (
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 px-2 text-xs text-green-600 hover:text-green-700 hover:bg-green-50"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            router.post(
-                                `/projects/${projectId}/tasks/${task.id}/time/start`,
-                                {},
-                                { preserveScroll: true }
-                            );
-                        }}
-                    >
-                        <Play className="size-3 mr-1" />
-                        Start
-                    </Button>
-                )}
-                <div className="flex-1" />
-                <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
-                    <AudioRecorder projectId={projectId} taskId={task.id} iconOnly />
-                </div>
             </div>
         </div>
     );
@@ -433,7 +432,7 @@ function DroppableColumn({ id, children }: DroppableColumnProps) {
     return (
         <div
             ref={setNodeRef}
-            className={`flex-1 overflow-y-auto px-2 pb-2 space-y-2 min-h-[100px] rounded-lg transition-colors ${
+            className={`flex-1 overflow-y-auto px-1.5 pb-1.5 space-y-1.5 min-h-[100px] rounded-lg transition-colors ${
                 isOver ? 'bg-primary/5 ring-2 ring-primary/20' : ''
             }`}
         >
@@ -759,14 +758,14 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
 
                 {/* Kanban Board */}
                 {viewMode === 'kanban' && (
-                    <div className="flex-1 min-h-0 p-4 overflow-x-auto">
+                    <div className="flex-1 min-h-0 p-3 overflow-x-auto">
                         <DndContext
                             sensors={sensors}
                             collisionDetection={closestCorners}
                             onDragStart={handleDragStart}
                             onDragEnd={handleDragEnd}
                         >
-                            <div className="grid grid-cols-3 gap-4 h-full min-w-[800px]">
+                            <div className="grid grid-cols-3 gap-3 h-full min-w-[700px]">
                                 {(['todo', 'in_progress', 'done'] as const).map((status) => {
                                     const statusTasks = tasksByStatus[status];
                                     const config = columnConfig[status];
@@ -775,14 +774,14 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                                     return (
                                         <div
                                             key={status}
-                                            className={`flex flex-col rounded-xl border-t-2 ${config.border} bg-muted/30`}
+                                            className={`flex flex-col rounded-lg border-t-2 ${config.border} bg-muted/30`}
                                         >
                                             {/* Column Header */}
-                                            <div className="flex items-center justify-between px-4 py-3">
-                                                <div className="flex items-center gap-2">
-                                                    <Icon className={`size-4 ${config.color}`} />
-                                                    <span className="font-medium text-sm">{config.label}</span>
-                                                    <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                                            <div className="flex items-center justify-between px-3 py-2">
+                                                <div className="flex items-center gap-1.5">
+                                                    <Icon className={`size-3.5 ${config.color}`} />
+                                                    <span className="font-medium text-xs">{config.label}</span>
+                                                    <span className="text-[10px] text-muted-foreground bg-muted px-1 py-0.5 rounded">
                                                         {statusTasks.length}
                                                     </span>
                                                 </div>
@@ -795,8 +794,8 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                                             >
                                                 <DroppableColumn id={status}>
                                                     {statusTasks.length === 0 ? (
-                                                        <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
-                                                            <p className="text-sm">Drop tasks here</p>
+                                                        <div className="text-center py-4 text-muted-foreground border border-dashed rounded-md">
+                                                            <p className="text-xs">Drop here</p>
                                                         </div>
                                                     ) : (
                                                         statusTasks.map((task) => (
@@ -816,7 +815,7 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
 
                             <DragOverlay>
                                 {activeTask && (
-                                    <div className="w-80">
+                                    <div className="w-64">
                                         <TaskCard task={activeTask} projectId={project.id} isDragging />
                                     </div>
                                 )}
@@ -827,13 +826,13 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
 
                 {/* List View */}
                 {viewMode === 'list' && (
-                    <div className="flex-1 min-h-0 overflow-y-auto">
+                    <div className="flex-1 min-h-0 overflow-y-auto p-3">
                         {filteredTasks.length === 0 ? (
                             <div className="text-center py-12 text-muted-foreground">
                                 <p>No tasks found</p>
                             </div>
                         ) : (
-                            <div className="border-t">
+                            <div className="space-y-1.5">
                                 {filteredTasks.map((task) => (
                                     <ListTaskItem key={task.id} task={task} projectId={project.id} />
                                 ))}
