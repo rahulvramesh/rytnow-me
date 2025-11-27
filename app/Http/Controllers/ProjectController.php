@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Services\CacheService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,7 +16,13 @@ class ProjectController extends Controller
 
     public function index(Request $request): Response
     {
-        $query = $request->user()->projects();
+        $workspace = $request->user()->currentWorkspace;
+
+        if (!$workspace) {
+            return redirect()->route('workspaces.create');
+        }
+
+        $query = $workspace->projects();
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
@@ -46,6 +53,12 @@ class ProjectController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $workspace = $request->user()->currentWorkspace;
+
+        if (!$workspace) {
+            return redirect()->route('workspaces.create');
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -54,7 +67,7 @@ class ProjectController extends Controller
             'due_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
-        $request->user()->projects()->create($validated);
+        $workspace->projects()->create($validated);
 
         return redirect()->route('projects.index')
             ->with('success', 'Project created successfully.');
@@ -66,20 +79,33 @@ class ProjectController extends Controller
 
         $project->load(['tasks' => function ($query) {
             $query->orderBy('position')
-                ->with(['runningTimeEntry', 'audioRecordings'])
+                ->with(['runningTimeEntry', 'audioRecordings', 'labels', 'assignee:id,name,email'])
+                ->withCount(['comments', 'subtasks', 'subtasks as completed_subtask_count' => function ($query) {
+                    $query->where('is_completed', true);
+                }])
                 ->withSum(['timeEntries as total_time' => function ($query) {
                     $query->whereNotNull('stopped_at');
                 }], 'duration');
-        }]);
+        }, 'labels']);
+
+        $workspaceMembers = CacheService::getWorkspaceMembers(
+            $project->workspace_id,
+            fn () => $project->workspace->members()
+                ->select('users.id', 'users.name', 'users.email')
+                ->get()
+        );
 
         return Inertia::render('projects/show', [
             'project' => $project,
+            'workspaceMembers' => $workspaceMembers,
         ]);
     }
 
     public function edit(Project $project): Response
     {
         $this->authorize('update', $project);
+
+        $project->load('labels');
 
         return Inertia::render('projects/edit', [
             'project' => $project,

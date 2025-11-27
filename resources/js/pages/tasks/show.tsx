@@ -1,17 +1,29 @@
 import { AudioRecorder } from '@/components/audio-recorder';
 import { AudioRecordingsList } from '@/components/audio-recordings-list';
 import { CommentsSection } from '@/components/comments-section';
+import { SubtasksSection } from '@/components/subtasks-section';
+import { TimeEntriesSheet } from '@/components/time-entries-sheet';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type Project } from '@/types/project';
 import { type Task } from '@/types/task';
+import { type TimeEntry } from '@/types/time-entry';
 import { Head, Link, router } from '@inertiajs/react';
 import {
     ArrowLeft,
     Calendar,
     CheckCircle2,
+    CheckSquare,
     Circle,
     Clock,
     Edit,
@@ -19,14 +31,24 @@ import {
     MessageSquare,
     Mic,
     Pause,
+    Pencil,
     Play,
     Trash2,
+    User,
 } from 'lucide-react';
+import { fetchHeaders } from '@/lib/csrf';
 import { useEffect, useState } from 'react';
+
+interface WorkspaceMember {
+    id: number;
+    name: string;
+    email: string;
+}
 
 interface Props {
     project: Project;
     task: Task;
+    workspaceMembers: WorkspaceMember[];
 }
 
 const priorityConfig: Record<Task['priority'], { label: string; color: string; icon: string }> = {
@@ -90,7 +112,12 @@ function StatusIcon({ status }: { status: Task['status'] }) {
     }
 }
 
-export default function TaskShow({ project, task }: Props) {
+export default function TaskShow({ project, task, workspaceMembers }: Props) {
+    const [showStopModal, setShowStopModal] = useState(false);
+    const [stopNote, setStopNote] = useState('');
+    const [editingEntry, setEditingEntry] = useState<TimeEntry | null>(null);
+    const [editNote, setEditNote] = useState('');
+
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: '/dashboard' },
         { title: 'Projects', href: '/projects' },
@@ -103,6 +130,7 @@ export default function TaskShow({ project, task }: Props) {
     const hasRecordings = task.audio_recordings && task.audio_recordings.length > 0;
     const timeEntries = task.time_entries || [];
     const comments = task.comments || [];
+    const subtasks = task.subtasks || [];
 
     const cycleStatus = () => {
         const statusOrder: Task['status'][] = ['todo', 'in_progress', 'done'];
@@ -120,7 +148,40 @@ export default function TaskShow({ project, task }: Props) {
     };
 
     const handleStopTimer = () => {
-        router.post(`/projects/${project.id}/tasks/${task.id}/time/stop`, {}, { preserveScroll: true });
+        setShowStopModal(true);
+    };
+
+    const confirmStopTimer = () => {
+        router.post(
+            `/projects/${project.id}/tasks/${task.id}/time/stop`,
+            { description: stopNote },
+            { preserveScroll: true }
+        );
+        setShowStopModal(false);
+        setStopNote('');
+    };
+
+    const handleEditEntry = (entry: TimeEntry) => {
+        setEditingEntry(entry);
+        setEditNote(entry.description || '');
+    };
+
+    const saveEntryNote = async () => {
+        if (!editingEntry) return;
+
+        const response = await fetch(`/projects/${project.id}/tasks/${task.id}/time/${editingEntry.id}`, {
+            method: 'PUT',
+            headers: fetchHeaders(),
+            body: JSON.stringify({ description: editNote }),
+        });
+
+        if (response.ok) {
+            setEditingEntry(null);
+            setEditNote('');
+            router.reload();
+        } else {
+            console.error('Failed to save note:', await response.text());
+        }
     };
 
     const handleDelete = () => {
@@ -205,53 +266,100 @@ export default function TaskShow({ project, task }: Props) {
                             {/* Description */}
                             <div className="mb-8">
                                 {task.description ? (
-                                    <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                                        {task.description}
-                                    </p>
+                                    <div 
+                                        className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground"
+                                        dangerouslySetInnerHTML={{ __html: task.description }}
+                                    />
                                 ) : (
                                     <p className="text-muted-foreground/50 italic">No description</p>
                                 )}
                             </div>
+
+                            {/* Subtasks */}
+                            <section className="mb-8">
+                                <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+                                    <CheckSquare className="size-4 text-muted-foreground" />
+                                    Subtasks
+                                    {subtasks.length > 0 && (
+                                        <Badge variant="secondary" className="text-xs font-normal">
+                                            {subtasks.filter(s => s.is_completed).length}/{subtasks.length}
+                                        </Badge>
+                                    )}
+                                </h3>
+                                <SubtasksSection
+                                    projectId={project.id}
+                                    taskId={task.id}
+                                    subtasks={subtasks}
+                                    workspaceMembers={workspaceMembers}
+                                />
+                            </section>
 
                             {/* Activity Sections */}
                             <div className="space-y-8">
                                 {/* Time Entries */}
                                 {(timeEntries.length > 0 || isRunning) && (
                                     <section>
-                                        <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
-                                            <Clock className="size-4 text-muted-foreground" />
-                                            Time Tracked
-                                            <span className="text-muted-foreground font-normal">
-                                                {isRunning ? (
-                                                    <RunningTimer startedAt={task.running_time_entry!.started_at} />
-                                                ) : (
-                                                    formatDuration(totalTime)
-                                                )}
-                                            </span>
-                                        </h3>
+                                        <div className="flex items-center justify-between mb-3">
+                                            <h3 className="text-sm font-medium flex items-center gap-2">
+                                                <Clock className="size-4 text-muted-foreground" />
+                                                Time Tracked
+                                                <span className="text-muted-foreground font-normal">
+                                                    {isRunning ? (
+                                                        <RunningTimer startedAt={task.running_time_entry!.started_at} />
+                                                    ) : (
+                                                        formatDuration(totalTime)
+                                                    )}
+                                                </span>
+                                            </h3>
+                                            <TimeEntriesSheet
+                                                projectId={project.id}
+                                                taskId={task.id}
+                                                timeEntries={timeEntries}
+                                                totalTime={totalTime}
+                                            />
+                                        </div>
                                         {isRunning && (
                                             <div className="mb-3 flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
                                                 <span className="size-2 animate-pulse rounded-full bg-green-500" />
                                                 Timer running
                                             </div>
                                         )}
-                                        <div className="space-y-1">
+                                        <div className="space-y-2">
                                             {timeEntries.slice(0, 5).map((entry) => (
                                                 <div
                                                     key={entry.id}
-                                                    className="flex items-center justify-between text-sm py-1.5 px-2 -mx-2 rounded hover:bg-muted/50"
+                                                    className="group text-sm py-2 px-2 -mx-2 rounded hover:bg-muted/50"
                                                 >
-                                                    <span className="text-muted-foreground">
-                                                        {new Date(entry.started_at).toLocaleString(undefined, {
-                                                            month: 'short',
-                                                            day: 'numeric',
-                                                            hour: '2-digit',
-                                                            minute: '2-digit',
-                                                        })}
-                                                    </span>
-                                                    <span className="font-mono text-xs tabular-nums">
-                                                        {entry.duration ? formatDuration(entry.duration) : 'Running...'}
-                                                    </span>
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-muted-foreground">
+                                                            {new Date(entry.started_at).toLocaleString(undefined, {
+                                                                month: 'short',
+                                                                day: 'numeric',
+                                                                hour: '2-digit',
+                                                                minute: '2-digit',
+                                                            })}
+                                                        </span>
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="font-mono text-xs tabular-nums">
+                                                                {entry.duration ? formatDuration(entry.duration) : 'Running...'}
+                                                            </span>
+                                                            {entry.duration && (
+                                                                <button
+                                                                    onClick={() => handleEditEntry(entry)}
+                                                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-muted rounded"
+                                                                    title="Add/edit note"
+                                                                >
+                                                                    <Pencil className="size-3 text-muted-foreground" />
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    {entry.description && (
+                                                        <p className="text-xs text-muted-foreground mt-1 flex items-start gap-1">
+                                                            <Clock className="size-3 mt-0.5 flex-shrink-0" />
+                                                            {entry.description}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             ))}
                                             {timeEntries.length > 5 && (
@@ -265,24 +373,24 @@ export default function TaskShow({ project, task }: Props) {
 
                                 {/* Audio Recordings */}
                                 <section>
-                                    <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
-                                        <Mic className="size-4 text-muted-foreground" />
-                                        Recordings
-                                        {hasRecordings && (
-                                            <Badge variant="secondary" className="text-xs font-normal">
-                                                {task.audio_recordings!.length}
-                                            </Badge>
-                                        )}
-                                    </h3>
-                                    <AudioRecorder projectId={project.id} taskId={task.id} />
+                                    <div className="flex items-center justify-between mb-3">
+                                        <h3 className="text-sm font-medium flex items-center gap-2">
+                                            <Mic className="size-4 text-muted-foreground" />
+                                            Recordings
+                                            {hasRecordings && (
+                                                <Badge variant="secondary" className="text-xs font-normal">
+                                                    {task.audio_recordings!.length}
+                                                </Badge>
+                                            )}
+                                        </h3>
+                                        <AudioRecorder projectId={project.id} taskId={task.id} iconOnly />
+                                    </div>
                                     {hasRecordings && (
-                                        <div className="mt-3">
-                                            <AudioRecordingsList
-                                                projectId={project.id}
-                                                taskId={task.id}
-                                                recordings={task.audio_recordings!}
-                                            />
-                                        </div>
+                                        <AudioRecordingsList
+                                            projectId={project.id}
+                                            taskId={task.id}
+                                            recordings={task.audio_recordings!}
+                                        />
                                     )}
                                 </section>
 
@@ -335,6 +443,26 @@ export default function TaskShow({ project, task }: Props) {
                                     {priorityConfig[task.priority].icon}
                                 </span>
                                 {priorityConfig[task.priority].label}
+                            </div>
+                        </div>
+
+                        {/* Assignee */}
+                        <div className="space-y-1.5">
+                            <label className="text-xs text-muted-foreground">Assignee</label>
+                            <div className="flex items-center gap-2 px-2 py-1.5 text-sm">
+                                {task.assignee ? (
+                                    <>
+                                        <div className="size-5 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-medium text-primary">
+                                            {task.assignee.name.charAt(0).toUpperCase()}
+                                        </div>
+                                        <span>{task.assignee.name}</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <User className="size-4 text-muted-foreground" />
+                                        <span className="text-muted-foreground">Unassigned</span>
+                                    </>
+                                )}
                             </div>
                         </div>
 
@@ -395,6 +523,56 @@ export default function TaskShow({ project, task }: Props) {
                     </div>
                 </div>
             </div>
+
+            {/* Stop Timer Modal */}
+            <Dialog open={showStopModal} onOpenChange={setShowStopModal}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Stop Timer</DialogTitle>
+                    </DialogHeader>
+                    <div className="py-4">
+                        <Textarea
+                            placeholder="Add a note about what you worked on (optional)..."
+                            value={stopNote}
+                            onChange={(e) => setStopNote(e.target.value)}
+                            rows={3}
+                        />
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setShowStopModal(false)}>
+                            Cancel
+                        </Button>
+                        <Button onClick={confirmStopTimer}>
+                            Stop Timer
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Edit Time Entry Note Modal */}
+            <Dialog open={!!editingEntry} onOpenChange={(open) => !open && setEditingEntry(null)}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Edit Time Entry Note</DialogTitle>
+                    </DialogHeader>
+                    <div className="py-4">
+                        <Textarea
+                            placeholder="Add a note about what you worked on..."
+                            value={editNote}
+                            onChange={(e) => setEditNote(e.target.value)}
+                            rows={3}
+                        />
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setEditingEntry(null)}>
+                            Cancel
+                        </Button>
+                        <Button onClick={saveEntryNote}>
+                            Save Note
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </AppLayout>
     );
 }

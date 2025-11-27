@@ -160,9 +160,10 @@ export default function ProjectsIndex({ projects, filters }: Props) {
                                             </span>
                                         </div>
                                         {project.description && (
-                                            <p className="text-sm text-muted-foreground truncate mt-0.5">
-                                                {project.description}
-                                            </p>
+                                            <div 
+                                                className="text-sm text-muted-foreground line-clamp-1 mt-0.5"
+                                                dangerouslySetInnerHTML={{ __html: project.description }}
+                                            />
                                         )}
                                     </div>
                                     <div className="flex items-center gap-6 text-sm text-muted-foreground flex-shrink-0">

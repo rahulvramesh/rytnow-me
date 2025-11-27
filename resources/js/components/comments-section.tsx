@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { type Comment } from '@/types/comment';
 import { useForm, usePage } from '@inertiajs/react';
-import { Edit2, MessageSquare, Send, Trash2, X } from 'lucide-react';
+import { Clock, Edit2, MessageSquare, Send, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 
 interface CommentsSectionProps {
@@ -32,6 +32,13 @@ function getInitials(name: string): string {
         .join('')
         .toUpperCase()
         .slice(0, 2);
+}
+
+function formatDuration(seconds: number): string {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    return `${minutes}m`;
 }
 
 interface CommentItemProps {
@@ -65,16 +72,27 @@ function CommentItem({ comment, projectId, taskId, currentUserId }: CommentItemP
         }
     };
 
+    const isTimeEntryNote = !!comment.time_entry_id;
+
     return (
         <div className="flex gap-3">
-            <div className="flex-shrink-0 size-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary">
-                {comment.user ? getInitials(comment.user.name) : '?'}
+            <div className={`flex-shrink-0 size-8 rounded-full flex items-center justify-center text-xs font-medium ${isTimeEntryNote ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-primary/10 text-primary'}`}>
+                {isTimeEntryNote ? (
+                    <Clock className="size-4" />
+                ) : (
+                    comment.user ? getInitials(comment.user.name) : '?'
+                )}
             </div>
             <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-medium text-sm">{comment.user?.name || 'Unknown'}</span>
+                    {isTimeEntryNote && comment.time_entry?.duration && (
+                        <span className="text-xs px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                            Time logged: {formatDuration(comment.time_entry.duration)}
+                        </span>
+                    )}
                     <span className="text-xs text-muted-foreground">{formatRelativeTime(comment.created_at)}</span>
-                    {isOwner && !isEditing && (
+                    {isOwner && !isEditing && !isTimeEntryNote && (
                         <div className="ml-auto flex items-center gap-1">
                             <Button
                                 variant="ghost"

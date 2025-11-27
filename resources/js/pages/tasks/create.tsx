@@ -1,18 +1,30 @@
 import { Button } from '@/components/ui/button';
+import { ExplainTaskDialog } from '@/components/explain-task-dialog';
+import { EditorWrapper } from '@/components/editor-wrapper';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type Project } from '@/types/project';
-import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, CheckCircle2, Circle, Loader2 } from 'lucide-react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { ArrowLeft, CheckCircle2, Circle, Loader2, Mic, Trash2, User, X } from 'lucide-react';
+import { useState } from 'react';
+
+interface WorkspaceMember {
+    id: number;
+    name: string;
+    email: string;
+}
 
 interface Props {
     project: Project;
+    workspaceMembers: WorkspaceMember[];
 }
 
-export default function TaskCreate({ project }: Props) {
+export default function TaskCreate({ project, workspaceMembers }: Props) {
+    const { auth } = usePage<{ auth: { user: { id: number; name: string } } }>().props;
+
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: '/dashboard' },
         { title: 'Projects', href: '/projects' },
@@ -20,17 +32,71 @@ export default function TaskCreate({ project }: Props) {
         { title: 'New Task', href: `/projects/${project.id}/tasks/create` },
     ];
 
-    const { data, setData, post, processing, errors } = useForm({
+    const [data, setData] = useState({
         title: '',
         description: '',
-        status: 'todo',
-        priority: 'medium',
+        status: 'todo' as 'todo' | 'in_progress' | 'done',
+        priority: 'medium' as 'low' | 'medium' | 'high',
         due_date: '',
+        assigned_to: '' as string,
+        label_ids: [] as number[],
     });
+    const [audioRecording, setAudioRecording] = useState<{ blob: Blob; duration: number } | null>(null);
+    const [processing, setProcessing] = useState(false);
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const updateData = <K extends keyof typeof data>(key: K, value: typeof data[K]) => {
+        setData((prev) => ({ ...prev, [key]: value }));
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(`/projects/${project.id}/tasks`);
+        setProcessing(true);
+
+        const formData = new FormData();
+        formData.append('title', data.title);
+        formData.append('description', data.description);
+        formData.append('status', data.status);
+        formData.append('priority', data.priority);
+        if (data.due_date) formData.append('due_date', data.due_date);
+        if (data.assigned_to) formData.append('assigned_to', data.assigned_to);
+        data.label_ids.forEach((id) => formData.append('label_ids[]', String(id)));
+        
+        if (audioRecording) {
+            const extension = audioRecording.blob.type.includes('webm') ? 'webm' : 'm4a';
+            formData.append('audio', audioRecording.blob, `explanation-${Date.now()}.${extension}`);
+            formData.append('audio_duration', String(audioRecording.duration));
+        }
+
+        router.post(`/projects/${project.id}/tasks`, formData, {
+            onSuccess: () => setProcessing(false),
+            onError: (errs) => {
+                setErrors(errs);
+                setProcessing(false);
+            },
+        });
+    };
+
+    const handleAudioSave = (blob: Blob, duration: number) => {
+        setAudioRecording({ blob, duration });
+    };
+
+    const removeAudioRecording = () => {
+        setAudioRecording(null);
+    };
+
+    const formatDuration = (seconds: number): string => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
+
+    const toggleLabel = (labelId: number) => {
+        if (data.label_ids.includes(labelId)) {
+            updateData('label_ids', data.label_ids.filter((id) => id !== labelId));
+        } else {
+            updateData('label_ids', [...data.label_ids, labelId]);
+        }
     };
 
     return (
@@ -63,7 +129,7 @@ export default function TaskCreate({ project }: Props) {
                                 <Input
                                     id="title"
                                     value={data.title}
-                                    onChange={(e) => setData('title', e.target.value)}
+                                    onChange={(e) => updateData('title', e.target.value)}
                                     placeholder="What needs to be done?"
                                     className="h-11"
                                     autoFocus
@@ -76,15 +142,49 @@ export default function TaskCreate({ project }: Props) {
                                 <Label htmlFor="description" className="text-sm font-medium">
                                     Description
                                 </Label>
-                                <textarea
-                                    id="description"
+                                <EditorWrapper
                                     value={data.description}
-                                    onChange={(e) => setData('description', e.target.value)}
+                                    onChange={(html) => updateData('description', html)}
                                     placeholder="Add more details about this task..."
-                                    rows={4}
-                                    className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                                 />
                                 {errors.description && <p className="text-sm text-destructive">{errors.description}</p>}
+                            </div>
+
+                            {/* Explain Task */}
+                            <div className="space-y-2">
+                                <Label className="text-sm font-medium">Voice Explanation</Label>
+                                {audioRecording ? (
+                                    <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                                        <div className="flex items-center justify-center size-10 rounded-full bg-primary/10">
+                                            <Mic className="size-5 text-primary" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-sm font-medium">Voice explanation recorded</p>
+                                            <p className="text-xs text-muted-foreground">
+                                                Duration: {formatDuration(audioRecording.duration)}
+                                            </p>
+                                        </div>
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            className="text-destructive hover:text-destructive"
+                                            onClick={removeAudioRecording}
+                                        >
+                                            <Trash2 className="size-4" />
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <ExplainTaskDialog onSave={handleAudioSave}>
+                                        <Button type="button" variant="outline" className="gap-2">
+                                            <Mic className="size-4" />
+                                            Record Explanation
+                                        </Button>
+                                    </ExplainTaskDialog>
+                                )}
+                                <p className="text-xs text-muted-foreground">
+                                    Record a voice note to explain this task in detail
+                                </p>
                             </div>
 
                             <div className="grid gap-4 sm:grid-cols-2">
@@ -92,7 +192,7 @@ export default function TaskCreate({ project }: Props) {
                                     <Label htmlFor="status" className="text-sm font-medium">
                                         Status
                                     </Label>
-                                    <Select value={data.status} onValueChange={(value: 'todo' | 'in_progress' | 'done') => setData('status', value)}>
+                                    <Select value={data.status} onValueChange={(value: 'todo' | 'in_progress' | 'done') => updateData('status', value)}>
                                         <SelectTrigger className="h-11">
                                             <SelectValue placeholder="Select status" />
                                         </SelectTrigger>
@@ -124,7 +224,7 @@ export default function TaskCreate({ project }: Props) {
                                     <Label htmlFor="priority" className="text-sm font-medium">
                                         Priority
                                     </Label>
-                                    <Select value={data.priority} onValueChange={(value: 'low' | 'medium' | 'high') => setData('priority', value)}>
+                                    <Select value={data.priority} onValueChange={(value: 'low' | 'medium' | 'high') => updateData('priority', value)}>
                                         <SelectTrigger className="h-11">
                                             <SelectValue placeholder="Select priority" />
                                         </SelectTrigger>
@@ -153,19 +253,115 @@ export default function TaskCreate({ project }: Props) {
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="due_date" className="text-sm font-medium">
-                                    Due Date
-                                </Label>
-                                <Input
-                                    id="due_date"
-                                    type="date"
-                                    value={data.due_date}
-                                    onChange={(e) => setData('due_date', e.target.value)}
-                                    className="h-11 max-w-xs"
-                                />
-                                {errors.due_date && <p className="text-sm text-destructive">{errors.due_date}</p>}
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                <div className="space-y-2">
+                                    <Label htmlFor="assigned_to" className="text-sm font-medium">
+                                        Assignee
+                                    </Label>
+                                    <Select
+                                        value={data.assigned_to || 'unassigned'}
+                                        onValueChange={(value) => updateData('assigned_to', value === 'unassigned' ? '' : value)}
+                                    >
+                                        <SelectTrigger className="h-11">
+                                            <SelectValue placeholder="Unassigned">
+                                                {data.assigned_to ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="size-5 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-medium text-primary">
+                                                            {workspaceMembers.find(m => m.id.toString() === data.assigned_to)?.name.charAt(0).toUpperCase()}
+                                                        </div>
+                                                        {workspaceMembers.find(m => m.id.toString() === data.assigned_to)?.name || 'Select assignee'}
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex items-center gap-2 text-muted-foreground">
+                                                        <User className="size-4" />
+                                                        Unassigned
+                                                    </div>
+                                                )}
+                                            </SelectValue>
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="unassigned">
+                                                <div className="flex items-center gap-2 text-muted-foreground">
+                                                    <User className="size-4" />
+                                                    Unassigned
+                                                </div>
+                                            </SelectItem>
+                                            {workspaceMembers.map((member) => (
+                                                <SelectItem key={member.id} value={member.id.toString()}>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="size-5 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-medium text-primary">
+                                                            {member.name.charAt(0).toUpperCase()}
+                                                        </div>
+                                                        {member.name}
+                                                    </div>
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    {data.assigned_to !== auth.user.id.toString() && (
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="w-full justify-start text-xs text-muted-foreground hover:text-foreground"
+                                            onClick={() => updateData('assigned_to', auth.user.id.toString())}
+                                        >
+                                            <User className="size-3 mr-1" />
+                                            Assign to me
+                                        </Button>
+                                    )}
+                                    {errors.assigned_to && <p className="text-sm text-destructive">{errors.assigned_to}</p>}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="due_date" className="text-sm font-medium">
+                                        Due Date
+                                    </Label>
+                                    <Input
+                                        id="due_date"
+                                        type="date"
+                                        value={data.due_date}
+                                        onChange={(e) => updateData('due_date', e.target.value)}
+                                        className="h-11"
+                                    />
+                                    {errors.due_date && <p className="text-sm text-destructive">{errors.due_date}</p>}
+                                </div>
                             </div>
+
+                            {/* Labels */}
+                            {project.labels && project.labels.length > 0 && (
+                                <div className="space-y-2">
+                                    <Label className="text-sm font-medium">Labels</Label>
+                                    <div className="flex flex-wrap gap-2">
+                                        {project.labels.map((label) => {
+                                            const isSelected = data.label_ids.includes(label.id);
+                                            return (
+                                                <button
+                                                    key={label.id}
+                                                    type="button"
+                                                    onClick={() => toggleLabel(label.id)}
+                                                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-medium transition-all ${
+                                                        isSelected
+                                                            ? 'ring-2 ring-offset-2 ring-primary'
+                                                            : 'hover:ring-1 hover:ring-offset-1 hover:ring-muted-foreground'
+                                                    }`}
+                                                    style={{
+                                                        backgroundColor: `${label.color}20`,
+                                                        color: label.color,
+                                                    }}
+                                                >
+                                                    <span
+                                                        className="size-2 rounded-full"
+                                                        style={{ backgroundColor: label.color }}
+                                                    />
+                                                    {label.name}
+                                                    {isSelected && <X className="size-3" />}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex items-center justify-end gap-3 pt-4 border-t">

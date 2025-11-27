@@ -1,3 +1,4 @@
+import { EditorWrapper } from '@/components/editor-wrapper';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -70,13 +71,10 @@ export default function ProjectCreate() {
                                 <Label htmlFor="description" className="text-sm font-medium">
                                     Description
                                 </Label>
-                                <textarea
-                                    id="description"
+                                <EditorWrapper
                                     value={data.description}
-                                    onChange={(e) => setData('description', e.target.value)}
+                                    onChange={(html) => setData('description', html)}
                                     placeholder="What is this project about?"
-                                    rows={4}
-                                    className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                                 />
                                 {errors.description && <p className="text-sm text-destructive">{errors.description}</p>}
                             </div>

@@ -3,9 +3,14 @@
 use App\Http\Controllers\AudioRecordingController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LabelController;
+use App\Http\Controllers\MergedTasksController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SubtaskController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TimeEntryController;
+use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -18,6 +23,15 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('search', [SearchController::class, 'search'])->name('search');
+
+    // Workspace routes
+    Route::resource('workspaces', WorkspaceController::class);
+    Route::post('workspaces/{workspace}/switch', [WorkspaceController::class, 'switch'])
+        ->name('workspaces.switch');
+
+    // Merged tasks view (all tasks across projects in current workspace)
+    Route::get('tasks', [MergedTasksController::class, 'index'])->name('tasks.index');
 
     Route::resource('projects', ProjectController::class);
 
@@ -29,11 +43,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('{task}', [TaskController::class, 'update'])->name('update');
         Route::delete('{task}', [TaskController::class, 'destroy'])->name('destroy');
         Route::patch('{task}/status', [TaskController::class, 'updateStatus'])->name('status');
+        Route::post('reorder', [TaskController::class, 'reorder'])->name('reorder');
 
         // Time tracking
         Route::post('{task}/time/start', [TimeEntryController::class, 'start'])->name('time.start');
         Route::post('{task}/time/stop', [TimeEntryController::class, 'stop'])->name('time.stop');
         Route::post('{task}/time', [TimeEntryController::class, 'store'])->name('time.store');
+        Route::put('{task}/time/{timeEntry}', [TimeEntryController::class, 'update'])->name('time.update');
         Route::delete('{task}/time/{timeEntry}', [TimeEntryController::class, 'destroy'])->name('time.destroy');
 
         // Audio recordings
@@ -45,6 +61,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('{task}/comments', [CommentController::class, 'store'])->name('comments.store');
         Route::put('{task}/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
         Route::delete('{task}/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+
+        // Task labels
+        Route::post('{task}/labels', [LabelController::class, 'attachToTask'])->name('labels.attach');
+
+        // Subtasks
+        Route::post('{task}/subtasks', [SubtaskController::class, 'store'])->name('subtasks.store');
+        Route::put('{task}/subtasks/{subtask}', [SubtaskController::class, 'update'])->name('subtasks.update');
+        Route::delete('{task}/subtasks/{subtask}', [SubtaskController::class, 'destroy'])->name('subtasks.destroy');
+        Route::post('{task}/subtasks/reorder', [SubtaskController::class, 'reorder'])->name('subtasks.reorder');
+    });
+
+    // Project labels
+    Route::prefix('projects/{project}/labels')->name('labels.')->group(function () {
+        Route::get('/', [LabelController::class, 'index'])->name('index');
+        Route::post('/', [LabelController::class, 'store'])->name('store');
+        Route::put('{label}', [LabelController::class, 'update'])->name('update');
+        Route::delete('{label}', [LabelController::class, 'destroy'])->name('destroy');
     });
 });
 

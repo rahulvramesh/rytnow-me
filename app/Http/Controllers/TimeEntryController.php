@@ -41,13 +41,29 @@ class TimeEntryController extends Controller
     {
         $this->authorize('update', $project);
 
+        $validated = $request->validate([
+            'description' => 'nullable|string|max:500',
+        ]);
+
         $runningEntry = $task->runningTimeEntry;
+        $description = $validated['description'] ?? null;
 
         if ($runningEntry) {
             $runningEntry->update([
                 'stopped_at' => now(),
                 'duration' => now()->diffInSeconds($runningEntry->started_at),
+                'description' => $description,
             ]);
+
+            // Create linked comment if description provided
+            if ($description) {
+                \App\Models\Comment::create([
+                    'task_id' => $task->id,
+                    'user_id' => $request->user()->id,
+                    'time_entry_id' => $runningEntry->id,
+                    'content' => $description,
+                ]);
+            }
         }
 
         return redirect()->back()->with('success', 'Timer stopped.');
@@ -75,6 +91,41 @@ class TimeEntryController extends Controller
         }
 
         return redirect()->back()->with('success', 'Time entry added.');
+    }
+
+    public function update(Request $request, Project $project, Task $task, TimeEntry $timeEntry): \Illuminate\Http\JsonResponse
+    {
+        $this->authorize('update', $project);
+
+        $validated = $request->validate([
+            'description' => 'nullable|string|max:500',
+        ]);
+
+        $description = $validated['description'] ?? null;
+
+        $timeEntry->update([
+            'description' => $description,
+        ]);
+
+        // Create or update linked comment
+        if ($description) {
+            $existingComment = \App\Models\Comment::where('time_entry_id', $timeEntry->id)->first();
+            if ($existingComment) {
+                $existingComment->update(['content' => $description]);
+            } else {
+                \App\Models\Comment::create([
+                    'task_id' => $task->id,
+                    'user_id' => $request->user()->id,
+                    'time_entry_id' => $timeEntry->id,
+                    'content' => $description,
+                ]);
+            }
+        } else {
+            // Remove linked comment if description is cleared
+            \App\Models\Comment::where('time_entry_id', $timeEntry->id)->delete();
+        }
+
+        return response()->json(['success' => true]);
     }
 
     public function destroy(Project $project, Task $task, TimeEntry $timeEntry): RedirectResponse

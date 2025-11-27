@@ -6,9 +6,10 @@ import { useCallback, useRef, useState } from 'react';
 interface AudioRecorderProps {
     projectId: number;
     taskId: number;
+    iconOnly?: boolean;
 }
 
-export function AudioRecorder({ projectId, taskId }: AudioRecorderProps) {
+export function AudioRecorder({ projectId, taskId, iconOnly = false }: AudioRecorderProps) {
     const [isRecording, setIsRecording] = useState(false);
     const [recordingTime, setRecordingTime] = useState(0);
     const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
@@ -20,11 +21,39 @@ export function AudioRecorder({ projectId, taskId }: AudioRecorderProps) {
     const startTimeRef = useRef<number>(0);
 
     const startRecording = useCallback(async () => {
+        // Check if mediaDevices is available (requires HTTPS or localhost)
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            alert('Audio recording requires HTTPS. Please access this site via HTTPS or localhost.');
+            return;
+        }
+
         try {
+            // First check permission status if available
+            if (navigator.permissions) {
+                try {
+                    const permissionStatus = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+                    if (permissionStatus.state === 'denied') {
+                        alert('Microphone access was denied. Please enable it in your browser settings and reload the page.');
+                        return;
+                    }
+                } catch {
+                    // permissions.query may not support microphone in all browsers
+                }
+            }
+
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const mediaRecorder = new MediaRecorder(stream, {
-                mimeType: MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4',
-            });
+            
+            // Determine supported mime type
+            let mimeType = 'audio/webm';
+            if (!MediaRecorder.isTypeSupported('audio/webm')) {
+                if (MediaRecorder.isTypeSupported('audio/mp4')) {
+                    mimeType = 'audio/mp4';
+                } else if (MediaRecorder.isTypeSupported('audio/ogg')) {
+                    mimeType = 'audio/ogg';
+                }
+            }
+
+            const mediaRecorder = new MediaRecorder(stream, { mimeType });
 
             mediaRecorderRef.current = mediaRecorder;
             chunksRef.current = [];
@@ -51,7 +80,16 @@ export function AudioRecorder({ projectId, taskId }: AudioRecorderProps) {
             }, 1000);
         } catch (err) {
             console.error('Failed to start recording:', err);
-            alert('Could not access microphone. Please check permissions.');
+            const error = err as Error;
+            if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                alert('Microphone access was denied. Please allow microphone access in your browser and try again.');
+            } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+                alert('No microphone found. Please connect a microphone and try again.');
+            } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
+                alert('Microphone is in use by another application. Please close other apps using the microphone.');
+            } else {
+                alert(`Could not access microphone: ${error.message}`);
+            }
         }
     }, []);
 
@@ -104,10 +142,21 @@ export function AudioRecorder({ projectId, taskId }: AudioRecorderProps) {
     return (
         <div className="flex items-center gap-2">
             {!isRecording && !audioBlob && (
-                <Button variant="outline" size="sm" onClick={startRecording} className="gap-1">
-                    <Mic className="size-4" />
-                    Record
-                </Button>
+                iconOnly ? (
+                    <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={startRecording} 
+                        className="size-7 text-muted-foreground hover:text-foreground"
+                    >
+                        <Mic className="size-4" />
+                    </Button>
+                ) : (
+                    <Button variant="outline" size="sm" onClick={startRecording} className="gap-1">
+                        <Mic className="size-4" />
+                        Record
+                    </Button>
+                )
             )}
 
             {isRecording && (

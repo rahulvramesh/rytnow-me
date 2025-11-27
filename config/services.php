@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'liveblocks' => [
+        'public_key' => env('VITE_LIVEBLOCKS_PUBLIC_KEY'),
+        'secret_key' => env('LIVEBLOCKS_SECRET_KEY'),
+    ],
+
 ];

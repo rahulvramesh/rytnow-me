@@ -1,3 +1,4 @@
+import { useKeyboard } from '@/components/keyboard-provider';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -10,17 +11,21 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { WorkspaceSwitcher } from '@/components/workspace-switcher';
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, FolderKanban, LayoutGrid } from 'lucide-react';
-import AppLogo from './app-logo';
+import { BookOpen, CheckSquare, Folder, FolderKanban, LayoutGrid, Search } from 'lucide-react';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Tasks',
+        href: '/tasks',
+        icon: CheckSquare,
     },
     {
         title: 'Projects',
@@ -43,15 +48,26 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { openCommandPalette } = useKeyboard();
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
-                                <AppLogo />
-                            </Link>
+                        <WorkspaceSwitcher />
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            onClick={openCommandPalette}
+                            className="group"
+                            tooltip="Search"
+                        >
+                            <Search className="size-4" />
+                            <span className="flex-1">Search</span>
+                            <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 group-data-[collapsible=icon]:hidden sm:flex">
+                                <span className="text-xs">⌘</span>K
+                            </kbd>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>

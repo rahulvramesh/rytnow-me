@@ -13,6 +13,7 @@ class Comment extends Model
     protected $fillable = [
         'task_id',
         'user_id',
+        'time_entry_id',
         'content',
     ];
 
@@ -24,5 +25,10 @@ class Comment extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function timeEntry(): BelongsTo
+    {
+        return $this->belongsTo(TimeEntry::class);
     }
 }

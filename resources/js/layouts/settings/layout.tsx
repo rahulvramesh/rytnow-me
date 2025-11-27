@@ -31,6 +31,16 @@ const sidebarNavItems: NavItem[] = [
         href: editAppearance(),
         icon: null,
     },
+    {
+        title: 'Editor',
+        href: '/settings/editor',
+        icon: null,
+    },
+    {
+        title: 'API Tokens',
+        href: '/settings/api-tokens',
+        icon: null,
+    },
 ];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {

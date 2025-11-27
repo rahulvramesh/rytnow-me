@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
 @import "tw-animate-css";
 
@@ -140,4 +141,307 @@
     body {
         @apply bg-background text-foreground;
     }
+}
+
+/* Lexical Table Styles */
+.LexicalTheme__table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 8px 0;
+    table-layout: fixed;
+}
+
+.LexicalTheme__tableRow {
+    /* Row styling if needed */
+}
+
+.LexicalTheme__tableRowStriping {
+    background-color: var(--muted);
+}
+
+.LexicalTheme__tableCell {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    min-width: 75px;
+    vertical-align: top;
+    position: relative;
+    outline: none;
+}
+
+.LexicalTheme__tableCellHeader {
+    background-color: var(--muted);
+    font-weight: 600;
+}
+
+.LexicalTheme__tableCellSelected {
+    background-color: oklch(0.7 0.15 250 / 0.15);
+}
+
+.dark .LexicalTheme__tableCellSelected {
+    background-color: oklch(0.5 0.15 250 / 0.25);
+}
+
+.LexicalTheme__tableSelected {
+    outline: 2px solid var(--primary);
+}
+
+.LexicalTheme__tableSelection {
+    background-color: oklch(0.7 0.15 250 / 0.1);
+}
+
+.dark .LexicalTheme__tableSelection {
+    background-color: oklch(0.5 0.15 250 / 0.2);
+}
+
+/* TipTap Editor Styles */
+.tiptap {
+    outline: none;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+    color: var(--muted-foreground);
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
+
+.tiptap table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 8px 0;
+    table-layout: fixed;
+}
+
+.tiptap td,
+.tiptap th {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    min-width: 75px;
+    vertical-align: top;
+    position: relative;
+}
+
+.tiptap th {
+    background-color: var(--muted);
+    font-weight: 600;
+}
+
+.tiptap .selectedCell {
+    background-color: oklch(0.7 0.15 250 / 0.15);
+}
+
+.dark .tiptap .selectedCell {
+    background-color: oklch(0.5 0.15 250 / 0.25);
+}
+
+.tiptap ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin: 0.5rem 0;
+}
+
+.tiptap ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    margin: 0.5rem 0;
+}
+
+.tiptap li {
+    margin: 0.25rem 0;
+}
+
+.tiptap blockquote {
+    border-left: 4px solid var(--border);
+    padding-left: 1rem;
+    margin: 0.5rem 0;
+    font-style: italic;
+    color: var(--muted-foreground);
+}
+
+/* Liveblocks Collaborative Editor Styles */
+.collaborative-editor {
+    position: relative;
+}
+
+/* Liveblocks theme integration */
+.lb-root {
+    --lb-accent: var(--primary);
+    --lb-accent-foreground: var(--primary-foreground);
+    --lb-background: var(--background);
+    --lb-foreground: var(--foreground);
+    --lb-muted: var(--muted);
+    --lb-muted-foreground: var(--muted-foreground);
+    --lb-border: var(--border);
+    --lb-radius: var(--radius);
+}
+
+/* Floating toolbar styling */
+.lb-tiptap-floating-toolbar {
+    background: var(--popover);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 4px;
+}
+
+.lb-tiptap-floating-toolbar button {
+    border-radius: calc(var(--radius) - 2px);
+    padding: 6px 8px;
+    transition: background-color 0.15s ease;
+}
+
+.lb-tiptap-floating-toolbar button:hover {
+    background-color: var(--muted);
+}
+
+.lb-tiptap-floating-toolbar button[data-active="true"] {
+    background-color: var(--muted);
+    color: var(--primary);
+}
+
+/* Floating composer styling */
+.lb-tiptap-floating-composer,
+.lb-tiptap-anchored-threads {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Thread/comment styling */
+.lb-thread {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.lb-thread-comment {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.lb-thread-comment:last-child {
+    border-bottom: none;
+}
+
+.lb-comment-author {
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.lb-comment-date {
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+}
+
+.lb-comment-body {
+    color: var(--foreground);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* Cursor styles for collaboration */
+.lb-tiptap-cursor {
+    position: relative;
+}
+
+.lb-tiptap-cursor-caret {
+    position: absolute;
+    width: 2px;
+    height: 1.2em;
+    border-radius: 1px;
+}
+
+.lb-tiptap-cursor-label {
+    position: absolute;
+    top: -1.4em;
+    left: 0;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    color: white;
+}
+
+/* Selection highlight for comments */
+.lb-tiptap-thread-mark {
+    background-color: oklch(0.85 0.15 90 / 0.4);
+    border-bottom: 2px solid oklch(0.7 0.2 90);
+}
+
+.dark .lb-tiptap-thread-mark {
+    background-color: oklch(0.5 0.15 90 / 0.3);
+    border-bottom-color: oklch(0.6 0.2 90);
+}
+
+/* Input fields in composer */
+.lb-composer-editor {
+    background: var(--background);
+    border: 1px solid var(--input);
+    border-radius: calc(var(--radius) - 2px);
+    padding: 8px 12px;
+    font-size: 0.875rem;
+}
+
+.lb-composer-editor:focus-within {
+    border-color: var(--ring);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--ring);
+}
+
+/* Button styling in Liveblocks UI */
+.lb-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: calc(var(--radius) - 2px);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 8px 16px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.lb-button-primary {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+}
+
+.lb-button-primary:hover {
+    background-color: var(--primary);
+    opacity: 0.9;
+}
+
+.lb-button-secondary {
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+}
+
+.lb-button-secondary:hover {
+    background-color: var(--muted);
+}
+
+/* Avatar styling */
+.lb-avatar {
+    border-radius: 50%;
+    border: 2px solid var(--background);
+}
+
+/* Presence indicators */
+.lb-presence-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--background);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Mention styling */
+.lb-mention {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    padding: 1px 4px;
+    border-radius: 4px;
+    font-weight: 500;
 }
