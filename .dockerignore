@@ -1,0 +1,62 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Dependencies (will be installed in container)
+node_modules
+vendor
+
+# Storage (mounted as volume)
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/app/public/*
+!storage/app/.gitignore
+!storage/app/public/.gitignore
+!storage/framework/.gitignore
+!storage/framework/cache/.gitignore
+!storage/framework/sessions/.gitignore
+!storage/framework/views/.gitignore
+!storage/logs/.gitignore
+
+# Cache
+bootstrap/cache/*
+!bootstrap/cache/.gitignore
+
+# Docker files (not needed in image)
+docker-compose*.yml
+Dockerfile*
+
+# Documentation
+*.md
+docs/
+
+# Tests
+tests/
+phpunit.xml
+.phpunit.result.cache
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+public/hot
+public/build/
+
+# Misc
+.claude/
+.editorconfig

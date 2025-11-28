@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Task\TaskCreated;
+use App\Events\Task\TaskDeleted;
+use App\Events\Task\TaskStatusChanged;
+use App\Events\Task\TaskUpdated;
 use App\Models\Project;
 use App\Models\Task;
 use App\Services\CacheService;
@@ -69,6 +73,9 @@ class TaskController extends Controller
         if (!empty($labelIds)) {
             $task->labels()->sync($labelIds);
         }
+
+        // Broadcast task created event
+        broadcast(new TaskCreated($task, $request->user()))->toOthers();
 
         return redirect()->route('projects.show', $project)
             ->with('success', 'Task created successfully.');
@@ -158,15 +165,25 @@ class TaskController extends Controller
         $task->update($validated);
         $task->labels()->sync($labelIds);
 
+        // Broadcast task updated event
+        broadcast(new TaskUpdated($task->fresh(), $request->user()))->toOthers();
+
         return redirect()->route('projects.show', $project)
             ->with('success', 'Task updated successfully.');
     }
 
-    public function destroy(Project $project, Task $task): RedirectResponse
+    public function destroy(Request $request, Project $project, Task $task): RedirectResponse
     {
         $this->authorize('update', $project);
 
+        $taskId = $task->id;
+        $projectId = $project->id;
+        $workspaceId = $project->workspace_id;
+
         $task->delete();
+
+        // Broadcast task deleted event
+        broadcast(new TaskDeleted($taskId, $projectId, $workspaceId, $request->user()))->toOthers();
 
         return redirect()->route('projects.show', $project)
             ->with('success', 'Task deleted successfully.');
@@ -180,7 +197,11 @@ class TaskController extends Controller
             'status' => 'required|in:todo,in_progress,done',
         ]);
 
+        $previousStatus = $task->status;
         $task->update($validated);
+
+        // Broadcast status change event
+        broadcast(new TaskStatusChanged($task, $previousStatus, $request->user()))->toOthers();
 
         return redirect()->back()->with('success', 'Task status updated.');
     }
@@ -240,6 +261,9 @@ class TaskController extends Controller
             'status' => $newStatus,
             'position' => $newPosition,
         ]);
+
+        // Broadcast status/position change event
+        broadcast(new TaskStatusChanged($task, $oldStatus, $request->user()))->toOthers();
 
         if ($request->wantsJson()) {
             return response()->json(['success' => true]);

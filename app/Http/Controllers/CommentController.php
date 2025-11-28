@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Comment\CommentCreated;
+use App\Events\Comment\CommentDeleted;
+use App\Events\Comment\CommentUpdated;
 use App\Models\Comment;
 use App\Models\Project;
 use App\Models\Task;
@@ -21,10 +24,13 @@ class CommentController extends Controller
             'content' => 'required|string|max:5000',
         ]);
 
-        $task->comments()->create([
+        $comment = $task->comments()->create([
             'user_id' => $request->user()->id,
             'content' => $validated['content'],
         ]);
+
+        // Broadcast comment created event
+        broadcast(new CommentCreated($comment, $request->user()))->toOthers();
 
         return redirect()->back()->with('success', 'Comment added.');
     }
@@ -43,6 +49,9 @@ class CommentController extends Controller
 
         $comment->update($validated);
 
+        // Broadcast comment updated event
+        broadcast(new CommentUpdated($comment->fresh(), $request->user()))->toOthers();
+
         return redirect()->back()->with('success', 'Comment updated.');
     }
 
@@ -54,7 +63,14 @@ class CommentController extends Controller
             abort(403, 'You can only delete your own comments.');
         }
 
+        $commentId = $comment->id;
+        $taskId = $task->id;
+        $workspaceId = $project->workspace_id;
+
         $comment->delete();
+
+        // Broadcast comment deleted event
+        broadcast(new CommentDeleted($commentId, $taskId, $workspaceId, $request->user()))->toOthers();
 
         return redirect()->back()->with('success', 'Comment deleted.');
     }

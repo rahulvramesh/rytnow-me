@@ -1,4 +1,5 @@
 import { ConvertToTaskDialog } from '@/components/convert-to-task-dialog';
+import { PageHeader } from '@/components/page-header';
 import { QuickThoughtCard } from '@/components/quick-thought-card';
 import { QuickThoughtInput } from '@/components/quick-thought-input';
 import AppLayout from '@/layouts/app-layout';
@@ -32,20 +33,11 @@ export default function QuickThoughtsIndex({ thoughts, projects }: Props) {
             <Head title="Quick Thoughts" />
 
             <div className="flex h-full flex-1 flex-col">
-                {/* Header */}
-                <div className="border-b px-6 py-4">
-                    <div className="flex items-center gap-3">
-                        <div className="size-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
-                            <Lightbulb className="size-5 text-amber-600" />
-                        </div>
-                        <div>
-                            <h1 className="text-xl font-semibold">Quick Thoughts</h1>
-                            <p className="text-sm text-muted-foreground">
-                                Capture ideas quickly, convert them to tasks later
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <PageHeader
+                    title="Quick Thoughts"
+                    description="Capture ideas quickly, convert them to tasks later"
+                    icon={<Lightbulb className="size-5" />}
+                />
 
                 {/* Content */}
                 <div className="flex-1 overflow-y-auto p-6">

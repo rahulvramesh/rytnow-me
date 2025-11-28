@@ -1,3 +1,4 @@
+import { EchoProvider } from '@/components/echo-provider';
 import { KeyboardProvider } from '@/components/keyboard-provider';
 import { QuickThoughtCaptureButton } from '@/components/quick-thought-capture-button';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
@@ -108,12 +109,14 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
                 }
             }}
         >
-            <KeyboardProvider>
-                <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
-                    {children}
-                </AppLayoutTemplate>
-                <QuickThoughtCaptureButton />
-            </KeyboardProvider>
+            <EchoProvider userId={user?.id ?? null}>
+                <KeyboardProvider>
+                    <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
+                        {children}
+                    </AppLayoutTemplate>
+                    <QuickThoughtCaptureButton />
+                </KeyboardProvider>
+            </EchoProvider>
         </LiveblocksProvider>
     );
 };

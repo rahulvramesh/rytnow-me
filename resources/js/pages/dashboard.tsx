@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type Project } from '@/types/project';
@@ -10,6 +11,7 @@ import {
     Circle,
     Clock,
     FolderOpen,
+    LayoutDashboard,
     Loader2,
     Plus,
     TrendingUp,
@@ -73,11 +75,11 @@ export default function Dashboard({ projects, upcomingTasks, stats }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col">
-                {/* Header */}
-                <div className="border-b px-6 py-4">
-                    <h1 className="text-xl font-semibold">Dashboard</h1>
-                    <p className="text-sm text-muted-foreground mt-1">Overview of your projects and tasks</p>
-                </div>
+                <PageHeader
+                    title="Dashboard"
+                    description="Overview of your projects and tasks"
+                    icon={<LayoutDashboard className="size-5" />}
+                />
 
                 <div className="flex-1 overflow-y-auto p-6">
                     {/* Stats Grid */}

@@ -105,4 +105,14 @@ class Project extends Model
     {
         return $this->hasMany(Label::class);
     }
+
+    public function docFolders(): HasMany
+    {
+        return $this->hasMany(DocFolder::class)->orderBy('position');
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class);
+    }
 }

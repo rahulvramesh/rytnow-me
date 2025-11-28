@@ -1,9 +1,13 @@
-import { AudioRecorder } from '@/components/audio-recorder';
+import { PageHeader } from '@/components/page-header';
+import { TaskCard } from '@/components/task-card';
+import { TaskListItem } from '@/components/task-list-item';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useProjectChannel } from '@/hooks/use-project-channel';
 import { fetchHeaders } from '@/lib/csrf';
 import AppLayout from '@/layouts/app-layout';
+import { useKanbanStore } from '@/stores/kanban-store';
 import { type BreadcrumbItem } from '@/types';
 import { type Project } from '@/types/project';
 import { type Task } from '@/types/task';
@@ -24,58 +28,19 @@ import { Head, Link, router } from '@inertiajs/react';
 import {
     Calendar,
     CheckCircle2,
-    CheckSquare,
     Circle,
-    Clock,
+    FileText,
     GripVertical,
     Kanban,
     List,
     Loader2,
-    MessageSquare,
-    Mic,
-    Pause,
-    Play,
     Plus,
     Search,
     Settings,
     Trash2,
-    User,
     X,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-
-function formatDuration(seconds: number): string {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    if (hours > 0) {
-        return `${hours}h ${minutes}m`;
-    }
-    if (minutes > 0) {
-        return `${minutes}m ${secs}s`;
-    }
-    return `${secs}s`;
-}
-
-function RunningTimer({ startedAt }: { startedAt: string }) {
-    const [elapsed, setElapsed] = useState(0);
-
-    useEffect(() => {
-        const start = new Date(startedAt).getTime();
-        const updateElapsed = () => {
-            setElapsed(Math.floor((Date.now() - start) / 1000));
-        };
-        updateElapsed();
-        const interval = setInterval(updateElapsed, 1000);
-        return () => clearInterval(interval);
-    }, [startedAt]);
-
-    return (
-        <span className="font-mono text-xs tabular-nums text-green-600 dark:text-green-400">
-            {formatDuration(elapsed)}
-        </span>
-    );
-}
 
 const statusConfig: Record<Project['status'], { label: string; color: string; bg: string }> = {
     active: { label: 'Active', color: 'text-green-600', bg: 'bg-green-500' },
@@ -84,297 +49,11 @@ const statusConfig: Record<Project['status'], { label: string; color: string; bg
     archived: { label: 'Archived', color: 'text-gray-500', bg: 'bg-gray-400' },
 };
 
-const priorityConfig = {
-    low: { label: 'Low', color: 'text-gray-500', dot: 'bg-gray-400', border: 'border-l-gray-400' },
-    medium: { label: 'Medium', color: 'text-yellow-600', dot: 'bg-yellow-500', border: 'border-l-yellow-500' },
-    high: { label: 'High', color: 'text-red-600', dot: 'bg-red-500', border: 'border-l-red-500' },
-};
-
 const columnConfig = {
     todo: { label: 'Todo', icon: Circle, color: 'text-gray-500', border: 'border-t-gray-400' },
     in_progress: { label: 'In Progress', icon: Loader2, color: 'text-blue-500', border: 'border-t-blue-500' },
     done: { label: 'Done', icon: CheckCircle2, color: 'text-green-500', border: 'border-t-green-500' },
 };
-
-interface TaskCardProps {
-    task: Task;
-    projectId: number;
-    isDragging?: boolean;
-}
-
-// List view task item - full width, bottom color indicator
-function ListTaskItem({ task, projectId }: { task: Task; projectId: number }) {
-    const isRunning = !!task.running_time_entry;
-    const totalTime = task.total_time || 0;
-    const hasRecordings = task.audio_recordings && task.audio_recordings.length > 0;
-    const subtaskCount = task.subtasks_count || task.subtask_count || 0;
-    const hasSubtasks = subtaskCount > 0;
-    const commentsCount = task.comments_count || 0;
-    const hasComments = commentsCount > 0;
-
-    return (
-        <Link
-            href={`/projects/${projectId}/tasks/${task.id}`}
-            className={`block bg-background border border-border/50 rounded-md hover:bg-muted/50 hover:border-border transition-colors ${
-                isRunning ? 'bg-green-500/5 border-green-500/30' : ''
-            }`}
-        >
-            <div className="px-4 py-2.5">
-                <div className="flex items-center gap-3">
-                    {/* Priority indicator */}
-                    <div className={`w-1 h-8 rounded-full flex-shrink-0 ${priorityConfig[task.priority].dot}`} />
-
-                    {/* Status indicator */}
-                    <div className="flex-shrink-0">
-                        {task.status === 'done' ? (
-                            <CheckCircle2 className="size-4 text-green-500" />
-                        ) : task.status === 'in_progress' ? (
-                            <Loader2 className="size-4 text-blue-500" />
-                        ) : (
-                            <Circle className="size-4 text-gray-400" />
-                        )}
-                    </div>
-
-                    {/* Short code */}
-                    <span className="text-[10px] font-mono text-muted-foreground flex-shrink-0 w-16">
-                        {task.short_code}
-                    </span>
-
-                    {/* Title, description and labels */}
-                    <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                            <p className={`text-sm font-medium flex-shrink-0 ${task.status === 'done' ? 'line-through text-muted-foreground' : ''}`}>
-                                {task.title}
-                            </p>
-                            {task.description && (
-                                <span className="text-xs text-muted-foreground truncate">
-                                    — {task.description.replace(/<[^>]*>/g, '')}
-                                </span>
-                            )}
-                            {task.labels && task.labels.length > 0 && (
-                                <div className="flex flex-wrap gap-1 flex-shrink-0">
-                                    {task.labels.slice(0, 3).map((label) => (
-                                        <span
-                                            key={label.id}
-                                            className="inline-flex items-center px-1 py-px rounded text-[9px] font-medium"
-                                            style={{
-                                                backgroundColor: `${label.color}20`,
-                                                color: label.color,
-                                            }}
-                                        >
-                                            {label.name}
-                                        </span>
-                                    ))}
-                                    {task.labels.length > 3 && (
-                                        <span className="text-[9px] text-muted-foreground">+{task.labels.length - 3}</span>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Metadata section - right aligned */}
-                    <div className="flex items-center gap-3 flex-shrink-0">
-                        {/* Subtask progress */}
-                        {hasSubtasks && (
-                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground" title="Subtasks">
-                                <CheckSquare className="size-3.5" />
-                                <span className="tabular-nums">{task.completed_subtask_count || 0}/{subtaskCount}</span>
-                            </div>
-                        )}
-
-                        {/* Comments count */}
-                        {hasComments && (
-                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground" title="Comments">
-                                <MessageSquare className="size-3.5" />
-                                <span className="tabular-nums">{commentsCount}</span>
-                            </div>
-                        )}
-
-                        {/* Audio recordings */}
-                        {hasRecordings && (
-                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground" title="Audio recordings">
-                                <Mic className="size-3.5" />
-                                <span className="tabular-nums">{task.audio_recordings!.length}</span>
-                            </div>
-                        )}
-
-                        {/* Time tracked */}
-                        {(totalTime > 0 || isRunning) && (
-                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground min-w-[60px]" title="Time tracked">
-                                <Clock className="size-3.5" />
-                                {isRunning ? (
-                                    <RunningTimer startedAt={task.running_time_entry!.started_at} />
-                                ) : (
-                                    <span className="tabular-nums">{formatDuration(totalTime)}</span>
-                                )}
-                            </div>
-                        )}
-
-                        {/* Due date */}
-                        {task.due_date && (
-                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground min-w-[70px]" title="Due date">
-                                <Calendar className="size-3.5" />
-                                <span>{new Date(task.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
-                            </div>
-                        )}
-
-                        {/* Assignee */}
-                        {task.assignee ? (
-                            <div className="flex items-center gap-1.5 min-w-[100px]" title={`Assigned to ${task.assignee.name}`}>
-                                <div className="size-5 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-medium text-primary">
-                                    {task.assignee.name.charAt(0).toUpperCase()}
-                                </div>
-                                <span className="text-[10px] text-muted-foreground truncate max-w-[75px]">
-                                    {task.assignee.name}
-                                </span>
-                            </div>
-                        ) : (
-                            <div className="flex items-center gap-1.5 min-w-[100px] text-[10px] text-muted-foreground/50">
-                                <User className="size-3.5" />
-                                <span>Unassigned</span>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
-        </Link>
-    );
-}
-
-function TaskCard({ task, projectId, isDragging }: TaskCardProps) {
-    const isRunning = !!task.running_time_entry;
-    const totalTime = task.total_time || 0;
-    const hasRecordings = task.audio_recordings && task.audio_recordings.length > 0;
-    const hasSubtasks = (task.subtask_count || 0) > 0;
-    const subtaskProgress = hasSubtasks ? ((task.completed_subtask_count || 0) / (task.subtask_count || 1)) * 100 : 0;
-    const commentsCount = task.comments_count || 0;
-
-    return (
-        <div
-            className={`rounded-md border-l-2 border bg-background px-2.5 py-2 transition-all ${priorityConfig[task.priority].border} ${
-                isDragging ? 'shadow-lg ring-2 ring-primary/20 opacity-90' : 'hover:shadow-sm hover:border-primary/20'
-            } ${isRunning ? 'ring-1 ring-green-500/50 bg-green-500/5' : ''}`}
-        >
-            {/* Short code and Title */}
-            <div className="flex items-start justify-between gap-1.5 mb-1">
-                <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                        <span className="text-[9px] font-mono text-muted-foreground flex-shrink-0">{task.short_code}</span>
-                        {task.assignee && (
-                            <div
-                                className="size-4 rounded-full bg-primary/10 flex items-center justify-center text-[8px] font-medium text-primary flex-shrink-0"
-                                title={task.assignee.name}
-                            >
-                                {task.assignee.name.charAt(0).toUpperCase()}
-                            </div>
-                        )}
-                    </div>
-                    <p className={`text-xs font-medium leading-tight mt-0.5 ${task.status === 'done' ? 'line-through text-muted-foreground' : ''}`}>
-                        {task.title}
-                    </p>
-                </div>
-                {/* Timer controls */}
-                <div className="flex-shrink-0">
-                    {isRunning ? (
-                        <button
-                            className="size-5 flex items-center justify-center rounded text-red-600 hover:bg-red-50"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                router.post(`/projects/${projectId}/tasks/${task.id}/time/stop`, {}, { preserveScroll: true });
-                            }}
-                            title="Stop timer"
-                        >
-                            <Pause className="size-3" />
-                        </button>
-                    ) : (
-                        <button
-                            className="size-5 flex items-center justify-center rounded text-muted-foreground hover:text-green-600 hover:bg-green-50"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                router.post(`/projects/${projectId}/tasks/${task.id}/time/start`, {}, { preserveScroll: true });
-                            }}
-                            title="Start timer"
-                        >
-                            <Play className="size-3" />
-                        </button>
-                    )}
-                </div>
-            </div>
-
-            {/* Labels - inline, smaller */}
-            {task.labels && task.labels.length > 0 && (
-                <div className="flex flex-wrap gap-0.5 mb-1">
-                    {task.labels.slice(0, 3).map((label) => (
-                        <span
-                            key={label.id}
-                            className="inline-flex items-center px-1 py-px rounded text-[9px] font-medium"
-                            style={{
-                                backgroundColor: `${label.color}20`,
-                                color: label.color,
-                            }}
-                        >
-                            {label.name}
-                        </span>
-                    ))}
-                    {task.labels.length > 3 && (
-                        <span className="text-[9px] text-muted-foreground">+{task.labels.length - 3}</span>
-                    )}
-                </div>
-            )}
-
-            {/* Subtask Progress - more compact */}
-            {hasSubtasks && (
-                <div className="flex items-center gap-1.5 mb-1">
-                    <CheckSquare className="size-2.5 text-muted-foreground" />
-                    <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
-                        <div
-                            className="h-full bg-green-500 transition-all duration-300"
-                            style={{ width: `${subtaskProgress}%` }}
-                        />
-                    </div>
-                    <span className="text-[9px] text-muted-foreground tabular-nums">
-                        {task.completed_subtask_count}/{task.subtask_count}
-                    </span>
-                </div>
-            )}
-
-            {/* Meta row - compact */}
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-muted-foreground">
-                {task.due_date && (
-                    <span className="flex items-center gap-0.5">
-                        <Calendar className="size-2.5" />
-                        {new Date(task.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                    </span>
-                )}
-                {(totalTime > 0 || isRunning) && (
-                    <span className="flex items-center gap-0.5">
-                        <Clock className="size-2.5" />
-                        {isRunning ? (
-                            <RunningTimer startedAt={task.running_time_entry!.started_at} />
-                        ) : (
-                            formatDuration(totalTime)
-                        )}
-                    </span>
-                )}
-                {commentsCount > 0 && (
-                    <span className="flex items-center gap-0.5">
-                        <MessageSquare className="size-2.5" />
-                        {commentsCount}
-                    </span>
-                )}
-                {hasRecordings && (
-                    <span className="flex items-center gap-0.5">
-                        <Mic className="size-2.5" />
-                        {task.audio_recordings!.length}
-                    </span>
-                )}
-            </div>
-        </div>
-    );
-}
 
 interface SortableTaskCardProps {
     task: Task;
@@ -461,16 +140,28 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
     const [pendingUpdates, setPendingUpdates] = useState<Map<number, Partial<Task>>>(new Map());
     const [viewMode, setViewMode] = useState<'kanban' | 'list'>('kanban');
 
-    // Merge server tasks with pending optimistic updates
+    // Zustand store for real-time updates
+    const { tasks: storeTasks, setTasks, setProjectId, moveTask } = useKanbanStore();
+
+    // Sync Inertia props to Zustand store
+    useEffect(() => {
+        setProjectId(project.id);
+        setTasks(project.tasks || []);
+    }, [project.id, project.tasks, setProjectId, setTasks]);
+
+    // Subscribe to real-time project channel
+    useProjectChannel(project.workspace_id, project.id);
+
+    // Merge store tasks with pending optimistic updates
     const localTasks = useMemo(() => {
-        const tasks = project.tasks || [];
+        const tasks = storeTasks.length > 0 ? storeTasks : (project.tasks || []);
         if (pendingUpdates.size === 0) return tasks;
-        
+
         return tasks.map((task) => {
             const update = pendingUpdates.get(task.id);
             return update ? { ...task, ...update } : task;
         });
-    }, [project.tasks, pendingUpdates]);
+    }, [storeTasks, project.tasks, pendingUpdates]);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -507,12 +198,6 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
         todo: filteredTasks.filter((t) => t.status === 'todo'),
         in_progress: filteredTasks.filter((t) => t.status === 'in_progress'),
         done: filteredTasks.filter((t) => t.status === 'done'),
-    }), [filteredTasks]);
-
-    const tasksByPriority = useMemo(() => ({
-        high: filteredTasks.filter((t) => t.priority === 'high'),
-        medium: filteredTasks.filter((t) => t.priority === 'medium'),
-        low: filteredTasks.filter((t) => t.priority === 'low'),
     }), [filteredTasks]);
 
     const hasTaskFilters = taskSearch || taskPriorityFilter !== 'all' || taskLabelFilter !== 'all' || taskAssigneeFilter !== 'all';
@@ -593,8 +278,17 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                 status: targetStatus,
                 position: targetPosition,
             }),
-        }).then(() => {
-            // Clear pending update after server confirms
+        }).then((response) => {
+            if (response.ok) {
+                router.reload({ only: ['project'] });
+            }
+            setPendingUpdates((prev) => {
+                const next = new Map(prev);
+                next.delete(taskId);
+                return next;
+            });
+        }).catch(() => {
+            // Revert optimistic update on error
             setPendingUpdates((prev) => {
                 const next = new Map(prev);
                 next.delete(taskId);
@@ -610,53 +304,53 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={project.name} />
             <div className="flex h-full flex-1 flex-col">
-                {/* Header */}
-                <div className="border-b px-6 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-base font-semibold text-primary">
-                                {project.name.charAt(0).toUpperCase()}
-                            </div>
-                            <div>
-                                <div className="flex items-center gap-2">
-                                    <h1 className="text-xl font-semibold">{project.name}</h1>
-                                    <span className={`size-2 rounded-full ${statusConfig[project.status].bg}`} />
-                                    <span className={`text-sm ${statusConfig[project.status].color}`}>
-                                        {statusConfig[project.status].label}
-                                    </span>
-                                </div>
-                                {project.description && (
-                                    <div 
-                                        className="text-sm text-muted-foreground mt-1 max-w-xl line-clamp-2 prose prose-sm dark:prose-invert"
-                                        dangerouslySetInnerHTML={{ __html: project.description }}
-                                    />
-                                )}
-                            </div>
+                <PageHeader
+                    title={project.name}
+                    titleExtra={
+                        <>
+                            <span className={`size-2 rounded-full ${statusConfig[project.status].bg}`} />
+                            <span className={`text-sm ${statusConfig[project.status].color}`}>
+                                {statusConfig[project.status].label}
+                            </span>
+                        </>
+                    }
+                    description={
+                        project.description ? (
+                            <div
+                                className="max-w-xl line-clamp-2 prose prose-sm dark:prose-invert"
+                                dangerouslySetInnerHTML={{ __html: project.description }}
+                            />
+                        ) : undefined
+                    }
+                    iconText={project.name.charAt(0).toUpperCase()}
+                >
+                    {project.due_date && (
+                        <div className="flex items-center gap-1.5 text-sm text-muted-foreground mr-2">
+                            <Calendar className="size-4" />
+                            <span>Due {new Date(project.due_date).toLocaleDateString()}</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                            {project.due_date && (
-                                <div className="flex items-center gap-1.5 text-sm text-muted-foreground mr-2">
-                                    <Calendar className="size-4" />
-                                    <span>Due {new Date(project.due_date).toLocaleDateString()}</span>
-                                </div>
-                            )}
-                            <Button variant="outline" size="sm" asChild>
-                                <Link href={`/projects/${project.id}/edit`}>
-                                    <Settings className="size-4 mr-1.5" />
-                                    Settings
-                                </Link>
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="size-8 text-destructive hover:text-destructive"
-                                onClick={handleDelete}
-                            >
-                                <Trash2 className="size-4" />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                    )}
+                    <Button variant="outline" size="sm" asChild>
+                        <Link href={`/projects/${project.id}/docs`}>
+                            <FileText className="size-4 mr-1.5" />
+                            Docs
+                        </Link>
+                    </Button>
+                    <Button variant="outline" size="sm" asChild>
+                        <Link href={`/projects/${project.id}/edit`}>
+                            <Settings className="size-4 mr-1.5" />
+                            Settings
+                        </Link>
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-8 text-destructive hover:text-destructive"
+                        onClick={handleDelete}
+                    >
+                        <Trash2 className="size-4" />
+                    </Button>
+                </PageHeader>
 
                 {/* Toolbar */}
                 <div className="border-b px-4 sm:px-6 py-3 flex flex-wrap items-center gap-2 sm:gap-3">
@@ -835,7 +529,7 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                         ) : (
                             <div className="space-y-1.5">
                                 {filteredTasks.map((task) => (
-                                    <ListTaskItem key={task.id} task={task} projectId={project.id} />
+                                    <TaskListItem key={task.id} task={task} projectId={project.id} />
                                 ))}
                             </div>
                         )}

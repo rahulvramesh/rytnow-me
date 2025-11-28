@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -5,7 +6,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type Project } from '@/types/project';
 import { Head, Link, router } from '@inertiajs/react';
-import { Calendar, FolderOpen, Plus, Search, X } from 'lucide-react';
+import { Calendar, FolderKanban, FolderOpen, Plus, Search, X } from 'lucide-react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -53,23 +54,18 @@ export default function ProjectsIndex({ projects, filters }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Projects" />
             <div className="flex h-full flex-1 flex-col">
-                {/* Header */}
-                <div className="border-b px-6 py-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="text-xl font-semibold">Projects</h1>
-                            <p className="text-sm text-muted-foreground mt-1">
-                                {projects.length} project{projects.length !== 1 ? 's' : ''}
-                            </p>
-                        </div>
-                        <Button asChild>
-                            <Link href="/projects/create">
-                                <Plus className="size-4 mr-1.5" />
-                                New Project
-                            </Link>
-                        </Button>
-                    </div>
-                </div>
+                <PageHeader
+                    title="Projects"
+                    description={`${projects.length} project${projects.length !== 1 ? 's' : ''}`}
+                    icon={<FolderKanban className="size-5" />}
+                >
+                    <Button asChild>
+                        <Link href="/projects/create">
+                            <Plus className="size-4 mr-1.5" />
+                            New Project
+                        </Link>
+                    </Button>
+                </PageHeader>
 
                 {/* Filters */}
                 <div className="border-b px-6 py-3 flex items-center gap-3">

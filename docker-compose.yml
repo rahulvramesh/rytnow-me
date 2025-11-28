@@ -1,18 +1,81 @@
 services:
-  redis:
-    image: redis:alpine
-    container_name: trakx-redis
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: trakx-app
+    restart: unless-stopped
+    volumes:
+      - ./storage:/var/www/html/storage
+      - ./.env:/var/www/html/.env:ro
+    environment:
+      - APP_ENV=production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - trakx-network
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: trakx-caddy
+    restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "80:80"
+      - "443:443"
+    environment:
+      - APP_URL=${APP_URL:-localhost}
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./public:/var/www/html/public:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - app
+    networks:
+      - trakx-network
+
+  postgres:
+    image: supabase/postgres:15.1.1.78
+    container_name: trakx-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-trakx}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+      POSTGRES_DB: ${DB_DATABASE:-trakx}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - trakx-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: trakx-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
     volumes:
       - redis-data:/data
-    command: redis-server --appendonly yes
-    restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
-      retries: 3
+      retries: 5
+    networks:
+      - trakx-network
+
+networks:
+  trakx-network:
+    driver: bridge
 
 volumes:
+  postgres-data:
   redis-data:
+  caddy-data:
+  caddy-config:

@@ -1,0 +1,1 @@
+- dutone icons are always first preference

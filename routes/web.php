@@ -3,6 +3,8 @@
 use App\Http\Controllers\AudioRecordingController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocFolderController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\MergedTasksController;
 use App\Http\Controllers\ProjectController;
@@ -80,6 +82,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/', [LabelController::class, 'store'])->name('store');
         Route::put('{label}', [LabelController::class, 'update'])->name('update');
         Route::delete('{label}', [LabelController::class, 'destroy'])->name('destroy');
+    });
+
+    // Project documents
+    Route::prefix('projects/{project}/docs')->name('docs.')->group(function () {
+        Route::get('/', [DocumentController::class, 'index'])->name('index');
+        Route::post('/', [DocumentController::class, 'store'])->name('store');
+        Route::get('{document}', [DocumentController::class, 'show'])->name('show');
+        Route::put('{document}', [DocumentController::class, 'update'])->name('update');
+        Route::delete('{document}', [DocumentController::class, 'destroy'])->name('destroy');
+        Route::patch('{document}/move', [DocumentController::class, 'move'])->name('move');
+        Route::post('reorder', [DocumentController::class, 'reorder'])->name('reorder');
+        Route::post('{document}/upload-image', [DocumentController::class, 'uploadImage'])->name('upload-image');
+
+        // Folders
+        Route::post('folders', [DocFolderController::class, 'store'])->name('folders.store');
+        Route::put('folders/{folder}', [DocFolderController::class, 'update'])->name('folders.update');
+        Route::delete('folders/{folder}', [DocFolderController::class, 'destroy'])->name('folders.destroy');
+        Route::post('folders/reorder', [DocFolderController::class, 'reorder'])->name('folders.reorder');
     });
 
     // Quick Thoughts

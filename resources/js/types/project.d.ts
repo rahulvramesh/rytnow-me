@@ -4,6 +4,7 @@ import { type Task } from './task';
 export interface Project {
     id: number;
     user_id: number;
+    workspace_id: number;
     name: string;
     key: string;
     description: string | null;

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TimeEntry\TimeEntryStarted;
+use App\Events\TimeEntry\TimeEntryStopped;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\TimeEntry;
@@ -17,9 +19,11 @@ class TimeEntryController extends Controller
     {
         $this->authorize('update', $project);
 
+        $user = $request->user();
+
         // Stop any running timer for this user's tasks
-        $runningEntries = TimeEntry::whereHas('task.project', function ($query) use ($request) {
-            $query->where('user_id', $request->user()->id);
+        $runningEntries = TimeEntry::whereHas('task.project', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
         })->whereNull('stopped_at')->get();
 
         foreach ($runningEntries as $entry) {
@@ -27,12 +31,17 @@ class TimeEntryController extends Controller
                 'stopped_at' => now(),
                 'duration' => now()->diffInSeconds($entry->started_at),
             ]);
+            // Broadcast stop event for each stopped timer
+            broadcast(new TimeEntryStopped($entry->fresh(), $user))->toOthers();
         }
 
         // Start new timer
-        $task->timeEntries()->create([
+        $timeEntry = $task->timeEntries()->create([
             'started_at' => now(),
         ]);
+
+        // Broadcast timer started event
+        broadcast(new TimeEntryStarted($timeEntry, $user))->toOthers();
 
         return redirect()->back()->with('success', 'Timer started.');
     }
@@ -45,6 +54,7 @@ class TimeEntryController extends Controller
             'description' => 'nullable|string|max:500',
         ]);
 
+        $user = $request->user();
         $runningEntry = $task->runningTimeEntry;
         $description = $validated['description'] ?? null;
 
@@ -55,11 +65,14 @@ class TimeEntryController extends Controller
                 'description' => $description,
             ]);
 
+            // Broadcast timer stopped event
+            broadcast(new TimeEntryStopped($runningEntry->fresh(), $user))->toOthers();
+
             // Create linked comment if description provided
             if ($description) {
                 \App\Models\Comment::create([
                     'task_id' => $task->id,
-                    'user_id' => $request->user()->id,
+                    'user_id' => $user->id,
                     'time_entry_id' => $runningEntry->id,
                     'content' => $description,
                 ]);

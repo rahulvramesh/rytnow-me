@@ -21,7 +21,7 @@ class MergedTasksController extends Controller
         }
 
         $tasks = $workspace->tasks()
-            ->with(['project:id,name,status', 'labels', 'runningTimeEntry'])
+            ->with(['project:id,name,status,key', 'labels', 'runningTimeEntry', 'assignee:id,name,email'])
             ->withSum(['timeEntries as total_time' => function ($query) {
                 $query->whereNotNull('stopped_at');
             }], 'duration')
