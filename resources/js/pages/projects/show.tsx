@@ -49,6 +49,12 @@ const statusConfig: Record<Project['status'], { label: string; color: string; bg
     archived: { label: 'Archived', color: 'text-gray-500', bg: 'bg-gray-400' },
 };
 
+// Subscriber component to ensure hook runs within Echo context
+function ProjectChannelSubscriber({ workspaceId, projectId }: { workspaceId: number; projectId: number }) {
+    useProjectChannel(workspaceId, projectId);
+    return null;
+}
+
 const columnConfig = {
     todo: { label: 'Todo', icon: Circle, color: 'text-gray-500', border: 'border-t-gray-400' },
     in_progress: { label: 'In Progress', icon: Loader2, color: 'text-blue-500', border: 'border-t-blue-500' },
@@ -148,9 +154,6 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
         setProjectId(project.id);
         setTasks(project.tasks || []);
     }, [project.id, project.tasks, setProjectId, setTasks]);
-
-    // Subscribe to real-time project channel
-    useProjectChannel(project.workspace_id, project.id);
 
     // Merge store tasks with pending optimistic updates
     const localTasks = useMemo(() => {
@@ -302,6 +305,7 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
+            <ProjectChannelSubscriber workspaceId={project.workspace_id} projectId={project.id} />
             <Head title={project.name} />
             <div className="flex h-full flex-1 flex-col">
                 <PageHeader

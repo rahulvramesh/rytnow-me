@@ -16,7 +16,10 @@ export function useProjectChannel(workspaceId: number | undefined, projectId: nu
     const { addTask, updateTask, removeTask, moveTask } = useKanbanStore();
 
     useEffect(() => {
+        console.log('[Reverb] useProjectChannel called with:', { workspaceId, projectId, echo: !!echo, isConnected });
+        
         if (!echo || !isConnected || !workspaceId || !projectId) {
+            console.log('[Reverb] useProjectChannel skipping - missing:', { echo: !echo, isConnected: !isConnected, workspaceId: !workspaceId, projectId: !projectId });
             return;
         }
 

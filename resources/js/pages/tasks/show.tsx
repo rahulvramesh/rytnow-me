@@ -13,7 +13,9 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
+import { useTaskChannel } from '@/hooks/use-task-channel';
 import AppLayout from '@/layouts/app-layout';
+import { fetchHeaders } from '@/lib/csrf';
 import { type BreadcrumbItem } from '@/types';
 import { type Project } from '@/types/project';
 import { type Task } from '@/types/task';
@@ -36,7 +38,6 @@ import {
     Trash2,
     User,
 } from 'lucide-react';
-import { fetchHeaders } from '@/lib/csrf';
 import { useEffect, useState } from 'react';
 
 interface WorkspaceMember {
@@ -117,6 +118,9 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
     const [stopNote, setStopNote] = useState('');
     const [editingEntry, setEditingEntry] = useState<TimeEntry | null>(null);
     const [editNote, setEditNote] = useState('');
+
+    // Subscribe to real-time task channel for comments and time entries
+    useTaskChannel(project.workspace_id, task.id);
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: '/dashboard' },

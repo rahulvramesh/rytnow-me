@@ -1,6 +1,7 @@
 import { EchoProvider } from '@/components/echo-provider';
 import { KeyboardProvider } from '@/components/keyboard-provider';
 import { QuickThoughtCaptureButton } from '@/components/quick-thought-capture-button';
+import { useWorkspaceChannel } from '@/hooks/use-workspace-channel';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { LiveblocksProvider, LIVEBLOCKS_AUTH_ENDPOINT } from '@/liveblocks.config';
 import { type BreadcrumbItem, type SharedData } from '@/types';
@@ -21,8 +22,14 @@ interface UserInfo {
     color?: string;
 }
 
+// Inner component that uses workspace channel (must be inside EchoProvider)
+function WorkspaceChannelSubscriber({ workspaceId }: { workspaceId: number | undefined }) {
+    useWorkspaceChannel(workspaceId);
+    return null;
+}
+
 export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
-    const { auth } = usePage<SharedData>().props;
+    const { auth, currentWorkspace } = usePage<SharedData>().props;
     const user = auth?.user;
 
     return (
@@ -110,6 +117,7 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
             }}
         >
             <EchoProvider userId={user?.id ?? null}>
+                <WorkspaceChannelSubscriber workspaceId={currentWorkspace?.id} />
                 <KeyboardProvider>
                     <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
                         {children}

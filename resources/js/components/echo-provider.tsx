@@ -24,27 +24,35 @@ export function EchoProvider({ children, userId, enabled = true }: EchoProviderP
             return;
         }
 
+        let isMounted = true;
         const echoInstance = createEcho();
+
+        // Set echo instance immediately
+        setEcho(echoInstance);
+        window.Echo = echoInstance;
 
         // Track connection state
         echoInstance.connector.pusher.connection.bind('connected', () => {
-            setIsConnected(true);
-            console.log('[Echo] Connected to Reverb');
+            if (isMounted) {
+                console.log('[Echo] Connected to Reverb');
+                // Force a state update to trigger re-renders in consuming components
+                setIsConnected(true);
+            }
         });
 
         echoInstance.connector.pusher.connection.bind('disconnected', () => {
-            setIsConnected(false);
-            console.log('[Echo] Disconnected from Reverb');
+            if (isMounted) {
+                console.log('[Echo] Disconnected from Reverb');
+                setIsConnected(false);
+            }
         });
 
         echoInstance.connector.pusher.connection.bind('error', (error: unknown) => {
             console.error('[Echo] Connection error:', error);
         });
 
-        setEcho(echoInstance);
-        window.Echo = echoInstance;
-
         return () => {
+            isMounted = false;
             echoInstance.disconnect();
             setEcho(null);
             setIsConnected(false);
