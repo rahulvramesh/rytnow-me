@@ -41,6 +41,11 @@ const sidebarNavItems: NavItem[] = [
         href: '/settings/api-tokens',
         icon: null,
     },
+    {
+        title: 'LLM Providers',
+        href: '/settings/llm-providers',
+        icon: null,
+    },
 ];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {

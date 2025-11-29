@@ -52,6 +52,11 @@ class HandleInertiaRequests extends Middleware
                 ->select('workspaces.id', 'workspaces.name', 'workspaces.color', 'workspaces.description')
                 ->withCount('projects')
                 ->get() ?? [],
+            'sidebarProjects' => $user?->currentWorkspace?->projects()
+                ->select('id', 'name', 'key', 'status')
+                ->where('status', '!=', 'archived')
+                ->orderBy('name')
+                ->get() ?? [],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'flash' => [
                 'newToken' => fn () => $request->session()->get('newToken'),

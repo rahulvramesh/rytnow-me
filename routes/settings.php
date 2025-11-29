@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Settings\ApiTokenController;
 use App\Http\Controllers\Settings\EditorController;
+use App\Http\Controllers\Settings\LlmProviderController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\TwoFactorAuthenticationController;
@@ -34,4 +35,14 @@ Route::middleware('auth')->group(function () {
     Route::get('settings/api-tokens', [ApiTokenController::class, 'index'])->name('api-tokens.index');
     Route::post('settings/api-tokens', [ApiTokenController::class, 'store'])->name('api-tokens.store');
     Route::delete('settings/api-tokens/{token}', [ApiTokenController::class, 'destroy'])->name('api-tokens.destroy');
+
+    // LLM Providers
+    Route::get('settings/llm-providers', [LlmProviderController::class, 'index'])->name('llm-providers.index');
+    Route::post('settings/llm-providers', [LlmProviderController::class, 'store'])->name('llm-providers.store');
+    Route::post('settings/llm-providers/fetch-models', [LlmProviderController::class, 'fetchModelsFromEndpoint'])->name('llm-providers.fetch-models');
+    Route::patch('settings/llm-providers/{provider}', [LlmProviderController::class, 'update'])->name('llm-providers.update');
+    Route::delete('settings/llm-providers/{provider}', [LlmProviderController::class, 'destroy'])->name('llm-providers.destroy');
+    Route::post('settings/llm-providers/{provider}/default', [LlmProviderController::class, 'setDefault'])->name('llm-providers.default');
+    Route::post('settings/llm-providers/{provider}/test', [LlmProviderController::class, 'testConnection'])->name('llm-providers.test');
+    Route::get('settings/llm-providers/{provider}/models', [LlmProviderController::class, 'fetchModels'])->name('llm-providers.models');
 });

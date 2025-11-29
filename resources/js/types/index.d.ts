@@ -23,12 +23,20 @@ export interface NavItem {
     isActive?: boolean;
 }
 
+export interface SidebarProject {
+    id: number;
+    name: string;
+    key: string;
+    status: 'active' | 'on_hold' | 'completed' | 'archived';
+}
+
 export interface SharedData {
     name: string;
     quote: { message: string; author: string };
     auth: Auth;
     currentWorkspace: Workspace | null;
     workspaces: Workspace[];
+    sidebarProjects: SidebarProject[];
     sidebarOpen: boolean;
     [key: string]: unknown;
 }

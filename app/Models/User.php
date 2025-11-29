@@ -92,4 +92,23 @@ class User extends Authenticatable
         $workspaceIds = $this->workspaces()->pluck('workspaces.id');
         return Project::whereIn('workspace_id', $workspaceIds);
     }
+
+    /**
+     * LLM providers configured by this user
+     */
+    public function llmProviders(): HasMany
+    {
+        return $this->hasMany(LlmProvider::class);
+    }
+
+    /**
+     * Get the user's default LLM provider
+     */
+    public function defaultLlmProvider(): ?LlmProvider
+    {
+        return $this->llmProviders()
+            ->where('is_default', true)
+            ->where('is_active', true)
+            ->first();
+    }
 }
