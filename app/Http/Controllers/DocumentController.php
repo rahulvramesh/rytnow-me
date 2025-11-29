@@ -115,7 +115,7 @@ class DocumentController extends Controller
             ->with('success', 'Document created.');
     }
 
-    public function update(Request $request, Project $project, Document $document): RedirectResponse
+    public function update(Request $request, Project $project, Document $document): RedirectResponse|JsonResponse
     {
         $this->authorize('view', $project);
 
@@ -132,6 +132,14 @@ class DocumentController extends Controller
             ...$validated,
             'updated_by' => $request->user()->id,
         ]);
+
+        // Return JSON for AJAX requests (auto-save)
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'updated_at' => $document->updated_at,
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Document saved.');
     }

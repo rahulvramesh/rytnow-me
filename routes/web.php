@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocFolderController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\LabelController;
+use App\Http\Controllers\MergedDocsController;
 use App\Http\Controllers\MergedTasksController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\QuickThoughtController;
@@ -36,6 +37,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Merged tasks view (all tasks across projects in current workspace)
     Route::get('tasks', [MergedTasksController::class, 'index'])->name('tasks.index');
+
+    // Merged docs view (all documents across projects in current workspace)
+    Route::get('docs', [MergedDocsController::class, 'index'])->name('docs.workspace');
 
     Route::resource('projects', ProjectController::class);
 

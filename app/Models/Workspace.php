@@ -56,6 +56,14 @@ class Workspace extends Model
     }
 
     /**
+     * All documents across all projects in this workspace
+     */
+    public function documents(): HasManyThrough
+    {
+        return $this->hasManyThrough(Document::class, Project::class);
+    }
+
+    /**
      * Check if a user is a member of this workspace
      */
     public function hasMember(User $user): bool

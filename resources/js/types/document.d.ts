@@ -1,5 +1,12 @@
 import { type User } from './index';
 
+export interface DocProject {
+    id: number;
+    name: string;
+    status: 'active' | 'on_hold' | 'completed' | 'archived';
+    key?: string;
+}
+
 export interface DocFolder {
     id: number;
     project_id: number;
@@ -31,6 +38,7 @@ export interface Document {
     creator?: User;
     updater?: User;
     folder?: DocFolder;
+    project?: DocProject;
     created_at: string;
     updated_at: string;
 }
