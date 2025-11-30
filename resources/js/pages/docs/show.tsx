@@ -91,10 +91,7 @@ export default function DocShow({ project, document: doc, folders, rootDocuments
 
         const response = await fetch(`/projects/${project.id}/docs/${doc.id}/upload-image`, {
             method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-                Accept: 'application/json',
-            },
+            headers: fetchHeaders('form'),
             body: formData,
         });
 

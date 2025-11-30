@@ -15,6 +15,7 @@ import {
     Wifi,
     WifiOff,
 } from 'lucide-react';
+import { fetchHeaders } from '@/lib/csrf';
 
 import HeadingSmall from '@/components/heading-small';
 import { Button } from '@/components/ui/button';
@@ -132,10 +133,7 @@ export default function LlmProviders({ providers }: PageProps) {
         try {
             const response = await fetch('/settings/llm-providers/fetch-models', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-                },
+                headers: fetchHeaders(),
                 body: JSON.stringify({
                     base_url: data.base_url,
                     api_key: data.api_key || null,
@@ -168,9 +166,7 @@ export default function LlmProviders({ providers }: PageProps) {
 
         try {
             const response = await fetch(`/settings/llm-providers/${providerId}/models`, {
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-                },
+                headers: fetchHeaders(),
             });
 
             const result = await response.json();
@@ -263,10 +259,7 @@ export default function LlmProviders({ providers }: PageProps) {
         try {
             const response = await fetch(`/settings/llm-providers/${provider.id}/test`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-                },
+                headers: fetchHeaders(),
             });
 
             const result = await response.json();
