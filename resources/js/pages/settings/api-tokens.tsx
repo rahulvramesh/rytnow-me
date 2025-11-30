@@ -1,20 +1,9 @@
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { useState } from 'react';
 import { Copy, Key, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 import HeadingSmall from '@/components/heading-small';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -25,6 +14,17 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
@@ -120,45 +120,62 @@ export default function ApiTokens({ tokens }: PageProps) {
                     />
 
                     <div className="space-y-4">
-                        <div className="flex justify-between items-center">
+                        <div className="flex items-center justify-between">
                             <p className="text-sm text-muted-foreground">
-                                API tokens allow external applications to authenticate with the API on your behalf.
+                                API tokens allow external applications to
+                                authenticate with the API on your behalf.
                             </p>
-                            <Button onClick={() => setShowNewTokenModal(true)} size="sm">
-                                <Plus className="size-4 mr-2" />
+                            <Button
+                                onClick={() => setShowNewTokenModal(true)}
+                                size="sm"
+                            >
+                                <Plus className="mr-2 size-4" />
                                 Create Token
                             </Button>
                         </div>
 
                         {tokens.length === 0 ? (
-                            <div className="border rounded-lg p-8 text-center">
-                                <Key className="size-12 mx-auto text-muted-foreground/50 mb-4" />
-                                <p className="text-muted-foreground">No API tokens yet</p>
-                                <p className="text-sm text-muted-foreground mt-1">
+                            <div className="rounded-lg border p-8 text-center">
+                                <Key className="mx-auto mb-4 size-12 text-muted-foreground/50" />
+                                <p className="text-muted-foreground">
+                                    No API tokens yet
+                                </p>
+                                <p className="mt-1 text-sm text-muted-foreground">
                                     Create a token to get started with the API
                                 </p>
                             </div>
                         ) : (
-                            <div className="border rounded-lg divide-y">
+                            <div className="divide-y rounded-lg border">
                                 {tokens.map((token) => (
                                     <div
                                         key={token.id}
                                         className="flex items-center justify-between p-4"
                                     >
                                         <div className="space-y-1">
-                                            <p className="font-medium">{token.name}</p>
+                                            <p className="font-medium">
+                                                {token.name}
+                                            </p>
                                             <p className="text-sm text-muted-foreground">
-                                                Created {formatDate(token.created_at)}
+                                                Created{' '}
+                                                {formatDate(token.created_at)}
                                                 {token.last_used_at && (
-                                                    <> · Last used {formatDate(token.last_used_at)}</>
+                                                    <>
+                                                        {' '}
+                                                        · Last used{' '}
+                                                        {formatDate(
+                                                            token.last_used_at,
+                                                        )}
+                                                    </>
                                                 )}
                                             </p>
                                         </div>
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            onClick={() => setTokenToDelete(token)}
-                                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                            onClick={() =>
+                                                setTokenToDelete(token)
+                                            }
+                                            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                                         >
                                             <Trash2 className="size-4" />
                                         </Button>
@@ -167,20 +184,23 @@ export default function ApiTokens({ tokens }: PageProps) {
                             </div>
                         )}
 
-                        <div className="pt-4 border-t">
-                            <h4 className="text-sm font-medium mb-2">API Usage</h4>
-                            <div className="bg-muted rounded-lg p-4">
-                                <p className="text-sm text-muted-foreground mb-2">
-                                    Include your token in the Authorization header:
+                        <div className="border-t pt-4">
+                            <h4 className="mb-2 text-sm font-medium">
+                                API Usage
+                            </h4>
+                            <div className="rounded-lg bg-muted p-4">
+                                <p className="mb-2 text-sm text-muted-foreground">
+                                    Include your token in the Authorization
+                                    header:
                                 </p>
-                                <code className="text-xs bg-background px-2 py-1 rounded block overflow-x-auto">
+                                <code className="block overflow-x-auto rounded bg-background px-2 py-1 text-xs">
                                     Authorization: Bearer YOUR_TOKEN
                                 </code>
-                                <p className="text-sm text-muted-foreground mt-3 mb-2">
+                                <p className="mt-3 mb-2 text-sm text-muted-foreground">
                                     Example request:
                                 </p>
-                                <code className="text-xs bg-background px-2 py-1 rounded block overflow-x-auto whitespace-pre">
-{`curl -H "Authorization: Bearer YOUR_TOKEN" \\
+                                <code className="block overflow-x-auto rounded bg-background px-2 py-1 text-xs whitespace-pre">
+                                    {`curl -H "Authorization: Bearer YOUR_TOKEN" \\
      https://your-domain.com/api/v1/workspaces`}
                                 </code>
                             </div>
@@ -190,13 +210,17 @@ export default function ApiTokens({ tokens }: PageProps) {
             </SettingsLayout>
 
             {/* Create Token Modal */}
-            <Dialog open={showNewTokenModal} onOpenChange={setShowNewTokenModal}>
+            <Dialog
+                open={showNewTokenModal}
+                onOpenChange={setShowNewTokenModal}
+            >
                 <DialogContent>
                     <form onSubmit={handleCreateToken}>
                         <DialogHeader>
                             <DialogTitle>Create API Token</DialogTitle>
                             <DialogDescription>
-                                Give your token a descriptive name to identify its purpose.
+                                Give your token a descriptive name to identify
+                                its purpose.
                             </DialogDescription>
                         </DialogHeader>
                         <div className="py-4">
@@ -204,13 +228,17 @@ export default function ApiTokens({ tokens }: PageProps) {
                             <Input
                                 id="token-name"
                                 value={data.name}
-                                onChange={(e) => setData('name', e.target.value)}
+                                onChange={(e) =>
+                                    setData('name', e.target.value)
+                                }
                                 placeholder="e.g., CLI Tool, Integration"
                                 className="mt-2"
                                 autoFocus
                             />
                             {errors.name && (
-                                <p className="text-sm text-destructive mt-1">{errors.name}</p>
+                                <p className="mt-1 text-sm text-destructive">
+                                    {errors.name}
+                                </p>
                             )}
                         </div>
                         <DialogFooter>
@@ -221,7 +249,10 @@ export default function ApiTokens({ tokens }: PageProps) {
                             >
                                 Cancel
                             </Button>
-                            <Button type="submit" disabled={processing || !data.name}>
+                            <Button
+                                type="submit"
+                                disabled={processing || !data.name}
+                            >
                                 Create Token
                             </Button>
                         </DialogFooter>
@@ -230,18 +261,22 @@ export default function ApiTokens({ tokens }: PageProps) {
             </Dialog>
 
             {/* Display New Token Modal */}
-            <Dialog open={showTokenModal} onOpenChange={(open) => {
-                if (!open) {
-                    setShowTokenModal(false);
-                    setNewToken(null);
-                    setCopied(false);
-                }
-            }}>
+            <Dialog
+                open={showTokenModal}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setShowTokenModal(false);
+                        setNewToken(null);
+                        setCopied(false);
+                    }
+                }}
+            >
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Token Created</DialogTitle>
                         <DialogDescription>
-                            Make sure to copy your token now. You won't be able to see it again.
+                            Make sure to copy your token now. You won't be able
+                            to see it again.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-4">
@@ -261,15 +296,19 @@ export default function ApiTokens({ tokens }: PageProps) {
                             </Button>
                         </div>
                         {copied && (
-                            <p className="text-sm text-green-600 mt-2">Copied to clipboard!</p>
+                            <p className="mt-2 text-sm text-green-600">
+                                Copied to clipboard!
+                            </p>
                         )}
                     </div>
                     <DialogFooter>
-                        <Button onClick={() => {
-                            setShowTokenModal(false);
-                            setNewToken(null);
-                            setCopied(false);
-                        }}>
+                        <Button
+                            onClick={() => {
+                                setShowTokenModal(false);
+                                setNewToken(null);
+                                setCopied(false);
+                            }}
+                        >
                             Done
                         </Button>
                     </DialogFooter>
@@ -277,13 +316,17 @@ export default function ApiTokens({ tokens }: PageProps) {
             </Dialog>
 
             {/* Delete Token Confirmation */}
-            <AlertDialog open={!!tokenToDelete} onOpenChange={(open) => !open && setTokenToDelete(null)}>
+            <AlertDialog
+                open={!!tokenToDelete}
+                onOpenChange={(open) => !open && setTokenToDelete(null)}
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete Token</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Are you sure you want to delete the token "{tokenToDelete?.name}"?
-                            Any applications using this token will no longer be able to access the API.
+                            Are you sure you want to delete the token "
+                            {tokenToDelete?.name}"? Any applications using this
+                            token will no longer be able to access the API.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

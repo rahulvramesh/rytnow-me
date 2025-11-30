@@ -18,9 +18,15 @@ import {
     Text,
     Transforms,
 } from 'slate';
-import { withHistory } from 'slate-history';
-import { Editable, RenderElementProps, RenderLeafProps, Slate, withReact } from 'slate-react';
 import type { HistoryEditor } from 'slate-history';
+import { withHistory } from 'slate-history';
+import {
+    Editable,
+    RenderElementProps,
+    RenderLeafProps,
+    Slate,
+    withReact,
+} from 'slate-react';
 
 interface ToolbarButtonProps {
     onClick: () => void;
@@ -29,7 +35,12 @@ interface ToolbarButtonProps {
     title: string;
 }
 
-function ToolbarButton({ onClick, isActive, children, title }: ToolbarButtonProps) {
+function ToolbarButton({
+    onClick,
+    isActive,
+    children,
+    title,
+}: ToolbarButtonProps) {
     return (
         <button
             type="button"
@@ -38,7 +49,7 @@ function ToolbarButton({ onClick, isActive, children, title }: ToolbarButtonProp
                 onClick();
             }}
             title={title}
-            className={`p-1.5 rounded hover:bg-muted transition-colors ${
+            className={`rounded p-1.5 transition-colors hover:bg-muted ${
                 isActive ? 'bg-muted text-primary' : 'text-muted-foreground'
             }`}
         >
@@ -63,7 +74,10 @@ const toggleMark = (editor: Editor, format: string) => {
 
 const isBlockActive = (editor: Editor, format: string) => {
     const [match] = Editor.nodes(editor, {
-        match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === format,
+        match: (n) =>
+            !Editor.isEditor(n) &&
+            SlateElement.isElement(n) &&
+            n.type === format,
     });
     return !!match;
 };
@@ -104,12 +118,15 @@ const insertTable = (editor: Editor, rows: number = 3, cols: number = 3) => {
     };
 
     Transforms.insertNodes(editor, table as SlateElement);
-    Transforms.insertNodes(editor, { type: 'paragraph', children: [{ text: '' }] } as SlateElement);
+    Transforms.insertNodes(editor, {
+        type: 'paragraph',
+        children: [{ text: '' }],
+    } as SlateElement);
 };
 
 function Toolbar({ editor }: { editor: Editor }) {
     return (
-        <div className="flex items-center gap-0.5 p-2 border-b bg-muted/30">
+        <div className="flex items-center gap-0.5 border-b bg-muted/30 p-2">
             <ToolbarButton
                 onClick={() => toggleMark(editor, 'bold')}
                 isActive={isMarkActive(editor, 'bold')}
@@ -139,7 +156,7 @@ function Toolbar({ editor }: { editor: Editor }) {
                 <Strikethrough className="size-4" />
             </ToolbarButton>
 
-            <div className="w-px h-5 bg-border mx-1" />
+            <div className="mx-1 h-5 w-px bg-border" />
 
             <ToolbarButton
                 onClick={() => toggleBlock(editor, 'bulleted-list')}
@@ -156,7 +173,7 @@ function Toolbar({ editor }: { editor: Editor }) {
                 <ListOrdered className="size-4" />
             </ToolbarButton>
 
-            <div className="w-px h-5 bg-border mx-1" />
+            <div className="mx-1 h-5 w-px bg-border" />
 
             <ToolbarButton
                 onClick={() => insertTable(editor)}
@@ -165,7 +182,7 @@ function Toolbar({ editor }: { editor: Editor }) {
                 <Table className="size-4" />
             </ToolbarButton>
 
-            <div className="w-px h-5 bg-border mx-1" />
+            <div className="mx-1 h-5 w-px bg-border" />
 
             <ToolbarButton
                 onClick={() => (editor as Editor & HistoryEditor).undo()}
@@ -187,14 +204,31 @@ const Element = ({ attributes, children, element }: RenderElementProps) => {
     const el = element as SlateElement & { type?: string };
     switch (el.type) {
         case 'bulleted-list':
-            return <ul {...attributes} className="list-disc list-inside mb-2 space-y-1 ml-4">{children}</ul>;
+            return (
+                <ul
+                    {...attributes}
+                    className="mb-2 ml-4 list-inside list-disc space-y-1"
+                >
+                    {children}
+                </ul>
+            );
         case 'numbered-list':
-            return <ol {...attributes} className="list-decimal list-inside mb-2 space-y-1 ml-4">{children}</ol>;
+            return (
+                <ol
+                    {...attributes}
+                    className="mb-2 ml-4 list-inside list-decimal space-y-1"
+                >
+                    {children}
+                </ol>
+            );
         case 'list-item':
             return <li {...attributes}>{children}</li>;
         case 'table':
             return (
-                <table {...attributes} className="border-collapse border border-border my-2 w-full">
+                <table
+                    {...attributes}
+                    className="my-2 w-full border-collapse border border-border"
+                >
                     <tbody>{children}</tbody>
                 </table>
             );
@@ -202,17 +236,29 @@ const Element = ({ attributes, children, element }: RenderElementProps) => {
             return <tr {...attributes}>{children}</tr>;
         case 'table-cell':
             return (
-                <td {...attributes} className="border border-border px-3 py-2 min-w-[80px]">
+                <td
+                    {...attributes}
+                    className="min-w-[80px] border border-border px-3 py-2"
+                >
                     {children}
                 </td>
             );
         default:
-            return <p {...attributes} className="mb-2 last:mb-0">{children}</p>;
+            return (
+                <p {...attributes} className="mb-2 last:mb-0">
+                    {children}
+                </p>
+            );
     }
 };
 
 const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
-    const l = leaf as Text & { bold?: boolean; italic?: boolean; underline?: boolean; strikethrough?: boolean };
+    const l = leaf as Text & {
+        bold?: boolean;
+        italic?: boolean;
+        underline?: boolean;
+        strikethrough?: boolean;
+    };
     if (l.bold) children = <strong>{children}</strong>;
     if (l.italic) children = <em>{children}</em>;
     if (l.underline) children = <u>{children}</u>;
@@ -227,7 +273,12 @@ const serialize = (nodes: Descendant[]): string => {
 const serializeNode = (node: Descendant): string => {
     if (Text.isText(node)) {
         let text = node.text;
-        const n = node as Text & { bold?: boolean; italic?: boolean; underline?: boolean; strikethrough?: boolean };
+        const n = node as Text & {
+            bold?: boolean;
+            italic?: boolean;
+            underline?: boolean;
+            strikethrough?: boolean;
+        };
         if (n.bold) text = `<strong>${text}</strong>`;
         if (n.italic) text = `<em>${text}</em>`;
         if (n.underline) text = `<u>${text}</u>`;
@@ -281,30 +332,55 @@ const deserializeNodes = (el: Node): Descendant[] => {
 
             switch (tag) {
                 case 'p':
-                    nodes.push({ type: 'paragraph', children: deserializeInline(element) });
+                    nodes.push({
+                        type: 'paragraph',
+                        children: deserializeInline(element),
+                    });
                     break;
                 case 'ul':
-                    nodes.push({ type: 'bulleted-list', children: deserializeListItems(element) });
+                    nodes.push({
+                        type: 'bulleted-list',
+                        children: deserializeListItems(element),
+                    });
                     break;
                 case 'ol':
-                    nodes.push({ type: 'numbered-list', children: deserializeListItems(element) });
+                    nodes.push({
+                        type: 'numbered-list',
+                        children: deserializeListItems(element),
+                    });
                     break;
                 case 'li':
-                    nodes.push({ type: 'list-item', children: deserializeInline(element) });
+                    nodes.push({
+                        type: 'list-item',
+                        children: deserializeInline(element),
+                    });
                     break;
                 case 'table':
-                    nodes.push({ type: 'table', children: deserializeTableRows(element) });
+                    nodes.push({
+                        type: 'table',
+                        children: deserializeTableRows(element),
+                    });
                     break;
                 case 'tbody':
                 case 'thead':
-                    nodes.push(...deserializeTableRows(element).map(row => ({ ...row })));
+                    nodes.push(
+                        ...deserializeTableRows(element).map((row) => ({
+                            ...row,
+                        })),
+                    );
                     break;
                 case 'tr':
-                    nodes.push({ type: 'table-row', children: deserializeTableCells(element) });
+                    nodes.push({
+                        type: 'table-row',
+                        children: deserializeTableCells(element),
+                    });
                     break;
                 case 'td':
                 case 'th':
-                    nodes.push({ type: 'table-cell', children: deserializeInline(element) });
+                    nodes.push({
+                        type: 'table-cell',
+                        children: deserializeInline(element),
+                    });
                     break;
                 default: {
                     const inline = deserializeInline(element);
@@ -326,11 +402,19 @@ const deserializeNodes = (el: Node): Descendant[] => {
 const deserializeListItems = (el: HTMLElement): Descendant[] => {
     const items: Descendant[] = [];
     el.childNodes.forEach((child) => {
-        if (child.nodeType === Node.ELEMENT_NODE && (child as HTMLElement).tagName.toLowerCase() === 'li') {
-            items.push({ type: 'list-item', children: deserializeInline(child as HTMLElement) });
+        if (
+            child.nodeType === Node.ELEMENT_NODE &&
+            (child as HTMLElement).tagName.toLowerCase() === 'li'
+        ) {
+            items.push({
+                type: 'list-item',
+                children: deserializeInline(child as HTMLElement),
+            });
         }
     });
-    return items.length > 0 ? items : [{ type: 'list-item', children: [{ text: '' }] }];
+    return items.length > 0
+        ? items
+        : [{ type: 'list-item', children: [{ text: '' }] }];
 };
 
 const deserializeTableRows = (el: HTMLElement): Descendant[] => {
@@ -340,7 +424,10 @@ const deserializeTableRows = (el: HTMLElement): Descendant[] => {
             if (child.nodeType === Node.ELEMENT_NODE) {
                 const tag = (child as HTMLElement).tagName.toLowerCase();
                 if (tag === 'tr') {
-                    rows.push({ type: 'table-row', children: deserializeTableCells(child as HTMLElement) });
+                    rows.push({
+                        type: 'table-row',
+                        children: deserializeTableCells(child as HTMLElement),
+                    });
                 } else if (tag === 'tbody' || tag === 'thead') {
                     processChildren(child as HTMLElement);
                 }
@@ -348,7 +435,14 @@ const deserializeTableRows = (el: HTMLElement): Descendant[] => {
         });
     };
     processChildren(el);
-    return rows.length > 0 ? rows : [{ type: 'table-row', children: [{ type: 'table-cell', children: [{ text: '' }] }] }];
+    return rows.length > 0
+        ? rows
+        : [
+              {
+                  type: 'table-row',
+                  children: [{ type: 'table-cell', children: [{ text: '' }] }],
+              },
+          ];
 };
 
 const deserializeTableCells = (el: HTMLElement): Descendant[] => {
@@ -357,11 +451,16 @@ const deserializeTableCells = (el: HTMLElement): Descendant[] => {
         if (child.nodeType === Node.ELEMENT_NODE) {
             const tag = (child as HTMLElement).tagName.toLowerCase();
             if (tag === 'td' || tag === 'th') {
-                cells.push({ type: 'table-cell', children: deserializeInline(child as HTMLElement) });
+                cells.push({
+                    type: 'table-cell',
+                    children: deserializeInline(child as HTMLElement),
+                });
             }
         }
     });
-    return cells.length > 0 ? cells : [{ type: 'table-cell', children: [{ text: '' }] }];
+    return cells.length > 0
+        ? cells
+        : [{ type: 'table-cell', children: [{ text: '' }] }];
 };
 
 const deserializeInline = (el: HTMLElement): Descendant[] => {
@@ -399,7 +498,12 @@ interface PlateEditorProps {
     className?: string;
 }
 
-export function PlateEditor({ value, onChange, placeholder = 'Start typing...', className = '' }: PlateEditorProps) {
+export function PlateEditor({
+    value,
+    onChange,
+    placeholder = 'Start typing...',
+    className = '',
+}: PlateEditorProps) {
     const [editor] = useState(() => withHistory(withReact(createEditor())));
     const [initialValue] = useState<Descendant[]>(() => deserialize(value));
     const isInitializedRef = useRef(false);
@@ -411,13 +515,15 @@ export function PlateEditor({ value, onChange, placeholder = 'Start typing...', 
 
     const handleChange = useCallback(
         (newValue: Descendant[]) => {
-            const isAstChange = editor.operations.some((op) => op.type !== 'set_selection');
+            const isAstChange = editor.operations.some(
+                (op) => op.type !== 'set_selection',
+            );
             if (isAstChange) {
                 const html = serialize(newValue);
                 onChange(html);
             }
         },
-        [editor, onChange]
+        [editor, onChange],
     );
 
     const handleKeyDown = useCallback(
@@ -439,15 +545,21 @@ export function PlateEditor({ value, onChange, placeholder = 'Start typing...', 
                     break;
             }
         },
-        [editor]
+        [editor],
     );
 
     return (
-        <div className={`border rounded-lg overflow-hidden bg-background ${className}`}>
-            <Slate editor={editor} initialValue={initialValue} onChange={handleChange}>
+        <div
+            className={`overflow-hidden rounded-lg border bg-background ${className}`}
+        >
+            <Slate
+                editor={editor}
+                initialValue={initialValue}
+                onChange={handleChange}
+            >
                 <Toolbar editor={editor} />
                 <Editable
-                    className="min-h-[120px] max-h-[300px] overflow-y-auto px-4 py-3 outline-none text-sm"
+                    className="max-h-[300px] min-h-[120px] overflow-y-auto px-4 py-3 text-sm outline-none"
                     placeholder={placeholder}
                     renderElement={(props) => <Element {...props} />}
                     renderLeaf={(props) => <Leaf {...props} />}

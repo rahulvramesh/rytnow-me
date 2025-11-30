@@ -32,32 +32,48 @@ export default function WorkspaceCreate() {
                 {/* Header */}
                 <div className="border-b px-6 py-4">
                     <div className="flex items-center gap-3">
-                        <Button variant="ghost" size="icon" className="size-8" asChild>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-8"
+                            asChild
+                        >
                             <Link href="/dashboard">
                                 <ArrowLeft className="size-4" />
                             </Link>
                         </Button>
                         <div>
-                            <h1 className="text-xl font-semibold">New Workspace</h1>
-                            <p className="text-sm text-muted-foreground">Create a new workspace to organize your projects</p>
+                            <h1 className="text-xl font-semibold">
+                                New Workspace
+                            </h1>
+                            <p className="text-sm text-muted-foreground">
+                                Create a new workspace to organize your projects
+                            </p>
                         </div>
                     </div>
                 </div>
 
                 {/* Form */}
                 <div className="flex-1 overflow-y-auto">
-                    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-6 space-y-8">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="mx-auto max-w-2xl space-y-8 p-6"
+                    >
                         <div className="space-y-6">
                             {/* Workspace Preview */}
-                            <div className="flex items-center gap-4 p-4 border rounded-lg bg-muted/50">
+                            <div className="flex items-center gap-4 rounded-lg border bg-muted/50 p-4">
                                 <div
-                                    className="flex size-12 items-center justify-center rounded-lg text-white font-bold text-xl"
+                                    className="flex size-12 items-center justify-center rounded-lg text-xl font-bold text-white"
                                     style={{ backgroundColor: data.color }}
                                 >
-                                    {data.name ? data.name.charAt(0).toUpperCase() : 'W'}
+                                    {data.name
+                                        ? data.name.charAt(0).toUpperCase()
+                                        : 'W'}
                                 </div>
                                 <div>
-                                    <p className="font-semibold">{data.name || 'Workspace Name'}</p>
+                                    <p className="font-semibold">
+                                        {data.name || 'Workspace Name'}
+                                    </p>
                                     <p className="text-sm text-muted-foreground">
                                         {data.description || 'No description'}
                                     </p>
@@ -65,33 +81,52 @@ export default function WorkspaceCreate() {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="name" className="text-sm font-medium">
-                                    Workspace Name <span className="text-destructive">*</span>
+                                <Label
+                                    htmlFor="name"
+                                    className="text-sm font-medium"
+                                >
+                                    Workspace Name{' '}
+                                    <span className="text-destructive">*</span>
                                 </Label>
                                 <Input
                                     id="name"
                                     value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('name', e.target.value)
+                                    }
                                     placeholder="e.g., Company XYZ, Personal Projects"
                                     className="h-11"
                                     autoFocus
                                     required
                                 />
-                                {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
+                                {errors.name && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.name}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="description" className="text-sm font-medium">
+                                <Label
+                                    htmlFor="description"
+                                    className="text-sm font-medium"
+                                >
                                     Description
                                 </Label>
                                 <Textarea
                                     id="description"
                                     value={data.description}
-                                    onChange={(e) => setData('description', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('description', e.target.value)
+                                    }
                                     placeholder="What is this workspace for?"
                                     rows={3}
                                 />
-                                {errors.description && <p className="text-sm text-destructive">{errors.description}</p>}
+                                {errors.description && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.description}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
@@ -100,18 +135,26 @@ export default function WorkspaceCreate() {
                                 </Label>
                                 <ColorPicker
                                     value={data.color}
-                                    onChange={(color) => setData('color', color)}
+                                    onChange={(color) =>
+                                        setData('color', color)
+                                    }
                                 />
-                                {errors.color && <p className="text-sm text-destructive">{errors.color}</p>}
+                                {errors.color && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.color}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-end gap-3 pt-4 border-t">
+                        <div className="flex items-center justify-end gap-3 border-t pt-4">
                             <Button type="button" variant="ghost" asChild>
                                 <Link href="/dashboard">Cancel</Link>
                             </Button>
                             <Button type="submit" disabled={processing}>
-                                {processing ? 'Creating...' : 'Create Workspace'}
+                                {processing
+                                    ? 'Creating...'
+                                    : 'Create Workspace'}
                             </Button>
                         </div>
                     </form>

@@ -2,7 +2,13 @@ import { EditorWrapper } from '@/components/editor-wrapper';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
@@ -35,55 +41,98 @@ export default function ProjectCreate() {
                 {/* Header */}
                 <div className="border-b px-6 py-4">
                     <div className="flex items-center gap-3">
-                        <Button variant="ghost" size="icon" className="size-8" asChild>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-8"
+                            asChild
+                        >
                             <Link href="/projects">
                                 <ArrowLeft className="size-4" />
                             </Link>
                         </Button>
                         <div>
-                            <h1 className="text-xl font-semibold">New Project</h1>
-                            <p className="text-sm text-muted-foreground">Create a new project to organize your work</p>
+                            <h1 className="text-xl font-semibold">
+                                New Project
+                            </h1>
+                            <p className="text-sm text-muted-foreground">
+                                Create a new project to organize your work
+                            </p>
                         </div>
                     </div>
                 </div>
 
                 {/* Form */}
                 <div className="flex-1 overflow-y-auto">
-                    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-6 space-y-8">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="mx-auto max-w-2xl space-y-8 p-6"
+                    >
                         <div className="space-y-6">
                             <div className="space-y-2">
-                                <Label htmlFor="name" className="text-sm font-medium">
-                                    Project Name <span className="text-destructive">*</span>
+                                <Label
+                                    htmlFor="name"
+                                    className="text-sm font-medium"
+                                >
+                                    Project Name{' '}
+                                    <span className="text-destructive">*</span>
                                 </Label>
                                 <Input
                                     id="name"
                                     value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('name', e.target.value)
+                                    }
                                     placeholder="e.g., Website Redesign"
                                     className="h-11"
                                     autoFocus
                                     required
                                 />
-                                {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
+                                {errors.name && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.name}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="description" className="text-sm font-medium">
+                                <Label
+                                    htmlFor="description"
+                                    className="text-sm font-medium"
+                                >
                                     Description
                                 </Label>
                                 <EditorWrapper
                                     value={data.description}
-                                    onChange={(html) => setData('description', html)}
+                                    onChange={(html) =>
+                                        setData('description', html)
+                                    }
                                     placeholder="What is this project about?"
                                 />
-                                {errors.description && <p className="text-sm text-destructive">{errors.description}</p>}
+                                {errors.description && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.description}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="status" className="text-sm font-medium">
+                                <Label
+                                    htmlFor="status"
+                                    className="text-sm font-medium"
+                                >
                                     Status
                                 </Label>
-                                <Select value={data.status} onValueChange={(value: 'active' | 'on_hold' | 'completed' | 'archived') => setData('status', value)}>
+                                <Select
+                                    value={data.status}
+                                    onValueChange={(
+                                        value:
+                                            | 'active'
+                                            | 'on_hold'
+                                            | 'completed'
+                                            | 'archived',
+                                    ) => setData('status', value)}
+                                >
                                     <SelectTrigger className="h-11">
                                         <SelectValue placeholder="Select status" />
                                     </SelectTrigger>
@@ -114,41 +163,66 @@ export default function ProjectCreate() {
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
-                                {errors.status && <p className="text-sm text-destructive">{errors.status}</p>}
+                                {errors.status && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.status}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="space-y-2">
-                                    <Label htmlFor="start_date" className="text-sm font-medium">
+                                    <Label
+                                        htmlFor="start_date"
+                                        className="text-sm font-medium"
+                                    >
                                         Start Date
                                     </Label>
                                     <Input
                                         id="start_date"
                                         type="date"
                                         value={data.start_date}
-                                        onChange={(e) => setData('start_date', e.target.value)}
+                                        onChange={(e) =>
+                                            setData(
+                                                'start_date',
+                                                e.target.value,
+                                            )
+                                        }
                                         className="h-11"
                                     />
-                                    {errors.start_date && <p className="text-sm text-destructive">{errors.start_date}</p>}
+                                    {errors.start_date && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.start_date}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="due_date" className="text-sm font-medium">
+                                    <Label
+                                        htmlFor="due_date"
+                                        className="text-sm font-medium"
+                                    >
                                         Due Date
                                     </Label>
                                     <Input
                                         id="due_date"
                                         type="date"
                                         value={data.due_date}
-                                        onChange={(e) => setData('due_date', e.target.value)}
+                                        onChange={(e) =>
+                                            setData('due_date', e.target.value)
+                                        }
                                         className="h-11"
                                     />
-                                    {errors.due_date && <p className="text-sm text-destructive">{errors.due_date}</p>}
+                                    {errors.due_date && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.due_date}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-end gap-3 pt-4 border-t">
+                        <div className="flex items-center justify-end gap-3 border-t pt-4">
                             <Button type="button" variant="ghost" asChild>
                                 <Link href="/projects">Cancel</Link>
                             </Button>

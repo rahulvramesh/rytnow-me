@@ -7,7 +7,15 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { Mic, MicOff, Pause, Play, Square, Trash2, Volume2 } from 'lucide-react';
+import {
+    Mic,
+    MicOff,
+    Pause,
+    Play,
+    Square,
+    Trash2,
+    Volume2,
+} from 'lucide-react';
 import { useCallback, useRef, useState } from 'react';
 
 interface ExplainTaskDialogProps {
@@ -15,7 +23,10 @@ interface ExplainTaskDialogProps {
     children?: React.ReactNode;
 }
 
-export function ExplainTaskDialog({ onSave, children }: ExplainTaskDialogProps) {
+export function ExplainTaskDialog({
+    onSave,
+    children,
+}: ExplainTaskDialogProps) {
     const [open, setOpen] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
@@ -39,16 +50,22 @@ export function ExplainTaskDialog({ onSave, children }: ExplainTaskDialogProps) 
 
     const startRecording = useCallback(async () => {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            alert('Audio recording requires HTTPS. Please access this site via HTTPS or localhost.');
+            alert(
+                'Audio recording requires HTTPS. Please access this site via HTTPS or localhost.',
+            );
             return;
         }
 
         try {
             if (navigator.permissions) {
                 try {
-                    const permissionStatus = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+                    const permissionStatus = await navigator.permissions.query({
+                        name: 'microphone' as PermissionName,
+                    });
                     if (permissionStatus.state === 'denied') {
-                        alert('Microphone access was denied. Please enable it in your browser settings and reload the page.');
+                        alert(
+                            'Microphone access was denied. Please enable it in your browser settings and reload the page.',
+                        );
                         return;
                     }
                 } catch {
@@ -56,8 +73,10 @@ export function ExplainTaskDialog({ onSave, children }: ExplainTaskDialogProps) 
                 }
             }
 
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+            });
+
             let mimeType = 'audio/webm';
             if (!MediaRecorder.isTypeSupported('audio/webm')) {
                 if (MediaRecorder.isTypeSupported('audio/mp4')) {
@@ -78,7 +97,9 @@ export function ExplainTaskDialog({ onSave, children }: ExplainTaskDialogProps) 
             };
 
             mediaRecorder.onstop = () => {
-                const blob = new Blob(chunksRef.current, { type: mediaRecorder.mimeType });
+                const blob = new Blob(chunksRef.current, {
+                    type: mediaRecorder.mimeType,
+                });
                 setAudioBlob(blob);
                 const url = URL.createObjectURL(blob);
                 setAudioUrl(url);
@@ -94,16 +115,31 @@ export function ExplainTaskDialog({ onSave, children }: ExplainTaskDialogProps) 
             setAudioUrl(null);
 
             timerRef.current = setInterval(() => {
-                const elapsed = Math.floor((Date.now() - startTimeRef.current - pausedTimeRef.current) / 1000);
+                const elapsed = Math.floor(
+                    (Date.now() -
+                        startTimeRef.current -
+                        pausedTimeRef.current) /
+                        1000,
+                );
                 setRecordingTime(elapsed);
             }, 100);
         } catch (err) {
             console.error('Failed to start recording:', err);
             const error = err as Error;
-            if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
-                alert('Microphone access was denied. Please allow microphone access in your browser and try again.');
-            } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
-                alert('No microphone found. Please connect a microphone and try again.');
+            if (
+                error.name === 'NotAllowedError' ||
+                error.name === 'PermissionDeniedError'
+            ) {
+                alert(
+                    'Microphone access was denied. Please allow microphone access in your browser and try again.',
+                );
+            } else if (
+                error.name === 'NotFoundError' ||
+                error.name === 'DevicesNotFoundError'
+            ) {
+                alert(
+                    'No microphone found. Please connect a microphone and try again.',
+                );
             } else {
                 alert(`Could not access microphone: ${error.message}`);
             }
@@ -205,29 +241,30 @@ export function ExplainTaskDialog({ onSave, children }: ExplainTaskDialogProps) 
                         Explain Task
                     </DialogTitle>
                     <DialogDescription>
-                        Record an audio explanation for this task. This helps provide context and details.
+                        Record an audio explanation for this task. This helps
+                        provide context and details.
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="flex flex-col items-center py-8 space-y-6">
+                <div className="flex flex-col items-center space-y-6 py-8">
                     {/* Recording visualization */}
                     <div className="relative">
-                        <div 
-                            className={`size-32 rounded-full flex items-center justify-center transition-all ${
-                                isRecording 
-                                    ? isPaused 
-                                        ? 'bg-yellow-100 dark:bg-yellow-900/30' 
-                                        : 'bg-red-100 dark:bg-red-900/30 animate-pulse'
+                        <div
+                            className={`flex size-32 items-center justify-center rounded-full transition-all ${
+                                isRecording
+                                    ? isPaused
+                                        ? 'bg-yellow-100 dark:bg-yellow-900/30'
+                                        : 'animate-pulse bg-red-100 dark:bg-red-900/30'
                                     : audioBlob
-                                        ? 'bg-green-100 dark:bg-green-900/30'
-                                        : 'bg-muted'
+                                      ? 'bg-green-100 dark:bg-green-900/30'
+                                      : 'bg-muted'
                             }`}
                         >
                             {isRecording ? (
                                 isPaused ? (
                                     <MicOff className="size-12 text-yellow-600" />
                                 ) : (
-                                    <Mic className="size-12 text-red-600 animate-pulse" />
+                                    <Mic className="size-12 animate-pulse text-red-600" />
                                 )
                             ) : audioBlob ? (
                                 <Volume2 className="size-12 text-green-600" />
@@ -236,20 +273,20 @@ export function ExplainTaskDialog({ onSave, children }: ExplainTaskDialogProps) 
                             )}
                         </div>
                         {isRecording && !isPaused && (
-                            <div className="absolute inset-0 rounded-full border-4 border-red-500 animate-ping opacity-20" />
+                            <div className="absolute inset-0 animate-ping rounded-full border-4 border-red-500 opacity-20" />
                         )}
                     </div>
 
                     {/* Timer */}
-                    <div className="text-3xl font-mono font-semibold tabular-nums">
+                    <div className="font-mono text-3xl font-semibold tabular-nums">
                         {formatTime(recordingTime)}
                     </div>
 
                     {/* Controls */}
                     <div className="flex items-center gap-3">
                         {!isRecording && !audioBlob && (
-                            <Button 
-                                size="lg" 
+                            <Button
+                                size="lg"
                                 onClick={startRecording}
                                 className="gap-2 px-8"
                             >
@@ -260,11 +297,15 @@ export function ExplainTaskDialog({ onSave, children }: ExplainTaskDialogProps) 
 
                         {isRecording && (
                             <>
-                                <Button 
-                                    variant="outline" 
+                                <Button
+                                    variant="outline"
                                     size="icon"
                                     className="size-12 rounded-full"
-                                    onClick={isPaused ? resumeRecording : pauseRecording}
+                                    onClick={
+                                        isPaused
+                                            ? resumeRecording
+                                            : pauseRecording
+                                    }
                                 >
                                     {isPaused ? (
                                         <Play className="size-5" />
@@ -272,8 +313,8 @@ export function ExplainTaskDialog({ onSave, children }: ExplainTaskDialogProps) 
                                         <Pause className="size-5" />
                                     )}
                                 </Button>
-                                <Button 
-                                    variant="destructive" 
+                                <Button
+                                    variant="destructive"
                                     size="icon"
                                     className="size-12 rounded-full"
                                     onClick={stopRecording}
@@ -285,8 +326,8 @@ export function ExplainTaskDialog({ onSave, children }: ExplainTaskDialogProps) 
 
                         {audioBlob && !isRecording && (
                             <>
-                                <Button 
-                                    variant="outline" 
+                                <Button
+                                    variant="outline"
                                     size="icon"
                                     className="size-12 rounded-full"
                                     onClick={togglePlayback}
@@ -297,15 +338,15 @@ export function ExplainTaskDialog({ onSave, children }: ExplainTaskDialogProps) 
                                         <Play className="size-5" />
                                     )}
                                 </Button>
-                                <Button 
-                                    variant="outline" 
+                                <Button
+                                    variant="outline"
                                     size="icon"
                                     className="size-12 rounded-full text-destructive hover:text-destructive"
                                     onClick={discardRecording}
                                 >
                                     <Trash2 className="size-5" />
                                 </Button>
-                                <Button 
+                                <Button
                                     size="lg"
                                     onClick={handleSave}
                                     className="px-8"
@@ -318,14 +359,13 @@ export function ExplainTaskDialog({ onSave, children }: ExplainTaskDialogProps) 
 
                     {/* Status text */}
                     <p className="text-sm text-muted-foreground">
-                        {isRecording 
-                            ? isPaused 
-                                ? 'Recording paused' 
+                        {isRecording
+                            ? isPaused
+                                ? 'Recording paused'
                                 : 'Recording in progress...'
-                            : audioBlob 
-                                ? 'Recording complete. Play to review or save.'
-                                : 'Click to start recording your explanation'
-                        }
+                            : audioBlob
+                              ? 'Recording complete. Play to review or save.'
+                              : 'Click to start recording your explanation'}
                     </p>
                 </div>
             </DialogContent>

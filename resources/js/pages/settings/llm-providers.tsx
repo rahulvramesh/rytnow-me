@@ -1,10 +1,9 @@
+import { fetchHeaders } from '@/lib/csrf';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
-import { useCallback, useState } from 'react';
 import {
     Bot,
     Check,
-    ChevronDown,
     Loader2,
     MoreVertical,
     Pencil,
@@ -15,21 +14,9 @@ import {
     Wifi,
     WifiOff,
 } from 'lucide-react';
-import { fetchHeaders } from '@/lib/csrf';
+import { useCallback, useState } from 'react';
 
 import HeadingSmall from '@/components/heading-small';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -40,6 +27,16 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -47,6 +44,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     Select,
     SelectContent,
@@ -77,12 +76,32 @@ interface PageProps {
 
 const PROVIDER_PRESETS = [
     { value: 'openai', label: 'OpenAI', baseUrl: 'https://api.openai.com' },
-    { value: 'anthropic', label: 'Anthropic', baseUrl: 'https://api.anthropic.com' },
+    {
+        value: 'anthropic',
+        label: 'Anthropic',
+        baseUrl: 'https://api.anthropic.com',
+    },
     { value: 'groq', label: 'Groq', baseUrl: 'https://api.groq.com/openai' },
-    { value: 'together', label: 'Together AI', baseUrl: 'https://api.together.xyz' },
-    { value: 'openrouter', label: 'OpenRouter', baseUrl: 'https://openrouter.ai/api' },
-    { value: 'ollama', label: 'Ollama (Local)', baseUrl: 'http://localhost:11434' },
-    { value: 'lmstudio', label: 'LM Studio (Local)', baseUrl: 'http://localhost:1234' },
+    {
+        value: 'together',
+        label: 'Together AI',
+        baseUrl: 'https://api.together.xyz',
+    },
+    {
+        value: 'openrouter',
+        label: 'OpenRouter',
+        baseUrl: 'https://openrouter.ai/api',
+    },
+    {
+        value: 'ollama',
+        label: 'Ollama (Local)',
+        baseUrl: 'http://localhost:11434',
+    },
+    {
+        value: 'lmstudio',
+        label: 'LM Studio (Local)',
+        baseUrl: 'http://localhost:1234',
+    },
     { value: 'custom', label: 'Custom Endpoint', baseUrl: '' },
 ];
 
@@ -95,10 +114,18 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function LlmProviders({ providers }: PageProps) {
     const [showAddModal, setShowAddModal] = useState(false);
-    const [editingProvider, setEditingProvider] = useState<Provider | null>(null);
-    const [providerToDelete, setProviderToDelete] = useState<Provider | null>(null);
+    const [editingProvider, setEditingProvider] = useState<Provider | null>(
+        null,
+    );
+    const [providerToDelete, setProviderToDelete] = useState<Provider | null>(
+        null,
+    );
     const [testingProvider, setTestingProvider] = useState<number | null>(null);
-    const [testResult, setTestResult] = useState<{ id: number; success: boolean; message: string } | null>(null);
+    const [testResult, setTestResult] = useState<{
+        id: number;
+        success: boolean;
+        message: string;
+    } | null>(null);
     const [availableModels, setAvailableModels] = useState<string[]>([]);
     const [fetchingModels, setFetchingModels] = useState(false);
     const [modelsError, setModelsError] = useState<string | null>(null);
@@ -131,14 +158,17 @@ export default function LlmProviders({ providers }: PageProps) {
         setModelsError(null);
 
         try {
-            const response = await fetch('/settings/llm-providers/fetch-models', {
-                method: 'POST',
-                headers: fetchHeaders(),
-                body: JSON.stringify({
-                    base_url: data.base_url,
-                    api_key: data.api_key || null,
-                }),
-            });
+            const response = await fetch(
+                '/settings/llm-providers/fetch-models',
+                {
+                    method: 'POST',
+                    headers: fetchHeaders(),
+                    body: JSON.stringify({
+                        base_url: data.base_url,
+                        api_key: data.api_key || null,
+                    }),
+                },
+            );
 
             const result = await response.json();
 
@@ -165,9 +195,12 @@ export default function LlmProviders({ providers }: PageProps) {
         setModelsError(null);
 
         try {
-            const response = await fetch(`/settings/llm-providers/${providerId}/models`, {
-                headers: fetchHeaders(),
-            });
+            const response = await fetch(
+                `/settings/llm-providers/${providerId}/models`,
+                {
+                    headers: fetchHeaders(),
+                },
+            );
 
             const result = await response.json();
 
@@ -239,17 +272,25 @@ export default function LlmProviders({ providers }: PageProps) {
     };
 
     const handleSetDefault = (provider: Provider) => {
-        router.post(`/settings/llm-providers/${provider.id}/default`, {}, {
-            preserveScroll: true,
-        });
+        router.post(
+            `/settings/llm-providers/${provider.id}/default`,
+            {},
+            {
+                preserveScroll: true,
+            },
+        );
     };
 
     const handleToggleActive = (provider: Provider) => {
-        router.patch(`/settings/llm-providers/${provider.id}`, {
-            is_active: !provider.is_active,
-        }, {
-            preserveScroll: true,
-        });
+        router.patch(
+            `/settings/llm-providers/${provider.id}`,
+            {
+                is_active: !provider.is_active,
+            },
+            {
+                preserveScroll: true,
+            },
+        );
     };
 
     const handleTestConnection = async (provider: Provider) => {
@@ -257,10 +298,13 @@ export default function LlmProviders({ providers }: PageProps) {
         setTestResult(null);
 
         try {
-            const response = await fetch(`/settings/llm-providers/${provider.id}/test`, {
-                method: 'POST',
-                headers: fetchHeaders(),
-            });
+            const response = await fetch(
+                `/settings/llm-providers/${provider.id}/test`,
+                {
+                    method: 'POST',
+                    headers: fetchHeaders(),
+                },
+            );
 
             const result = await response.json();
             setTestResult({
@@ -315,68 +359,100 @@ export default function LlmProviders({ providers }: PageProps) {
                     />
 
                     <div className="space-y-4">
-                        <div className="flex justify-between items-center">
+                        <div className="flex items-center justify-between">
                             <p className="text-sm text-muted-foreground">
-                                Connect OpenAI-compatible LLM endpoints to enable AI-powered features.
+                                Connect OpenAI-compatible LLM endpoints to
+                                enable AI-powered features.
                             </p>
-                            <Button onClick={() => setShowAddModal(true)} size="sm">
-                                <Plus className="size-4 mr-2" />
+                            <Button
+                                onClick={() => setShowAddModal(true)}
+                                size="sm"
+                            >
+                                <Plus className="mr-2 size-4" />
                                 Add Provider
                             </Button>
                         </div>
 
                         {providers.length === 0 ? (
-                            <div className="border rounded-lg p-8 text-center">
-                                <Bot className="size-12 mx-auto text-muted-foreground/50 mb-4" />
-                                <p className="text-muted-foreground">No LLM providers configured</p>
-                                <p className="text-sm text-muted-foreground mt-1">
+                            <div className="rounded-lg border p-8 text-center">
+                                <Bot className="mx-auto mb-4 size-12 text-muted-foreground/50" />
+                                <p className="text-muted-foreground">
+                                    No LLM providers configured
+                                </p>
+                                <p className="mt-1 text-sm text-muted-foreground">
                                     Add a provider to enable AI features
                                 </p>
                             </div>
                         ) : (
-                            <div className="border rounded-lg divide-y">
+                            <div className="divide-y rounded-lg border">
                                 {providers.map((provider) => (
                                     <div
                                         key={provider.id}
                                         className="flex items-center justify-between p-4"
                                     >
-                                        <div className="flex items-center gap-3 flex-1 min-w-0">
-                                            <div className={`size-10 rounded-lg flex items-center justify-center ${
-                                                provider.is_active ? 'bg-primary/10' : 'bg-muted'
-                                            }`}>
-                                                <Bot className={`size-5 ${
-                                                    provider.is_active ? 'text-primary' : 'text-muted-foreground'
-                                                }`} />
+                                        <div className="flex min-w-0 flex-1 items-center gap-3">
+                                            <div
+                                                className={`flex size-10 items-center justify-center rounded-lg ${
+                                                    provider.is_active
+                                                        ? 'bg-primary/10'
+                                                        : 'bg-muted'
+                                                }`}
+                                            >
+                                                <Bot
+                                                    className={`size-5 ${
+                                                        provider.is_active
+                                                            ? 'text-primary'
+                                                            : 'text-muted-foreground'
+                                                    }`}
+                                                />
                                             </div>
-                                            <div className="flex-1 min-w-0">
+                                            <div className="min-w-0 flex-1">
                                                 <div className="flex items-center gap-2">
-                                                    <p className="font-medium truncate">{provider.name}</p>
+                                                    <p className="truncate font-medium">
+                                                        {provider.name}
+                                                    </p>
                                                     {provider.is_default && (
-                                                        <Badge variant="secondary" className="shrink-0">
-                                                            <Star className="size-3 mr-1" />
+                                                        <Badge
+                                                            variant="secondary"
+                                                            className="shrink-0"
+                                                        >
+                                                            <Star className="mr-1 size-3" />
                                                             Default
                                                         </Badge>
                                                     )}
                                                     {!provider.is_active && (
-                                                        <Badge variant="outline" className="shrink-0 text-muted-foreground">
+                                                        <Badge
+                                                            variant="outline"
+                                                            className="shrink-0 text-muted-foreground"
+                                                        >
                                                             Disabled
                                                         </Badge>
                                                     )}
                                                 </div>
-                                                <p className="text-sm text-muted-foreground truncate">
+                                                <p className="truncate text-sm text-muted-foreground">
                                                     {provider.base_url}
                                                     {provider.default_model && (
-                                                        <span className="ml-2">· {provider.default_model}</span>
+                                                        <span className="ml-2">
+                                                            ·{' '}
+                                                            {
+                                                                provider.default_model
+                                                            }
+                                                        </span>
                                                     )}
                                                 </p>
-                                                {testResult?.id === provider.id && (
-                                                    <p className={`text-sm mt-1 ${
-                                                        testResult.success ? 'text-green-600' : 'text-destructive'
-                                                    }`}>
+                                                {testResult?.id ===
+                                                    provider.id && (
+                                                    <p
+                                                        className={`mt-1 text-sm ${
+                                                            testResult.success
+                                                                ? 'text-green-600'
+                                                                : 'text-destructive'
+                                                        }`}
+                                                    >
                                                         {testResult.success ? (
-                                                            <Check className="size-3 inline mr-1" />
+                                                            <Check className="mr-1 inline size-3" />
                                                         ) : (
-                                                            <WifiOff className="size-3 inline mr-1" />
+                                                            <WifiOff className="mr-1 inline size-3" />
                                                         )}
                                                         {testResult.message}
                                                     </p>
@@ -388,53 +464,88 @@ export default function LlmProviders({ providers }: PageProps) {
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                onClick={() => handleTestConnection(provider)}
-                                                disabled={testingProvider === provider.id}
+                                                onClick={() =>
+                                                    handleTestConnection(
+                                                        provider,
+                                                    )
+                                                }
+                                                disabled={
+                                                    testingProvider ===
+                                                    provider.id
+                                                }
                                             >
-                                                {testingProvider === provider.id ? (
+                                                {testingProvider ===
+                                                provider.id ? (
                                                     <Loader2 className="size-4 animate-spin" />
                                                 ) : (
                                                     <Wifi className="size-4" />
                                                 )}
-                                                <span className="ml-1 hidden sm:inline">Test</span>
+                                                <span className="ml-1 hidden sm:inline">
+                                                    Test
+                                                </span>
                                             </Button>
 
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                    >
                                                         <MoreVertical className="size-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
-                                                    <DropdownMenuItem onClick={() => openEditModal(provider)}>
-                                                        <Pencil className="size-4 mr-2" />
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            openEditModal(
+                                                                provider,
+                                                            )
+                                                        }
+                                                    >
+                                                        <Pencil className="mr-2 size-4" />
                                                         Edit
                                                     </DropdownMenuItem>
                                                     {!provider.is_default && (
-                                                        <DropdownMenuItem onClick={() => handleSetDefault(provider)}>
-                                                            <Star className="size-4 mr-2" />
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                handleSetDefault(
+                                                                    provider,
+                                                                )
+                                                            }
+                                                        >
+                                                            <Star className="mr-2 size-4" />
                                                             Set as Default
                                                         </DropdownMenuItem>
                                                     )}
-                                                    <DropdownMenuItem onClick={() => handleToggleActive(provider)}>
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            handleToggleActive(
+                                                                provider,
+                                                            )
+                                                        }
+                                                    >
                                                         {provider.is_active ? (
                                                             <>
-                                                                <WifiOff className="size-4 mr-2" />
+                                                                <WifiOff className="mr-2 size-4" />
                                                                 Disable
                                                             </>
                                                         ) : (
                                                             <>
-                                                                <Wifi className="size-4 mr-2" />
+                                                                <Wifi className="mr-2 size-4" />
                                                                 Enable
                                                             </>
                                                         )}
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem
-                                                        onClick={() => setProviderToDelete(provider)}
+                                                        onClick={() =>
+                                                            setProviderToDelete(
+                                                                provider,
+                                                            )
+                                                        }
                                                         className="text-destructive focus:text-destructive"
                                                     >
-                                                        <Trash2 className="size-4 mr-2" />
+                                                        <Trash2 className="mr-2 size-4" />
                                                         Delete
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
@@ -445,15 +556,23 @@ export default function LlmProviders({ providers }: PageProps) {
                             </div>
                         )}
 
-                        <div className="pt-4 border-t">
-                            <h4 className="text-sm font-medium mb-2">Supported Providers</h4>
-                            <div className="bg-muted rounded-lg p-4">
-                                <p className="text-sm text-muted-foreground mb-3">
-                                    Any OpenAI-compatible API endpoint is supported, including:
+                        <div className="border-t pt-4">
+                            <h4 className="mb-2 text-sm font-medium">
+                                Supported Providers
+                            </h4>
+                            <div className="rounded-lg bg-muted p-4">
+                                <p className="mb-3 text-sm text-muted-foreground">
+                                    Any OpenAI-compatible API endpoint is
+                                    supported, including:
                                 </p>
                                 <div className="grid grid-cols-2 gap-2 text-sm">
-                                    {PROVIDER_PRESETS.filter(p => p.value !== 'custom').map((preset) => (
-                                        <div key={preset.value} className="flex items-center gap-2">
+                                    {PROVIDER_PRESETS.filter(
+                                        (p) => p.value !== 'custom',
+                                    ).map((preset) => (
+                                        <div
+                                            key={preset.value}
+                                            className="flex items-center gap-2"
+                                        >
                                             <Bot className="size-4 text-muted-foreground" />
                                             <span>{preset.label}</span>
                                         </div>
@@ -478,13 +597,19 @@ export default function LlmProviders({ providers }: PageProps) {
                         <div className="space-y-4 py-4">
                             <div className="space-y-2">
                                 <Label htmlFor="provider">Provider</Label>
-                                <Select value={data.provider} onValueChange={handleProviderChange}>
+                                <Select
+                                    value={data.provider}
+                                    onValueChange={handleProviderChange}
+                                >
                                     <SelectTrigger>
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {PROVIDER_PRESETS.map((preset) => (
-                                            <SelectItem key={preset.value} value={preset.value}>
+                                            <SelectItem
+                                                key={preset.value}
+                                                value={preset.value}
+                                            >
                                                 {preset.label}
                                             </SelectItem>
                                         ))}
@@ -497,11 +622,15 @@ export default function LlmProviders({ providers }: PageProps) {
                                 <Input
                                     id="name"
                                     value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('name', e.target.value)
+                                    }
                                     placeholder="e.g., My OpenAI, Local Ollama"
                                 />
                                 {errors.name && (
-                                    <p className="text-sm text-destructive">{errors.name}</p>
+                                    <p className="text-sm text-destructive">
+                                        {errors.name}
+                                    </p>
                                 )}
                             </div>
 
@@ -510,11 +639,15 @@ export default function LlmProviders({ providers }: PageProps) {
                                 <Input
                                     id="base_url"
                                     value={data.base_url}
-                                    onChange={(e) => setData('base_url', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('base_url', e.target.value)
+                                    }
                                     placeholder="https://api.openai.com"
                                 />
                                 {errors.base_url && (
-                                    <p className="text-sm text-destructive">{errors.base_url}</p>
+                                    <p className="text-sm text-destructive">
+                                        {errors.base_url}
+                                    </p>
                                 )}
                             </div>
 
@@ -525,7 +658,9 @@ export default function LlmProviders({ providers }: PageProps) {
                                         id="api_key"
                                         type="password"
                                         value={data.api_key}
-                                        onChange={(e) => setData('api_key', e.target.value)}
+                                        onChange={(e) =>
+                                            setData('api_key', e.target.value)
+                                        }
                                         placeholder="sk-..."
                                         className="flex-1"
                                     />
@@ -534,7 +669,9 @@ export default function LlmProviders({ providers }: PageProps) {
                                         variant="outline"
                                         size="icon"
                                         onClick={fetchModelsFromEndpoint}
-                                        disabled={fetchingModels || !data.base_url}
+                                        disabled={
+                                            fetchingModels || !data.base_url
+                                        }
                                         title="Fetch available models"
                                     >
                                         {fetchingModels ? (
@@ -545,23 +682,36 @@ export default function LlmProviders({ providers }: PageProps) {
                                     </Button>
                                 </div>
                                 <p className="text-xs text-muted-foreground">
-                                    Enter API key and click refresh to fetch available models.
+                                    Enter API key and click refresh to fetch
+                                    available models.
                                 </p>
                                 {errors.api_key && (
-                                    <p className="text-sm text-destructive">{errors.api_key}</p>
+                                    <p className="text-sm text-destructive">
+                                        {errors.api_key}
+                                    </p>
                                 )}
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="default_model">Default Model</Label>
+                                <Label htmlFor="default_model">
+                                    Default Model
+                                </Label>
                                 {availableModels.length > 0 ? (
-                                    <Select value={data.default_model} onValueChange={(v) => setData('default_model', v)}>
+                                    <Select
+                                        value={data.default_model}
+                                        onValueChange={(v) =>
+                                            setData('default_model', v)
+                                        }
+                                    >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select a model" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {availableModels.map((model) => (
-                                                <SelectItem key={model} value={model}>
+                                                <SelectItem
+                                                    key={model}
+                                                    value={model}
+                                                >
                                                     {model}
                                                 </SelectItem>
                                             ))}
@@ -571,24 +721,37 @@ export default function LlmProviders({ providers }: PageProps) {
                                     <Input
                                         id="default_model"
                                         value={data.default_model}
-                                        onChange={(e) => setData('default_model', e.target.value)}
+                                        onChange={(e) =>
+                                            setData(
+                                                'default_model',
+                                                e.target.value,
+                                            )
+                                        }
                                         placeholder="e.g., gpt-4, llama2"
                                     />
                                 )}
                                 {modelsError && (
-                                    <p className="text-xs text-amber-600">{modelsError}</p>
+                                    <p className="text-xs text-amber-600">
+                                        {modelsError}
+                                    </p>
                                 )}
                                 {errors.default_model && (
-                                    <p className="text-sm text-destructive">{errors.default_model}</p>
+                                    <p className="text-sm text-destructive">
+                                        {errors.default_model}
+                                    </p>
                                 )}
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <Label htmlFor="is_default">Set as default provider</Label>
+                                <Label htmlFor="is_default">
+                                    Set as default provider
+                                </Label>
                                 <Switch
                                     id="is_default"
                                     checked={data.is_default}
-                                    onCheckedChange={(checked) => setData('is_default', checked)}
+                                    onCheckedChange={(checked) =>
+                                        setData('is_default', checked)
+                                    }
                                 />
                             </div>
                         </div>
@@ -600,7 +763,12 @@ export default function LlmProviders({ providers }: PageProps) {
                             >
                                 Cancel
                             </Button>
-                            <Button type="submit" disabled={processing || !data.name || !data.base_url}>
+                            <Button
+                                type="submit"
+                                disabled={
+                                    processing || !data.name || !data.base_url
+                                }
+                            >
                                 Add Provider
                             </Button>
                         </DialogFooter>
@@ -609,9 +777,12 @@ export default function LlmProviders({ providers }: PageProps) {
             </Dialog>
 
             {/* Edit Provider Modal */}
-            <Dialog open={!!editingProvider} onOpenChange={(open) => {
-                if (!open) closeEditModal();
-            }}>
+            <Dialog
+                open={!!editingProvider}
+                onOpenChange={(open) => {
+                    if (!open) closeEditModal();
+                }}
+            >
                 <DialogContent className="sm:max-w-md">
                     <form onSubmit={handleEditProvider}>
                         <DialogHeader>
@@ -623,13 +794,19 @@ export default function LlmProviders({ providers }: PageProps) {
                         <div className="space-y-4 py-4">
                             <div className="space-y-2">
                                 <Label htmlFor="edit-provider">Provider</Label>
-                                <Select value={data.provider} onValueChange={handleProviderChange}>
+                                <Select
+                                    value={data.provider}
+                                    onValueChange={handleProviderChange}
+                                >
                                     <SelectTrigger>
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {PROVIDER_PRESETS.map((preset) => (
-                                            <SelectItem key={preset.value} value={preset.value}>
+                                            <SelectItem
+                                                key={preset.value}
+                                                value={preset.value}
+                                            >
                                                 {preset.label}
                                             </SelectItem>
                                         ))}
@@ -642,10 +819,14 @@ export default function LlmProviders({ providers }: PageProps) {
                                 <Input
                                     id="edit-name"
                                     value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('name', e.target.value)
+                                    }
                                 />
                                 {errors.name && (
-                                    <p className="text-sm text-destructive">{errors.name}</p>
+                                    <p className="text-sm text-destructive">
+                                        {errors.name}
+                                    </p>
                                 )}
                             </div>
 
@@ -654,10 +835,14 @@ export default function LlmProviders({ providers }: PageProps) {
                                 <Input
                                     id="edit-base_url"
                                     value={data.base_url}
-                                    onChange={(e) => setData('base_url', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('base_url', e.target.value)
+                                    }
                                 />
                                 {errors.base_url && (
-                                    <p className="text-sm text-destructive">{errors.base_url}</p>
+                                    <p className="text-sm text-destructive">
+                                        {errors.base_url}
+                                    </p>
                                 )}
                             </div>
 
@@ -668,15 +853,26 @@ export default function LlmProviders({ providers }: PageProps) {
                                         id="edit-api_key"
                                         type="password"
                                         value={data.api_key}
-                                        onChange={(e) => setData('api_key', e.target.value)}
-                                        placeholder={editingProvider?.has_api_key ? '••••••••' : 'Enter API key'}
+                                        onChange={(e) =>
+                                            setData('api_key', e.target.value)
+                                        }
+                                        placeholder={
+                                            editingProvider?.has_api_key
+                                                ? '••••••••'
+                                                : 'Enter API key'
+                                        }
                                         className="flex-1"
                                     />
                                     <Button
                                         type="button"
                                         variant="outline"
                                         size="icon"
-                                        onClick={() => editingProvider && fetchModelsForProvider(editingProvider.id)}
+                                        onClick={() =>
+                                            editingProvider &&
+                                            fetchModelsForProvider(
+                                                editingProvider.id,
+                                            )
+                                        }
                                         disabled={fetchingModels}
                                         title="Refresh available models"
                                     >
@@ -693,20 +889,32 @@ export default function LlmProviders({ providers }: PageProps) {
                                         : 'Enter API key for authentication.'}
                                 </p>
                                 {errors.api_key && (
-                                    <p className="text-sm text-destructive">{errors.api_key}</p>
+                                    <p className="text-sm text-destructive">
+                                        {errors.api_key}
+                                    </p>
                                 )}
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="edit-default_model">Default Model</Label>
+                                <Label htmlFor="edit-default_model">
+                                    Default Model
+                                </Label>
                                 {availableModels.length > 0 ? (
-                                    <Select value={data.default_model} onValueChange={(v) => setData('default_model', v)}>
+                                    <Select
+                                        value={data.default_model}
+                                        onValueChange={(v) =>
+                                            setData('default_model', v)
+                                        }
+                                    >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select a model" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {availableModels.map((model) => (
-                                                <SelectItem key={model} value={model}>
+                                                <SelectItem
+                                                    key={model}
+                                                    value={model}
+                                                >
                                                     {model}
                                                 </SelectItem>
                                             ))}
@@ -716,27 +924,42 @@ export default function LlmProviders({ providers }: PageProps) {
                                     <Input
                                         id="edit-default_model"
                                         value={data.default_model}
-                                        onChange={(e) => setData('default_model', e.target.value)}
+                                        onChange={(e) =>
+                                            setData(
+                                                'default_model',
+                                                e.target.value,
+                                            )
+                                        }
                                         placeholder="e.g., gpt-4, llama2"
                                     />
                                 )}
                                 {fetchingModels && (
-                                    <p className="text-xs text-muted-foreground">Loading models...</p>
+                                    <p className="text-xs text-muted-foreground">
+                                        Loading models...
+                                    </p>
                                 )}
                                 {modelsError && !fetchingModels && (
-                                    <p className="text-xs text-amber-600">{modelsError}</p>
+                                    <p className="text-xs text-amber-600">
+                                        {modelsError}
+                                    </p>
                                 )}
                                 {errors.default_model && (
-                                    <p className="text-sm text-destructive">{errors.default_model}</p>
+                                    <p className="text-sm text-destructive">
+                                        {errors.default_model}
+                                    </p>
                                 )}
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <Label htmlFor="edit-is_default">Set as default provider</Label>
+                                <Label htmlFor="edit-is_default">
+                                    Set as default provider
+                                </Label>
                                 <Switch
                                     id="edit-is_default"
                                     checked={data.is_default}
-                                    onCheckedChange={(checked) => setData('is_default', checked)}
+                                    onCheckedChange={(checked) =>
+                                        setData('is_default', checked)
+                                    }
                                 />
                             </div>
                         </div>
@@ -748,7 +971,12 @@ export default function LlmProviders({ providers }: PageProps) {
                             >
                                 Cancel
                             </Button>
-                            <Button type="submit" disabled={processing || !data.name || !data.base_url}>
+                            <Button
+                                type="submit"
+                                disabled={
+                                    processing || !data.name || !data.base_url
+                                }
+                            >
                                 Save Changes
                             </Button>
                         </DialogFooter>
@@ -757,13 +985,17 @@ export default function LlmProviders({ providers }: PageProps) {
             </Dialog>
 
             {/* Delete Confirmation */}
-            <AlertDialog open={!!providerToDelete} onOpenChange={(open) => !open && setProviderToDelete(null)}>
+            <AlertDialog
+                open={!!providerToDelete}
+                onOpenChange={(open) => !open && setProviderToDelete(null)}
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete Provider</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Are you sure you want to delete "{providerToDelete?.name}"?
-                            This action cannot be undone.
+                            Are you sure you want to delete "
+                            {providerToDelete?.name}"? This action cannot be
+                            undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

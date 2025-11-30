@@ -16,7 +16,9 @@ export function getXsrfToken(): string | null {
  * Get CSRF token from meta tag (can become stale on long-lived pages)
  */
 export function getCsrfToken(): string {
-    const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    const metaToken = document
+        .querySelector('meta[name="csrf-token"]')
+        ?.getAttribute('content');
     if (metaToken) {
         return metaToken;
     }
@@ -27,11 +29,13 @@ export function getCsrfToken(): string {
  * Create headers for fetch requests with CSRF token
  * Uses X-XSRF-TOKEN from cookie (preferred) with fallback to X-CSRF-TOKEN from meta
  */
-export function fetchHeaders(contentType: 'json' | 'form' = 'json'): HeadersInit {
+export function fetchHeaders(
+    contentType: 'json' | 'form' = 'json',
+): HeadersInit {
     const xsrfToken = getXsrfToken();
 
     const headers: HeadersInit = {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
     };
 
@@ -39,7 +43,9 @@ export function fetchHeaders(contentType: 'json' | 'form' = 'json'): HeadersInit
     if (xsrfToken) {
         headers['X-XSRF-TOKEN'] = xsrfToken;
     } else {
-        const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        const metaToken = document
+            .querySelector('meta[name="csrf-token"]')
+            ?.getAttribute('content');
         if (metaToken) {
             headers['X-CSRF-TOKEN'] = metaToken;
         }

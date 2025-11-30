@@ -10,7 +10,11 @@ interface QuickThoughtInputProps {
     autoFocus?: boolean;
 }
 
-export function QuickThoughtInput({ compact = false, onSuccess, autoFocus = false }: QuickThoughtInputProps) {
+export function QuickThoughtInput({
+    compact = false,
+    onSuccess,
+    autoFocus = false,
+}: QuickThoughtInputProps) {
     const [content, setContent] = useState('');
     const [isRecording, setIsRecording] = useState(false);
     const [recordingTime, setRecordingTime] = useState(0);
@@ -24,16 +28,22 @@ export function QuickThoughtInput({ compact = false, onSuccess, autoFocus = fals
 
     const startRecording = useCallback(async () => {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            alert('Audio recording requires HTTPS. Please access this site via HTTPS or localhost.');
+            alert(
+                'Audio recording requires HTTPS. Please access this site via HTTPS or localhost.',
+            );
             return;
         }
 
         try {
             if (navigator.permissions) {
                 try {
-                    const permissionStatus = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+                    const permissionStatus = await navigator.permissions.query({
+                        name: 'microphone' as PermissionName,
+                    });
                     if (permissionStatus.state === 'denied') {
-                        alert('Microphone access was denied. Please enable it in your browser settings and reload the page.');
+                        alert(
+                            'Microphone access was denied. Please enable it in your browser settings and reload the page.',
+                        );
                         return;
                     }
                 } catch {
@@ -41,7 +51,9 @@ export function QuickThoughtInput({ compact = false, onSuccess, autoFocus = fals
                 }
             }
 
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+            });
 
             let mimeType = 'audio/webm';
             if (!MediaRecorder.isTypeSupported('audio/webm')) {
@@ -64,7 +76,9 @@ export function QuickThoughtInput({ compact = false, onSuccess, autoFocus = fals
             };
 
             mediaRecorder.onstop = () => {
-                const blob = new Blob(chunksRef.current, { type: mediaRecorder.mimeType });
+                const blob = new Blob(chunksRef.current, {
+                    type: mediaRecorder.mimeType,
+                });
                 setAudioBlob(blob);
                 stream.getTracks().forEach((track) => track.stop());
             };
@@ -75,17 +89,34 @@ export function QuickThoughtInput({ compact = false, onSuccess, autoFocus = fals
             setAudioBlob(null);
 
             timerRef.current = setInterval(() => {
-                setRecordingTime(Math.floor((Date.now() - startTimeRef.current) / 1000));
+                setRecordingTime(
+                    Math.floor((Date.now() - startTimeRef.current) / 1000),
+                );
             }, 1000);
         } catch (err) {
             console.error('Failed to start recording:', err);
             const error = err as Error;
-            if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
-                alert('Microphone access was denied. Please allow microphone access in your browser and try again.');
-            } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
-                alert('No microphone found. Please connect a microphone and try again.');
-            } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
-                alert('Microphone is in use by another application. Please close other apps using the microphone.');
+            if (
+                error.name === 'NotAllowedError' ||
+                error.name === 'PermissionDeniedError'
+            ) {
+                alert(
+                    'Microphone access was denied. Please allow microphone access in your browser and try again.',
+                );
+            } else if (
+                error.name === 'NotFoundError' ||
+                error.name === 'DevicesNotFoundError'
+            ) {
+                alert(
+                    'No microphone found. Please connect a microphone and try again.',
+                );
+            } else if (
+                error.name === 'NotReadableError' ||
+                error.name === 'TrackStartError'
+            ) {
+                alert(
+                    'Microphone is in use by another application. Please close other apps using the microphone.',
+                );
             } else {
                 alert(`Could not access microphone: ${error.message}`);
             }
@@ -125,7 +156,11 @@ export function QuickThoughtInput({ compact = false, onSuccess, autoFocus = fals
         }
         if (audioBlob) {
             const extension = audioBlob.type.includes('webm') ? 'webm' : 'm4a';
-            formData.append('audio', audioBlob, `recording-${Date.now()}.${extension}`);
+            formData.append(
+                'audio',
+                audioBlob,
+                `recording-${Date.now()}.${extension}`,
+            );
             formData.append('duration', String(recordingTime));
         }
 
@@ -145,7 +180,8 @@ export function QuickThoughtInput({ compact = false, onSuccess, autoFocus = fals
         });
     }, [content, audioBlob, recordingTime, onSuccess]);
 
-    const canSubmit = (content.trim() || audioBlob) && !isRecording && !isSubmitting;
+    const canSubmit =
+        (content.trim() || audioBlob) && !isRecording && !isSubmitting;
 
     if (compact) {
         return (
@@ -157,7 +193,11 @@ export function QuickThoughtInput({ compact = false, onSuccess, autoFocus = fals
                     className="min-h-[80px] resize-none"
                     autoFocus={autoFocus}
                     onKeyDown={(e) => {
-                        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && canSubmit) {
+                        if (
+                            e.key === 'Enter' &&
+                            (e.metaKey || e.ctrlKey) &&
+                            canSubmit
+                        ) {
                             handleSubmit();
                         }
                     }}
@@ -165,21 +205,38 @@ export function QuickThoughtInput({ compact = false, onSuccess, autoFocus = fals
 
                 {/* Audio recording section */}
                 {audioBlob && !isRecording && (
-                    <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
-                        <audio src={URL.createObjectURL(audioBlob)} controls className="h-8 flex-1" />
-                        <Button variant="ghost" size="icon" className="size-7" onClick={discardRecording}>
+                    <div className="flex items-center gap-2 rounded-md bg-muted p-2">
+                        <audio
+                            src={URL.createObjectURL(audioBlob)}
+                            controls
+                            className="h-8 flex-1"
+                        />
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-7"
+                            onClick={discardRecording}
+                        >
                             <X className="size-4" />
                         </Button>
                     </div>
                 )}
 
                 {isRecording && (
-                    <div className="flex items-center gap-2 p-2 bg-red-50 dark:bg-red-950/20 rounded-md">
+                    <div className="flex items-center gap-2 rounded-md bg-red-50 p-2 dark:bg-red-950/20">
                         <span className="size-2 animate-pulse rounded-full bg-red-600" />
-                        <span className="text-sm font-medium text-red-600">{formatTime(recordingTime)}</span>
-                        <span className="flex-1 text-sm text-muted-foreground">Recording...</span>
-                        <Button variant="destructive" size="sm" onClick={stopRecording}>
-                            <Square className="size-3 mr-1" />
+                        <span className="text-sm font-medium text-red-600">
+                            {formatTime(recordingTime)}
+                        </span>
+                        <span className="flex-1 text-sm text-muted-foreground">
+                            Recording...
+                        </span>
+                        <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={stopRecording}
+                        >
+                            <Square className="mr-1 size-3" />
                             Stop
                         </Button>
                     </div>
@@ -188,18 +245,27 @@ export function QuickThoughtInput({ compact = false, onSuccess, autoFocus = fals
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1">
                         {!isRecording && !audioBlob && (
-                            <Button variant="ghost" size="sm" onClick={startRecording} className="text-muted-foreground">
-                                <Mic className="size-4 mr-1" />
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={startRecording}
+                                className="text-muted-foreground"
+                            >
+                                <Mic className="mr-1 size-4" />
                                 Record
                             </Button>
                         )}
                     </div>
-                    <Button size="sm" onClick={handleSubmit} disabled={!canSubmit}>
+                    <Button
+                        size="sm"
+                        onClick={handleSubmit}
+                        disabled={!canSubmit}
+                    >
                         {isSubmitting ? (
                             <Loader2 className="size-4 animate-spin" />
                         ) : (
                             <>
-                                <Send className="size-4 mr-1" />
+                                <Send className="mr-1 size-4" />
                                 Capture
                             </>
                         )}
@@ -210,15 +276,19 @@ export function QuickThoughtInput({ compact = false, onSuccess, autoFocus = fals
     }
 
     return (
-        <div className="border rounded-lg p-4 bg-background">
+        <div className="rounded-lg border bg-background p-4">
             <Textarea
                 placeholder="Capture a quick thought... (text, voice, or both)"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="min-h-[100px] resize-none border-0 p-0 focus-visible:ring-0 text-base"
+                className="min-h-[100px] resize-none border-0 p-0 text-base focus-visible:ring-0"
                 autoFocus={autoFocus}
                 onKeyDown={(e) => {
-                    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && canSubmit) {
+                    if (
+                        e.key === 'Enter' &&
+                        (e.metaKey || e.ctrlKey) &&
+                        canSubmit
+                    ) {
                         handleSubmit();
                     }
                 }}
@@ -226,43 +296,66 @@ export function QuickThoughtInput({ compact = false, onSuccess, autoFocus = fals
 
             {/* Audio recording section */}
             {audioBlob && !isRecording && (
-                <div className="flex items-center gap-2 mt-3 p-2 bg-muted rounded-md">
-                    <audio src={URL.createObjectURL(audioBlob)} controls className="h-8 flex-1" />
-                    <Button variant="ghost" size="icon" className="size-7" onClick={discardRecording}>
+                <div className="mt-3 flex items-center gap-2 rounded-md bg-muted p-2">
+                    <audio
+                        src={URL.createObjectURL(audioBlob)}
+                        controls
+                        className="h-8 flex-1"
+                    />
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-7"
+                        onClick={discardRecording}
+                    >
                         <X className="size-4" />
                     </Button>
                 </div>
             )}
 
             {isRecording && (
-                <div className="flex items-center gap-2 mt-3 p-2 bg-red-50 dark:bg-red-950/20 rounded-md">
+                <div className="mt-3 flex items-center gap-2 rounded-md bg-red-50 p-2 dark:bg-red-950/20">
                     <span className="size-2 animate-pulse rounded-full bg-red-600" />
-                    <span className="text-sm font-medium text-red-600">{formatTime(recordingTime)}</span>
-                    <span className="flex-1 text-sm text-muted-foreground">Recording...</span>
-                    <Button variant="destructive" size="sm" onClick={stopRecording}>
-                        <Square className="size-3 mr-1" />
+                    <span className="text-sm font-medium text-red-600">
+                        {formatTime(recordingTime)}
+                    </span>
+                    <span className="flex-1 text-sm text-muted-foreground">
+                        Recording...
+                    </span>
+                    <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={stopRecording}
+                    >
+                        <Square className="mr-1 size-3" />
                         Stop
                     </Button>
                 </div>
             )}
 
-            <div className="flex items-center justify-between mt-3 pt-3 border-t">
+            <div className="mt-3 flex items-center justify-between border-t pt-3">
                 <div className="flex items-center gap-2">
                     {!isRecording && !audioBlob && (
-                        <Button variant="outline" size="sm" onClick={startRecording}>
-                            <Mic className="size-4 mr-1.5" />
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={startRecording}
+                        >
+                            <Mic className="mr-1.5 size-4" />
                             Record Voice
                         </Button>
                     )}
                     <span className="text-xs text-muted-foreground">
-                        Press {navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl'}+Enter to save
+                        Press{' '}
+                        {navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl'}
+                        +Enter to save
                     </span>
                 </div>
                 <Button onClick={handleSubmit} disabled={!canSubmit}>
                     {isSubmitting ? (
-                        <Loader2 className="size-4 animate-spin mr-1.5" />
+                        <Loader2 className="mr-1.5 size-4 animate-spin" />
                     ) : (
-                        <Send className="size-4 mr-1.5" />
+                        <Send className="mr-1.5 size-4" />
                     )}
                     Capture Thought
                 </Button>

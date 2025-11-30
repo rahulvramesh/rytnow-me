@@ -11,15 +11,28 @@ import { useEffect } from 'react';
 /**
  * Subscribe to project-level real-time events (kanban sync)
  */
-export function useProjectChannel(workspaceId: number | undefined, projectId: number | undefined) {
+export function useProjectChannel(
+    workspaceId: number | undefined,
+    projectId: number | undefined,
+) {
     const { echo, isConnected } = useEcho();
     const { addTask, updateTask, removeTask, moveTask } = useKanbanStore();
 
     useEffect(() => {
-        console.log('[Reverb] useProjectChannel called with:', { workspaceId, projectId, echo: !!echo, isConnected });
-        
+        console.log('[Reverb] useProjectChannel called with:', {
+            workspaceId,
+            projectId,
+            echo: !!echo,
+            isConnected,
+        });
+
         if (!echo || !isConnected || !workspaceId || !projectId) {
-            console.log('[Reverb] useProjectChannel skipping - missing:', { echo: !echo, isConnected: !isConnected, workspaceId: !workspaceId, projectId: !projectId });
+            console.log('[Reverb] useProjectChannel skipping - missing:', {
+                echo: !echo,
+                isConnected: !isConnected,
+                workspaceId: !workspaceId,
+                projectId: !projectId,
+            });
             return;
         }
 
@@ -36,7 +49,12 @@ export function useProjectChannel(workspaceId: number | undefined, projectId: nu
                 updateTask(e.task.id, e.task);
             })
             .listen('.task.status.changed', (e: TaskStatusChangedEvent) => {
-                console.log('[Reverb] Task status changed:', e.taskId, '->', e.status);
+                console.log(
+                    '[Reverb] Task status changed:',
+                    e.taskId,
+                    '->',
+                    e.status,
+                );
                 moveTask(e.taskId, e.status, e.position);
             })
             .listen('.task.deleted', (e: TaskDeletedEvent) => {
@@ -50,5 +68,14 @@ export function useProjectChannel(workspaceId: number | undefined, projectId: nu
             echo.leave(channelName);
             console.log('[Reverb] Left project channel:', channelName);
         };
-    }, [echo, isConnected, workspaceId, projectId, addTask, updateTask, removeTask, moveTask]);
+    }, [
+        echo,
+        isConnected,
+        workspaceId,
+        projectId,
+        addTask,
+        updateTask,
+        removeTask,
+        moveTask,
+    ]);
 }

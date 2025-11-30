@@ -1,5 +1,13 @@
 import { ColorPicker } from '@/components/color-picker';
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,14 +17,6 @@ import { type Workspace } from '@/types/workspace';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { ArrowLeft, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
 
 interface Props {
     workspace: Workspace;
@@ -57,32 +57,48 @@ export default function WorkspaceEdit({ workspace, canDelete }: Props) {
                 {/* Header */}
                 <div className="border-b px-6 py-4">
                     <div className="flex items-center gap-3">
-                        <Button variant="ghost" size="icon" className="size-8" asChild>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-8"
+                            asChild
+                        >
                             <Link href="/dashboard">
                                 <ArrowLeft className="size-4" />
                             </Link>
                         </Button>
                         <div>
-                            <h1 className="text-xl font-semibold">Workspace Settings</h1>
-                            <p className="text-sm text-muted-foreground">Manage your workspace settings</p>
+                            <h1 className="text-xl font-semibold">
+                                Workspace Settings
+                            </h1>
+                            <p className="text-sm text-muted-foreground">
+                                Manage your workspace settings
+                            </p>
                         </div>
                     </div>
                 </div>
 
                 {/* Form */}
                 <div className="flex-1 overflow-y-auto">
-                    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-6 space-y-8">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="mx-auto max-w-2xl space-y-8 p-6"
+                    >
                         <div className="space-y-6">
                             {/* Workspace Preview */}
-                            <div className="flex items-center gap-4 p-4 border rounded-lg bg-muted/50">
+                            <div className="flex items-center gap-4 rounded-lg border bg-muted/50 p-4">
                                 <div
-                                    className="flex size-12 items-center justify-center rounded-lg text-white font-bold text-xl"
+                                    className="flex size-12 items-center justify-center rounded-lg text-xl font-bold text-white"
                                     style={{ backgroundColor: data.color }}
                                 >
-                                    {data.name ? data.name.charAt(0).toUpperCase() : 'W'}
+                                    {data.name
+                                        ? data.name.charAt(0).toUpperCase()
+                                        : 'W'}
                                 </div>
                                 <div>
-                                    <p className="font-semibold">{data.name || 'Workspace Name'}</p>
+                                    <p className="font-semibold">
+                                        {data.name || 'Workspace Name'}
+                                    </p>
                                     <p className="text-sm text-muted-foreground">
                                         {data.description || 'No description'}
                                     </p>
@@ -90,32 +106,51 @@ export default function WorkspaceEdit({ workspace, canDelete }: Props) {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="name" className="text-sm font-medium">
-                                    Workspace Name <span className="text-destructive">*</span>
+                                <Label
+                                    htmlFor="name"
+                                    className="text-sm font-medium"
+                                >
+                                    Workspace Name{' '}
+                                    <span className="text-destructive">*</span>
                                 </Label>
                                 <Input
                                     id="name"
                                     value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('name', e.target.value)
+                                    }
                                     placeholder="e.g., Company XYZ, Personal Projects"
                                     className="h-11"
                                     required
                                 />
-                                {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
+                                {errors.name && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.name}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="description" className="text-sm font-medium">
+                                <Label
+                                    htmlFor="description"
+                                    className="text-sm font-medium"
+                                >
                                     Description
                                 </Label>
                                 <Textarea
                                     id="description"
                                     value={data.description}
-                                    onChange={(e) => setData('description', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('description', e.target.value)
+                                    }
                                     placeholder="What is this workspace for?"
                                     rows={3}
                                 />
-                                {errors.description && <p className="text-sm text-destructive">{errors.description}</p>}
+                                {errors.description && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.description}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
@@ -124,21 +159,29 @@ export default function WorkspaceEdit({ workspace, canDelete }: Props) {
                                 </Label>
                                 <ColorPicker
                                     value={data.color}
-                                    onChange={(color) => setData('color', color)}
+                                    onChange={(color) =>
+                                        setData('color', color)
+                                    }
                                 />
-                                {errors.color && <p className="text-sm text-destructive">{errors.color}</p>}
+                                {errors.color && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.color}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between pt-4 border-t">
+                        <div className="flex items-center justify-between border-t pt-4">
                             <div>
                                 {canDelete && (
                                     <Button
                                         type="button"
                                         variant="destructive"
-                                        onClick={() => setShowDeleteDialog(true)}
+                                        onClick={() =>
+                                            setShowDeleteDialog(true)
+                                        }
                                     >
-                                        <Trash2 className="size-4 mr-2" />
+                                        <Trash2 className="mr-2 size-4" />
                                         Delete Workspace
                                     </Button>
                                 )}
@@ -162,24 +205,38 @@ export default function WorkspaceEdit({ workspace, canDelete }: Props) {
                     <DialogHeader>
                         <DialogTitle>Delete Workspace</DialogTitle>
                         <DialogDescription>
-                            This action cannot be undone. This will permanently delete the workspace
-                            <strong className="text-foreground"> {workspace.name}</strong> and all its projects and tasks.
+                            This action cannot be undone. This will permanently
+                            delete the workspace
+                            <strong className="text-foreground">
+                                {' '}
+                                {workspace.name}
+                            </strong>{' '}
+                            and all its projects and tasks.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-4">
-                        <Label htmlFor="confirm" className="text-sm font-medium">
+                        <Label
+                            htmlFor="confirm"
+                            className="text-sm font-medium"
+                        >
                             Type <strong>{workspace.name}</strong> to confirm
                         </Label>
                         <Input
                             id="confirm"
                             value={deleteConfirmation}
-                            onChange={(e) => setDeleteConfirmation(e.target.value)}
+                            onChange={(e) =>
+                                setDeleteConfirmation(e.target.value)
+                            }
                             placeholder="Enter workspace name"
                             className="mt-2"
                         />
                     </div>
                     <DialogFooter>
-                        <Button type="button" variant="ghost" onClick={() => setShowDeleteDialog(false)}>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            onClick={() => setShowDeleteDialog(false)}
+                        >
                             Cancel
                         </Button>
                         <Button

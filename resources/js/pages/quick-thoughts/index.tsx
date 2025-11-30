@@ -26,7 +26,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function QuickThoughtsIndex({ thoughts, projects }: Props) {
-    const [convertingThought, setConvertingThought] = useState<QuickThought | null>(null);
+    const [convertingThought, setConvertingThought] =
+        useState<QuickThought | null>(null);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -41,25 +42,27 @@ export default function QuickThoughtsIndex({ thoughts, projects }: Props) {
 
                 {/* Content */}
                 <div className="flex-1 overflow-y-auto p-6">
-                    <div className="max-w-2xl mx-auto space-y-6">
+                    <div className="mx-auto max-w-2xl space-y-6">
                         {/* Input */}
                         <QuickThoughtInput autoFocus />
 
                         {/* Thoughts list */}
                         {thoughts.length === 0 ? (
-                            <div className="text-center py-12">
-                                <Lightbulb className="size-12 text-muted-foreground/30 mx-auto mb-4" />
-                                <h3 className="text-lg font-medium text-muted-foreground mb-1">
+                            <div className="py-12 text-center">
+                                <Lightbulb className="mx-auto mb-4 size-12 text-muted-foreground/30" />
+                                <h3 className="mb-1 text-lg font-medium text-muted-foreground">
                                     No thoughts yet
                                 </h3>
                                 <p className="text-sm text-muted-foreground">
-                                    Capture your first idea above - text, voice, or both!
+                                    Capture your first idea above - text, voice,
+                                    or both!
                                 </p>
                             </div>
                         ) : (
                             <div className="space-y-4">
                                 <h2 className="text-sm font-medium text-muted-foreground">
-                                    {thoughts.length} thought{thoughts.length !== 1 ? 's' : ''}
+                                    {thoughts.length} thought
+                                    {thoughts.length !== 1 ? 's' : ''}
                                 </h2>
                                 {thoughts.map((thought) => (
                                     <QuickThoughtCard

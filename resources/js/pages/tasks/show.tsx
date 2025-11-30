@@ -1,6 +1,7 @@
 import { AudioRecorder } from '@/components/audio-recorder';
 import { AudioRecordingsList } from '@/components/audio-recordings-list';
 import { CommentsSection } from '@/components/comments-section';
+import { DueDateBadge } from '@/components/due-date-badge';
 import { SubtasksSection } from '@/components/subtasks-section';
 import { TimeEntriesSheet } from '@/components/time-entries-sheet';
 import { Badge } from '@/components/ui/badge';
@@ -52,15 +53,25 @@ interface Props {
     workspaceMembers: WorkspaceMember[];
 }
 
-const priorityConfig: Record<Task['priority'], { label: string; color: string; icon: string }> = {
+const priorityConfig: Record<
+    Task['priority'],
+    { label: string; color: string; icon: string }
+> = {
     low: { label: 'Low', color: 'text-gray-500', icon: '○' },
     medium: { label: 'Medium', color: 'text-yellow-500', icon: '◐' },
     high: { label: 'High', color: 'text-red-500', icon: '●' },
 };
 
-const statusConfig: Record<Task['status'], { label: string; color: string; bgColor: string }> = {
+const statusConfig: Record<
+    Task['status'],
+    { label: string; color: string; bgColor: string }
+> = {
     todo: { label: 'Todo', color: 'text-gray-500', bgColor: 'bg-gray-500' },
-    in_progress: { label: 'In Progress', color: 'text-blue-500', bgColor: 'bg-blue-500' },
+    in_progress: {
+        label: 'In Progress',
+        color: 'text-blue-500',
+        bgColor: 'bg-blue-500',
+    },
     done: { label: 'Done', color: 'text-green-500', bgColor: 'bg-green-500' },
 };
 
@@ -79,7 +90,11 @@ function formatDuration(seconds: number): string {
 
 function formatDate(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    return date.toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    });
 }
 
 function RunningTimer({ startedAt }: { startedAt: string }) {
@@ -96,7 +111,7 @@ function RunningTimer({ startedAt }: { startedAt: string }) {
     }, [startedAt]);
 
     return (
-        <span className="font-mono tabular-nums text-green-600 dark:text-green-400">
+        <span className="font-mono text-green-600 tabular-nums dark:text-green-400">
             {formatDuration(elapsed)}
         </span>
     );
@@ -131,7 +146,8 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
 
     const isRunning = !!task.running_time_entry;
     const totalTime = task.total_time || 0;
-    const hasRecordings = task.audio_recordings && task.audio_recordings.length > 0;
+    const hasRecordings =
+        task.audio_recordings && task.audio_recordings.length > 0;
     const timeEntries = task.time_entries || [];
     const comments = task.comments || [];
     const subtasks = task.subtasks || [];
@@ -143,12 +159,16 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
         router.patch(
             `/projects/${project.id}/tasks/${task.id}/status`,
             { status: nextStatus },
-            { preserveScroll: true }
+            { preserveScroll: true },
         );
     };
 
     const handleStartTimer = () => {
-        router.post(`/projects/${project.id}/tasks/${task.id}/time/start`, {}, { preserveScroll: true });
+        router.post(
+            `/projects/${project.id}/tasks/${task.id}/time/start`,
+            {},
+            { preserveScroll: true },
+        );
     };
 
     const handleStopTimer = () => {
@@ -159,7 +179,7 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
         router.post(
             `/projects/${project.id}/tasks/${task.id}/time/stop`,
             { description: stopNote },
-            { preserveScroll: true }
+            { preserveScroll: true },
         );
         setShowStopModal(false);
         setStopNote('');
@@ -173,11 +193,14 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
     const saveEntryNote = async () => {
         if (!editingEntry) return;
 
-        const response = await fetch(`/projects/${project.id}/tasks/${task.id}/time/${editingEntry.id}`, {
-            method: 'PUT',
-            headers: fetchHeaders(),
-            body: JSON.stringify({ description: editNote }),
-        });
+        const response = await fetch(
+            `/projects/${project.id}/tasks/${task.id}/time/${editingEntry.id}`,
+            {
+                method: 'PUT',
+                headers: fetchHeaders(),
+                body: JSON.stringify({ description: editNote }),
+            },
+        );
 
         if (response.ok) {
             setEditingEntry(null);
@@ -199,41 +222,55 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
             <Head title={task.title} />
             <div className="flex h-full flex-1">
                 {/* Main Content */}
-                <div className="flex-1 flex flex-col min-w-0 border-r">
+                <div className="flex min-w-0 flex-1 flex-col border-r">
                     {/* Top Bar */}
-                    <div className="flex items-center justify-between px-6 py-3 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                    <div className="flex items-center justify-between border-b bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                         <div className="flex items-center gap-3">
-                            <Button variant="ghost" size="icon" className="size-8" asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="size-8"
+                                asChild
+                            >
                                 <Link href={`/projects/${project.id}`}>
                                     <ArrowLeft className="size-4" />
                                 </Link>
                             </Button>
-                            <span className="text-sm text-muted-foreground">{project.name}</span>
+                            <span className="text-sm text-muted-foreground">
+                                {project.name}
+                            </span>
                         </div>
                         <div className="flex items-center gap-1">
                             {isRunning ? (
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    className="text-red-600 hover:bg-red-50 hover:text-red-700"
                                     onClick={handleStopTimer}
                                 >
-                                    <Pause className="size-4 mr-1" />
+                                    <Pause className="mr-1 size-4" />
                                     Stop
                                 </Button>
                             ) : (
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                    className="text-green-600 hover:bg-green-50 hover:text-green-700"
                                     onClick={handleStartTimer}
                                 >
-                                    <Play className="size-4 mr-1" />
+                                    <Play className="mr-1 size-4" />
                                     Start
                                 </Button>
                             )}
-                            <Button variant="ghost" size="icon" className="size-8" asChild>
-                                <Link href={`/projects/${project.id}/tasks/${task.id}/edit`}>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="size-8"
+                                asChild
+                            >
+                                <Link
+                                    href={`/projects/${project.id}/tasks/${task.id}/edit`}
+                                >
                                     <Edit className="size-4" />
                                 </Link>
                             </Button>
@@ -250,18 +287,20 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
 
                     {/* Task Content */}
                     <div className="flex-1 overflow-y-auto">
-                        <div className="max-w-3xl mx-auto px-6 py-8">
+                        <div className="mx-auto max-w-3xl px-6 py-8">
                             {/* Title & Status */}
-                            <div className="flex items-start gap-3 mb-6">
+                            <div className="mb-6 flex items-start gap-3">
                                 <button
                                     onClick={cycleStatus}
-                                    className="mt-1 p-0.5 rounded hover:bg-muted transition-colors"
+                                    className="mt-1 rounded p-0.5 transition-colors hover:bg-muted"
                                     title={`Status: ${statusConfig[task.status].label} (click to change)`}
                                 >
                                     <StatusIcon status={task.status} />
                                 </button>
-                                <div className="flex-1 min-w-0">
-                                    <h1 className={`text-2xl font-semibold tracking-tight ${task.status === 'done' ? 'line-through text-muted-foreground' : ''}`}>
+                                <div className="min-w-0 flex-1">
+                                    <h1
+                                        className={`text-2xl font-semibold tracking-tight ${task.status === 'done' ? 'text-muted-foreground line-through' : ''}`}
+                                    >
                                         {task.title}
                                     </h1>
                                 </div>
@@ -270,23 +309,35 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
                             {/* Description */}
                             <div className="mb-8">
                                 {task.description ? (
-                                    <div 
-                                        className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground"
-                                        dangerouslySetInnerHTML={{ __html: task.description }}
+                                    <div
+                                        className="prose prose-sm max-w-none text-muted-foreground dark:prose-invert"
+                                        dangerouslySetInnerHTML={{
+                                            __html: task.description,
+                                        }}
                                     />
                                 ) : (
-                                    <p className="text-muted-foreground/50 italic">No description</p>
+                                    <p className="text-muted-foreground/50 italic">
+                                        No description
+                                    </p>
                                 )}
                             </div>
 
                             {/* Subtasks */}
                             <section className="mb-8">
-                                <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+                                <h3 className="mb-3 flex items-center gap-2 text-sm font-medium">
                                     <CheckSquare className="size-4 text-muted-foreground" />
                                     Subtasks
                                     {subtasks.length > 0 && (
-                                        <Badge variant="secondary" className="text-xs font-normal">
-                                            {subtasks.filter(s => s.is_completed).length}/{subtasks.length}
+                                        <Badge
+                                            variant="secondary"
+                                            className="text-xs font-normal"
+                                        >
+                                            {
+                                                subtasks.filter(
+                                                    (s) => s.is_completed,
+                                                ).length
+                                            }
+                                            /{subtasks.length}
                                         </Badge>
                                     )}
                                 </h3>
@@ -303,15 +354,23 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
                                 {/* Time Entries */}
                                 {(timeEntries.length > 0 || isRunning) && (
                                     <section>
-                                        <div className="flex items-center justify-between mb-3">
-                                            <h3 className="text-sm font-medium flex items-center gap-2">
+                                        <div className="mb-3 flex items-center justify-between">
+                                            <h3 className="flex items-center gap-2 text-sm font-medium">
                                                 <Clock className="size-4 text-muted-foreground" />
                                                 Time Tracked
-                                                <span className="text-muted-foreground font-normal">
+                                                <span className="font-normal text-muted-foreground">
                                                     {isRunning ? (
-                                                        <RunningTimer startedAt={task.running_time_entry!.started_at} />
+                                                        <RunningTimer
+                                                            startedAt={
+                                                                task
+                                                                    .running_time_entry!
+                                                                    .started_at
+                                                            }
+                                                        />
                                                     ) : (
-                                                        formatDuration(totalTime)
+                                                        formatDuration(
+                                                            totalTime,
+                                                        )
                                                     )}
                                                 </span>
                                             </h3>
@@ -329,46 +388,64 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
                                             </div>
                                         )}
                                         <div className="space-y-2">
-                                            {timeEntries.slice(0, 5).map((entry) => (
-                                                <div
-                                                    key={entry.id}
-                                                    className="group text-sm py-2 px-2 -mx-2 rounded hover:bg-muted/50"
-                                                >
-                                                    <div className="flex items-center justify-between">
-                                                        <span className="text-muted-foreground">
-                                                            {new Date(entry.started_at).toLocaleString(undefined, {
-                                                                month: 'short',
-                                                                day: 'numeric',
-                                                                hour: '2-digit',
-                                                                minute: '2-digit',
-                                                            })}
-                                                        </span>
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="font-mono text-xs tabular-nums">
-                                                                {entry.duration ? formatDuration(entry.duration) : 'Running...'}
+                                            {timeEntries
+                                                .slice(0, 5)
+                                                .map((entry) => (
+                                                    <div
+                                                        key={entry.id}
+                                                        className="group -mx-2 rounded px-2 py-2 text-sm hover:bg-muted/50"
+                                                    >
+                                                        <div className="flex items-center justify-between">
+                                                            <span className="text-muted-foreground">
+                                                                {new Date(
+                                                                    entry.started_at,
+                                                                ).toLocaleString(
+                                                                    undefined,
+                                                                    {
+                                                                        month: 'short',
+                                                                        day: 'numeric',
+                                                                        hour: '2-digit',
+                                                                        minute: '2-digit',
+                                                                    },
+                                                                )}
                                                             </span>
-                                                            {entry.duration && (
-                                                                <button
-                                                                    onClick={() => handleEditEntry(entry)}
-                                                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-muted rounded"
-                                                                    title="Add/edit note"
-                                                                >
-                                                                    <Pencil className="size-3 text-muted-foreground" />
-                                                                </button>
-                                                            )}
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="font-mono text-xs tabular-nums">
+                                                                    {entry.duration
+                                                                        ? formatDuration(
+                                                                              entry.duration,
+                                                                          )
+                                                                        : 'Running...'}
+                                                                </span>
+                                                                {entry.duration && (
+                                                                    <button
+                                                                        onClick={() =>
+                                                                            handleEditEntry(
+                                                                                entry,
+                                                                            )
+                                                                        }
+                                                                        className="rounded p-1 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-muted"
+                                                                        title="Add/edit note"
+                                                                    >
+                                                                        <Pencil className="size-3 text-muted-foreground" />
+                                                                    </button>
+                                                                )}
+                                                            </div>
                                                         </div>
+                                                        {entry.description && (
+                                                            <p className="mt-1 flex items-start gap-1 text-xs text-muted-foreground">
+                                                                <Clock className="mt-0.5 size-3 flex-shrink-0" />
+                                                                {
+                                                                    entry.description
+                                                                }
+                                                            </p>
+                                                        )}
                                                     </div>
-                                                    {entry.description && (
-                                                        <p className="text-xs text-muted-foreground mt-1 flex items-start gap-1">
-                                                            <Clock className="size-3 mt-0.5 flex-shrink-0" />
-                                                            {entry.description}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            ))}
+                                                ))}
                                             {timeEntries.length > 5 && (
-                                                <p className="text-xs text-muted-foreground pt-1">
-                                                    +{timeEntries.length - 5} more entries
+                                                <p className="pt-1 text-xs text-muted-foreground">
+                                                    +{timeEntries.length - 5}{' '}
+                                                    more entries
                                                 </p>
                                             )}
                                         </div>
@@ -377,17 +454,27 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
 
                                 {/* Audio Recordings */}
                                 <section>
-                                    <div className="flex items-center justify-between mb-3">
-                                        <h3 className="text-sm font-medium flex items-center gap-2">
+                                    <div className="mb-3 flex items-center justify-between">
+                                        <h3 className="flex items-center gap-2 text-sm font-medium">
                                             <Mic className="size-4 text-muted-foreground" />
                                             Recordings
                                             {hasRecordings && (
-                                                <Badge variant="secondary" className="text-xs font-normal">
-                                                    {task.audio_recordings!.length}
+                                                <Badge
+                                                    variant="secondary"
+                                                    className="text-xs font-normal"
+                                                >
+                                                    {
+                                                        task.audio_recordings!
+                                                            .length
+                                                    }
                                                 </Badge>
                                             )}
                                         </h3>
-                                        <AudioRecorder projectId={project.id} taskId={task.id} iconOnly />
+                                        <AudioRecorder
+                                            projectId={project.id}
+                                            taskId={task.id}
+                                            iconOnly
+                                        />
                                     </div>
                                     {hasRecordings && (
                                         <AudioRecordingsList
@@ -400,11 +487,14 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
 
                                 {/* Comments */}
                                 <section>
-                                    <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+                                    <h3 className="mb-3 flex items-center gap-2 text-sm font-medium">
                                         <MessageSquare className="size-4 text-muted-foreground" />
                                         Comments
                                         {comments.length > 0 && (
-                                            <Badge variant="secondary" className="text-xs font-normal">
+                                            <Badge
+                                                variant="secondary"
+                                                className="text-xs font-normal"
+                                            >
                                                 {comments.length}
                                             </Badge>
                                         )}
@@ -421,29 +511,39 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
                 </div>
 
                 {/* Right Sidebar - Properties */}
-                <div className="w-64 flex-shrink-0 bg-muted/30 overflow-y-auto hidden lg:block">
-                    <div className="p-4 space-y-6">
-                        <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <div className="hidden w-64 flex-shrink-0 overflow-y-auto bg-muted/30 lg:block">
+                    <div className="space-y-6 p-4">
+                        <h2 className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                             Properties
                         </h2>
 
                         {/* Status */}
                         <div className="space-y-1.5">
-                            <label className="text-xs text-muted-foreground">Status</label>
+                            <label className="text-xs text-muted-foreground">
+                                Status
+                            </label>
                             <button
                                 onClick={cycleStatus}
-                                className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted text-sm text-left transition-colors"
+                                className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors hover:bg-muted"
                             >
-                                <span className={`size-2 rounded-full ${statusConfig[task.status].bgColor}`} />
+                                <span
+                                    className={`size-2 rounded-full ${statusConfig[task.status].bgColor}`}
+                                />
                                 {statusConfig[task.status].label}
                             </button>
                         </div>
 
                         {/* Priority */}
                         <div className="space-y-1.5">
-                            <label className="text-xs text-muted-foreground">Priority</label>
+                            <label className="text-xs text-muted-foreground">
+                                Priority
+                            </label>
                             <div className="flex items-center gap-2 px-2 py-1.5 text-sm">
-                                <span className={priorityConfig[task.priority].color}>
+                                <span
+                                    className={
+                                        priorityConfig[task.priority].color
+                                    }
+                                >
                                     {priorityConfig[task.priority].icon}
                                 </span>
                                 {priorityConfig[task.priority].label}
@@ -452,19 +552,25 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
 
                         {/* Assignee */}
                         <div className="space-y-1.5">
-                            <label className="text-xs text-muted-foreground">Assignee</label>
+                            <label className="text-xs text-muted-foreground">
+                                Assignee
+                            </label>
                             <div className="flex items-center gap-2 px-2 py-1.5 text-sm">
                                 {task.assignee ? (
                                     <>
-                                        <div className="size-5 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-medium text-primary">
-                                            {task.assignee.name.charAt(0).toUpperCase()}
+                                        <div className="flex size-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-medium text-primary">
+                                            {task.assignee.name
+                                                .charAt(0)
+                                                .toUpperCase()}
                                         </div>
                                         <span>{task.assignee.name}</span>
                                     </>
                                 ) : (
                                     <>
                                         <User className="size-4 text-muted-foreground" />
-                                        <span className="text-muted-foreground">Unassigned</span>
+                                        <span className="text-muted-foreground">
+                                            Unassigned
+                                        </span>
                                     </>
                                 )}
                             </div>
@@ -472,43 +578,66 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
 
                         {/* Due Date */}
                         <div className="space-y-1.5">
-                            <label className="text-xs text-muted-foreground">Due Date</label>
+                            <label className="text-xs text-muted-foreground">
+                                Due Date
+                            </label>
                             <div className="flex items-center gap-2 px-2 py-1.5 text-sm">
-                                <Calendar className="size-4 text-muted-foreground" />
                                 {task.due_date ? (
-                                    <span className={new Date(task.due_date) < new Date() ? 'text-red-500' : ''}>
-                                        {formatDate(task.due_date)}
-                                    </span>
+                                    <DueDateBadge
+                                        dueDate={task.due_date}
+                                        variant="default"
+                                    />
                                 ) : (
-                                    <span className="text-muted-foreground">No due date</span>
+                                    <div className="flex items-center gap-2">
+                                        <Calendar className="size-4 text-muted-foreground" />
+                                        <span className="text-muted-foreground">
+                                            No due date
+                                        </span>
+                                    </div>
                                 )}
                             </div>
                         </div>
 
                         {/* Time Tracked */}
                         <div className="space-y-1.5">
-                            <label className="text-xs text-muted-foreground">Time Tracked</label>
+                            <label className="text-xs text-muted-foreground">
+                                Time Tracked
+                            </label>
                             <div className="flex items-center gap-2 px-2 py-1.5 text-sm">
                                 <Clock className="size-4 text-muted-foreground" />
                                 {isRunning ? (
-                                    <RunningTimer startedAt={task.running_time_entry!.started_at} />
+                                    <RunningTimer
+                                        startedAt={
+                                            task.running_time_entry!.started_at
+                                        }
+                                    />
                                 ) : (
-                                    <span className="font-mono tabular-nums">{formatDuration(totalTime)}</span>
+                                    <span className="font-mono tabular-nums">
+                                        {formatDuration(totalTime)}
+                                    </span>
                                 )}
                             </div>
                         </div>
 
-                        <div className="border-t pt-4 space-y-4">
+                        <div className="space-y-4 border-t pt-4">
                             {/* Created */}
                             <div className="space-y-1.5">
-                                <label className="text-xs text-muted-foreground">Created</label>
-                                <p className="text-sm px-2">{formatDate(task.created_at)}</p>
+                                <label className="text-xs text-muted-foreground">
+                                    Created
+                                </label>
+                                <p className="px-2 text-sm">
+                                    {formatDate(task.created_at)}
+                                </p>
                             </div>
 
                             {/* Updated */}
                             <div className="space-y-1.5">
-                                <label className="text-xs text-muted-foreground">Updated</label>
-                                <p className="text-sm px-2">{formatDate(task.updated_at)}</p>
+                                <label className="text-xs text-muted-foreground">
+                                    Updated
+                                </label>
+                                <p className="px-2 text-sm">
+                                    {formatDate(task.updated_at)}
+                                </p>
                             </div>
                         </div>
 
@@ -516,9 +645,9 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
                         <div className="border-t pt-4">
                             <Link
                                 href={`/projects/${project.id}`}
-                                className="flex items-center gap-2 px-2 py-1.5 text-sm rounded-md hover:bg-muted transition-colors"
+                                className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-muted"
                             >
-                                <div className="size-4 rounded bg-primary/10 flex items-center justify-center text-[10px] font-medium text-primary">
+                                <div className="flex size-4 items-center justify-center rounded bg-primary/10 text-[10px] font-medium text-primary">
                                     {project.name.charAt(0).toUpperCase()}
                                 </div>
                                 <span className="truncate">{project.name}</span>
@@ -543,18 +672,22 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
                         />
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setShowStopModal(false)}>
+                        <Button
+                            variant="outline"
+                            onClick={() => setShowStopModal(false)}
+                        >
                             Cancel
                         </Button>
-                        <Button onClick={confirmStopTimer}>
-                            Stop Timer
-                        </Button>
+                        <Button onClick={confirmStopTimer}>Stop Timer</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
 
             {/* Edit Time Entry Note Modal */}
-            <Dialog open={!!editingEntry} onOpenChange={(open) => !open && setEditingEntry(null)}>
+            <Dialog
+                open={!!editingEntry}
+                onOpenChange={(open) => !open && setEditingEntry(null)}
+            >
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
                         <DialogTitle>Edit Time Entry Note</DialogTitle>
@@ -568,12 +701,13 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
                         />
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setEditingEntry(null)}>
+                        <Button
+                            variant="outline"
+                            onClick={() => setEditingEntry(null)}
+                        >
                             Cancel
                         </Button>
-                        <Button onClick={saveEntryNote}>
-                            Save Note
-                        </Button>
+                        <Button onClick={saveEntryNote}>Save Note</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

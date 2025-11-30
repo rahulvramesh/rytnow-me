@@ -14,7 +14,16 @@ import {
 import { WorkspaceSwitcher } from '@/components/workspace-switcher';
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
-import { BookOpen, CheckSquare, FileText, Folder, FolderKanban, LayoutGrid, Lightbulb, Search } from 'lucide-react';
+import {
+    BookOpen,
+    CheckSquare,
+    FileText,
+    Folder,
+    FolderKanban,
+    LayoutGrid,
+    Lightbulb,
+    Search,
+} from 'lucide-react';
 
 const mainNavItems: NavItem[] = [
     {
@@ -75,7 +84,7 @@ export function AppSidebar() {
                         >
                             <Search className="size-4" />
                             <span className="flex-1">Search</span>
-                            <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 group-data-[collapsible=icon]:hidden sm:flex">
+                            <kbd className="pointer-events-none hidden h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 select-none group-data-[collapsible=icon]:hidden sm:flex">
                                 <span className="text-xs">⌘</span>K
                             </kbd>
                         </SidebarMenuButton>

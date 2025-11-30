@@ -1,7 +1,13 @@
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
-import { ListItemNode, ListNode } from '@lexical/list';
+import {
+    INSERT_ORDERED_LIST_COMMAND,
+    INSERT_UNORDERED_LIST_COMMAND,
+    ListItemNode,
+    ListNode,
+} from '@lexical/list';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
@@ -16,31 +22,26 @@ import {
     TableNode,
     TableRowNode,
 } from '@lexical/table';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
+    $getRoot,
     $getSelection,
     $isRangeSelection,
-    $getRoot,
     FORMAT_TEXT_COMMAND,
-    UNDO_COMMAND,
     REDO_COMMAND,
+    UNDO_COMMAND,
     type EditorState,
     type LexicalEditor,
 } from 'lexical';
 import {
-    INSERT_ORDERED_LIST_COMMAND,
-    INSERT_UNORDERED_LIST_COMMAND,
-} from '@lexical/list';
-import {
     Bold,
     Italic,
-    Underline,
     List,
     ListOrdered,
-    Undo,
     Redo,
     Strikethrough,
     Table,
+    Underline,
+    Undo,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -82,13 +83,18 @@ interface ToolbarButtonProps {
     title: string;
 }
 
-function ToolbarButton({ onClick, isActive, children, title }: ToolbarButtonProps) {
+function ToolbarButton({
+    onClick,
+    isActive,
+    children,
+    title,
+}: ToolbarButtonProps) {
     return (
         <button
             type="button"
             onClick={onClick}
             title={title}
-            className={`p-1.5 rounded hover:bg-muted transition-colors ${
+            className={`rounded p-1.5 transition-colors hover:bg-muted ${
                 isActive ? 'bg-muted text-primary' : 'text-muted-foreground'
             }`}
         >
@@ -123,61 +129,85 @@ function ToolbarPlugin() {
     }, [editor, updateToolbar]);
 
     return (
-        <div className="flex items-center gap-0.5 p-2 border-b bg-muted/30">
+        <div className="flex items-center gap-0.5 border-b bg-muted/30 p-2">
             <ToolbarButton
-                onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold')}
+                onClick={() =>
+                    editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold')
+                }
                 isActive={isBold}
                 title="Bold (Ctrl+B)"
             >
                 <Bold className="size-4" />
             </ToolbarButton>
             <ToolbarButton
-                onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic')}
+                onClick={() =>
+                    editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic')
+                }
                 isActive={isItalic}
                 title="Italic (Ctrl+I)"
             >
                 <Italic className="size-4" />
             </ToolbarButton>
             <ToolbarButton
-                onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')}
+                onClick={() =>
+                    editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')
+                }
                 isActive={isUnderline}
                 title="Underline (Ctrl+U)"
             >
                 <Underline className="size-4" />
             </ToolbarButton>
             <ToolbarButton
-                onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough')}
+                onClick={() =>
+                    editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough')
+                }
                 isActive={isStrikethrough}
                 title="Strikethrough"
             >
                 <Strikethrough className="size-4" />
             </ToolbarButton>
 
-            <div className="w-px h-5 bg-border mx-1" />
+            <div className="mx-1 h-5 w-px bg-border" />
 
             <ToolbarButton
-                onClick={() => editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined)}
+                onClick={() =>
+                    editor.dispatchCommand(
+                        INSERT_UNORDERED_LIST_COMMAND,
+                        undefined,
+                    )
+                }
                 title="Bullet List"
             >
                 <List className="size-4" />
             </ToolbarButton>
             <ToolbarButton
-                onClick={() => editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined)}
+                onClick={() =>
+                    editor.dispatchCommand(
+                        INSERT_ORDERED_LIST_COMMAND,
+                        undefined,
+                    )
+                }
                 title="Numbered List"
             >
                 <ListOrdered className="size-4" />
             </ToolbarButton>
 
-            <div className="w-px h-5 bg-border mx-1" />
+            <div className="mx-1 h-5 w-px bg-border" />
 
             <ToolbarButton
-                onClick={() => editor.dispatchCommand(INSERT_TABLE_COMMAND, { rows: '3', columns: '3', includeHeaders: false })}
+                onClick={() =>
+                    editor.dispatchCommand(INSERT_TABLE_COMMAND, {
+                        rows: '3',
+                        columns: '3',
+                        includeHeaders: false,
+                    })
+                }
                 title="Insert Table (3x3)"
             >
                 <Table className="size-4" />
             </ToolbarButton>
 
-            <div className="w-px h-5 bg-border mx-1" />
+            <div className="mx-1 h-5 w-px bg-border" />
 
             <ToolbarButton
                 onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
@@ -227,14 +257,29 @@ interface RichTextEditorProps {
     className?: string;
 }
 
-export function RichTextEditor({ value, onChange, placeholder = 'Start typing...', className = '' }: RichTextEditorProps) {
+export function RichTextEditor({
+    value,
+    onChange,
+    placeholder = 'Start typing...',
+    className = '',
+}: RichTextEditorProps) {
     const initialConfig = {
         namespace: 'RichTextEditor',
         theme,
         onError: (error: Error) => {
             console.error('Lexical error:', error);
         },
-        nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode, AutoLinkNode, TableNode, TableCellNode, TableRowNode],
+        nodes: [
+            HeadingNode,
+            QuoteNode,
+            ListNode,
+            ListItemNode,
+            LinkNode,
+            AutoLinkNode,
+            TableNode,
+            TableCellNode,
+            TableRowNode,
+        ],
     };
 
     const handleChange = useCallback(
@@ -244,20 +289,22 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start typing...
                 onChange(html);
             });
         },
-        [onChange]
+        [onChange],
     );
 
     return (
         <LexicalComposer initialConfig={initialConfig}>
-            <div className={`border rounded-lg overflow-hidden bg-background ${className}`}>
+            <div
+                className={`overflow-hidden rounded-lg border bg-background ${className}`}
+            >
                 <ToolbarPlugin />
                 <div className="relative">
                     <RichTextPlugin
                         contentEditable={
-                            <ContentEditable className="min-h-[120px] max-h-[300px] overflow-y-auto px-4 py-3 outline-none text-sm" />
+                            <ContentEditable className="max-h-[300px] min-h-[120px] overflow-y-auto px-4 py-3 text-sm outline-none" />
                         }
                         placeholder={
-                            <div className="absolute top-3 left-4 text-muted-foreground pointer-events-none text-sm">
+                            <div className="pointer-events-none absolute top-3 left-4 text-sm text-muted-foreground">
                                 {placeholder}
                             </div>
                         }

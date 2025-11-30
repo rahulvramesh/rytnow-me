@@ -1,14 +1,21 @@
-import { useEditor, EditorContent } from '@tiptap/react';
-import { BubbleMenu } from '@tiptap/react/menus';
-import StarterKit from '@tiptap/starter-kit';
+import { useLiveblocksExtension } from '@liveblocks/react-tiptap';
+import { Placeholder } from '@tiptap/extension-placeholder';
 import { Table } from '@tiptap/extension-table';
-import { TableRow } from '@tiptap/extension-table-row';
 import { TableCell } from '@tiptap/extension-table-cell';
 import { TableHeader } from '@tiptap/extension-table-header';
-import { Placeholder } from '@tiptap/extension-placeholder';
-import { useLiveblocksExtension } from '@liveblocks/react-tiptap';
+import { TableRow } from '@tiptap/extension-table-row';
+import { EditorContent, useEditor } from '@tiptap/react';
+import { BubbleMenu } from '@tiptap/react/menus';
+import StarterKit from '@tiptap/starter-kit';
+import {
+    Bold,
+    Code,
+    Italic,
+    List,
+    ListOrdered,
+    Strikethrough,
+} from 'lucide-react';
 import { Suspense } from 'react';
-import { Bold, Italic, Strikethrough, List, ListOrdered, Code } from 'lucide-react';
 
 interface CollaborativeTipTapEditorProps {
     initialContent?: string;
@@ -64,18 +71,22 @@ function EditorWithThreads({
 
     return (
         <div className={`collaborative-editor relative ${className}`}>
-            <div className="border rounded-lg overflow-hidden bg-background">
+            <div className="overflow-hidden rounded-lg border bg-background">
                 {editor && (
                     <BubbleMenu
                         editor={editor}
                         tippyOptions={{ duration: 100 }}
-                        className="flex items-center gap-0.5 p-1 bg-background border rounded-lg shadow-lg"
+                        className="flex items-center gap-0.5 rounded-lg border bg-background p-1 shadow-lg"
                     >
                         <button
                             type="button"
-                            onClick={() => editor.chain().focus().toggleBold().run()}
-                            className={`p-1.5 rounded hover:bg-muted transition-colors ${
-                                editor.isActive('bold') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                            onClick={() =>
+                                editor.chain().focus().toggleBold().run()
+                            }
+                            className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                                editor.isActive('bold')
+                                    ? 'bg-muted text-primary'
+                                    : 'text-muted-foreground'
                             }`}
                             title="Bold"
                         >
@@ -83,9 +94,13 @@ function EditorWithThreads({
                         </button>
                         <button
                             type="button"
-                            onClick={() => editor.chain().focus().toggleItalic().run()}
-                            className={`p-1.5 rounded hover:bg-muted transition-colors ${
-                                editor.isActive('italic') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                            onClick={() =>
+                                editor.chain().focus().toggleItalic().run()
+                            }
+                            className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                                editor.isActive('italic')
+                                    ? 'bg-muted text-primary'
+                                    : 'text-muted-foreground'
                             }`}
                             title="Italic"
                         >
@@ -93,9 +108,13 @@ function EditorWithThreads({
                         </button>
                         <button
                             type="button"
-                            onClick={() => editor.chain().focus().toggleStrike().run()}
-                            className={`p-1.5 rounded hover:bg-muted transition-colors ${
-                                editor.isActive('strike') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                            onClick={() =>
+                                editor.chain().focus().toggleStrike().run()
+                            }
+                            className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                                editor.isActive('strike')
+                                    ? 'bg-muted text-primary'
+                                    : 'text-muted-foreground'
                             }`}
                             title="Strikethrough"
                         >
@@ -103,20 +122,28 @@ function EditorWithThreads({
                         </button>
                         <button
                             type="button"
-                            onClick={() => editor.chain().focus().toggleCode().run()}
-                            className={`p-1.5 rounded hover:bg-muted transition-colors ${
-                                editor.isActive('code') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                            onClick={() =>
+                                editor.chain().focus().toggleCode().run()
+                            }
+                            className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                                editor.isActive('code')
+                                    ? 'bg-muted text-primary'
+                                    : 'text-muted-foreground'
                             }`}
                             title="Code"
                         >
                             <Code className="size-4" />
                         </button>
-                        <div className="w-px h-5 bg-border mx-0.5" />
+                        <div className="mx-0.5 h-5 w-px bg-border" />
                         <button
                             type="button"
-                            onClick={() => editor.chain().focus().toggleBulletList().run()}
-                            className={`p-1.5 rounded hover:bg-muted transition-colors ${
-                                editor.isActive('bulletList') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                            onClick={() =>
+                                editor.chain().focus().toggleBulletList().run()
+                            }
+                            className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                                editor.isActive('bulletList')
+                                    ? 'bg-muted text-primary'
+                                    : 'text-muted-foreground'
                             }`}
                             title="Bullet List"
                         >
@@ -124,9 +151,13 @@ function EditorWithThreads({
                         </button>
                         <button
                             type="button"
-                            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                            className={`p-1.5 rounded hover:bg-muted transition-colors ${
-                                editor.isActive('orderedList') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                            onClick={() =>
+                                editor.chain().focus().toggleOrderedList().run()
+                            }
+                            className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                                editor.isActive('orderedList')
+                                    ? 'bg-muted text-primary'
+                                    : 'text-muted-foreground'
                             }`}
                             title="Numbered List"
                         >
@@ -143,18 +174,20 @@ function EditorWithThreads({
 function EditorSkeleton({ className = '' }: { className?: string }) {
     return (
         <div className={`collaborative-editor relative ${className}`}>
-            <div className="border rounded-lg overflow-hidden bg-background animate-pulse">
+            <div className="animate-pulse overflow-hidden rounded-lg border bg-background">
                 <div className="min-h-[150px] px-4 py-3">
-                    <div className="h-4 bg-muted rounded w-3/4 mb-2" />
-                    <div className="h-4 bg-muted rounded w-1/2 mb-2" />
-                    <div className="h-4 bg-muted rounded w-2/3" />
+                    <div className="mb-2 h-4 w-3/4 rounded bg-muted" />
+                    <div className="mb-2 h-4 w-1/2 rounded bg-muted" />
+                    <div className="h-4 w-2/3 rounded bg-muted" />
                 </div>
             </div>
         </div>
     );
 }
 
-export function CollaborativeTipTapEditor(props: CollaborativeTipTapEditorProps) {
+export function CollaborativeTipTapEditor(
+    props: CollaborativeTipTapEditorProps,
+) {
     return (
         <Suspense fallback={<EditorSkeleton className={props.className} />}>
             <EditorWithThreads {...props} />

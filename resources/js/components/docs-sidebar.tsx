@@ -28,8 +28,15 @@ interface DocsSidebarProps {
     activeDocumentId?: number;
 }
 
-export function DocsSidebar({ projectId, folders, rootDocuments, activeDocumentId }: DocsSidebarProps) {
-    const [expandedFolders, setExpandedFolders] = useState<Set<number>>(new Set(folders.map((f) => f.id)));
+export function DocsSidebar({
+    projectId,
+    folders,
+    rootDocuments,
+    activeDocumentId,
+}: DocsSidebarProps) {
+    const [expandedFolders, setExpandedFolders] = useState<Set<number>>(
+        new Set(folders.map((f) => f.id)),
+    );
     const [newFolderName, setNewFolderName] = useState('');
     const [isCreatingFolder, setIsCreatingFolder] = useState(false);
     const [editingFolderId, setEditingFolderId] = useState<number | null>(null);
@@ -49,15 +56,19 @@ export function DocsSidebar({ projectId, folders, rootDocuments, activeDocumentI
 
     const handleCreateFolder = () => {
         if (!newFolderName.trim()) return;
-        router.post(`/projects/${projectId}/docs/folders`, {
-            name: newFolderName.trim(),
-        }, {
-            preserveScroll: true,
-            onSuccess: () => {
-                setNewFolderName('');
-                setIsCreatingFolder(false);
+        router.post(
+            `/projects/${projectId}/docs/folders`,
+            {
+                name: newFolderName.trim(),
             },
-        });
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setNewFolderName('');
+                    setIsCreatingFolder(false);
+                },
+            },
+        );
     };
 
     const handleCreateDocument = (folderId?: number) => {
@@ -72,18 +83,23 @@ export function DocsSidebar({ projectId, folders, rootDocuments, activeDocumentI
             setEditingFolderId(null);
             return;
         }
-        router.put(`/projects/${projectId}/docs/folders/${folder.id}`, {
-            name: editingFolderName.trim(),
-        }, {
-            preserveScroll: true,
-            onSuccess: () => {
-                setEditingFolderId(null);
+        router.put(
+            `/projects/${projectId}/docs/folders/${folder.id}`,
+            {
+                name: editingFolderName.trim(),
             },
-        });
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setEditingFolderId(null);
+                },
+            },
+        );
     };
 
     const handleDeleteFolder = (folderId: number) => {
-        if (!confirm('Delete this folder? Documents will be moved to root.')) return;
+        if (!confirm('Delete this folder? Documents will be moved to root.'))
+            return;
         router.delete(`/projects/${projectId}/docs/folders/${folderId}`, {
             preserveScroll: true,
         });
@@ -97,10 +113,10 @@ export function DocsSidebar({ projectId, folders, rootDocuments, activeDocumentI
     };
 
     return (
-        <div className="w-64 flex-shrink-0 border-r bg-muted/20 flex flex-col h-full">
+        <div className="flex h-full w-64 flex-shrink-0 flex-col border-r bg-muted/20">
             {/* Header */}
-            <div className="p-3 border-b flex items-center justify-between">
-                <span className="font-medium text-sm">Documents</span>
+            <div className="flex items-center justify-between border-b p-3">
+                <span className="text-sm font-medium">Documents</span>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="size-7">
@@ -108,12 +124,16 @@ export function DocsSidebar({ projectId, folders, rootDocuments, activeDocumentI
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleCreateDocument()}>
-                            <File className="size-4 mr-2" />
+                        <DropdownMenuItem
+                            onClick={() => handleCreateDocument()}
+                        >
+                            <File className="mr-2 size-4" />
                             New Document
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setIsCreatingFolder(true)}>
-                            <Folder className="size-4 mr-2" />
+                        <DropdownMenuItem
+                            onClick={() => setIsCreatingFolder(true)}
+                        >
+                            <Folder className="mr-2 size-4" />
                             New Folder
                         </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -122,7 +142,7 @@ export function DocsSidebar({ projectId, folders, rootDocuments, activeDocumentI
 
             {/* Create Folder Input */}
             {isCreatingFolder && (
-                <div className="p-2 border-b">
+                <div className="border-b p-2">
                     <Input
                         placeholder="Folder name..."
                         value={newFolderName}
@@ -141,15 +161,15 @@ export function DocsSidebar({ projectId, folders, rootDocuments, activeDocumentI
             )}
 
             {/* Document Tree */}
-            <div className="flex-1 overflow-y-auto p-2 space-y-0.5">
+            <div className="flex-1 space-y-0.5 overflow-y-auto p-2">
                 {/* Folders */}
                 {folders.map((folder) => (
                     <div key={folder.id}>
                         {/* Folder Header */}
-                        <div className="group flex items-center gap-1 px-2 py-1.5 rounded-md hover:bg-muted/50">
+                        <div className="group flex items-center gap-1 rounded-md px-2 py-1.5 hover:bg-muted/50">
                             <button
                                 onClick={() => toggleFolder(folder.id)}
-                                className="p-0.5 hover:bg-muted rounded"
+                                className="rounded p-0.5 hover:bg-muted"
                             >
                                 {expandedFolders.has(folder.id) ? (
                                     <ChevronDown className="size-3.5 text-muted-foreground" />
@@ -165,17 +185,23 @@ export function DocsSidebar({ projectId, folders, rootDocuments, activeDocumentI
                             {editingFolderId === folder.id ? (
                                 <Input
                                     value={editingFolderName}
-                                    onChange={(e) => setEditingFolderName(e.target.value)}
+                                    onChange={(e) =>
+                                        setEditingFolderName(e.target.value)
+                                    }
                                     onBlur={() => handleRenameFolder(folder)}
                                     onKeyDown={(e) => {
-                                        if (e.key === 'Enter') handleRenameFolder(folder);
-                                        if (e.key === 'Escape') setEditingFolderId(null);
+                                        if (e.key === 'Enter')
+                                            handleRenameFolder(folder);
+                                        if (e.key === 'Escape')
+                                            setEditingFolderId(null);
                                     }}
                                     autoFocus
-                                    className="h-6 text-sm flex-1"
+                                    className="h-6 flex-1 text-sm"
                                 />
                             ) : (
-                                <span className="text-sm flex-1 truncate">{folder.name}</span>
+                                <span className="flex-1 truncate text-sm">
+                                    {folder.name}
+                                </span>
                             )}
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -188,8 +214,12 @@ export function DocsSidebar({ projectId, folders, rootDocuments, activeDocumentI
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                    <DropdownMenuItem onClick={() => handleCreateDocument(folder.id)}>
-                                        <Plus className="size-4 mr-2" />
+                                    <DropdownMenuItem
+                                        onClick={() =>
+                                            handleCreateDocument(folder.id)
+                                        }
+                                    >
+                                        <Plus className="mr-2 size-4" />
                                         New Document
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
@@ -198,14 +228,16 @@ export function DocsSidebar({ projectId, folders, rootDocuments, activeDocumentI
                                             setEditingFolderName(folder.name);
                                         }}
                                     >
-                                        <Pencil className="size-4 mr-2" />
+                                        <Pencil className="mr-2 size-4" />
                                         Rename
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
-                                        onClick={() => handleDeleteFolder(folder.id)}
+                                        onClick={() =>
+                                            handleDeleteFolder(folder.id)
+                                        }
                                         className="text-destructive"
                                     >
-                                        <Trash2 className="size-4 mr-2" />
+                                        <Trash2 className="mr-2 size-4" />
                                         Delete
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
@@ -221,7 +253,9 @@ export function DocsSidebar({ projectId, folders, rootDocuments, activeDocumentI
                                         document={doc}
                                         projectId={projectId}
                                         isActive={doc.id === activeDocumentId}
-                                        onDelete={() => handleDeleteDocument(doc.id)}
+                                        onDelete={() =>
+                                            handleDeleteDocument(doc.id)
+                                        }
                                     />
                                 ))}
                                 {folder.documents.length === 0 && (
@@ -237,7 +271,9 @@ export function DocsSidebar({ projectId, folders, rootDocuments, activeDocumentI
                 {/* Root Documents */}
                 {rootDocuments.length > 0 && (
                     <>
-                        {folders.length > 0 && <div className="h-px bg-border my-2" />}
+                        {folders.length > 0 && (
+                            <div className="my-2 h-px bg-border" />
+                        )}
                         {rootDocuments.map((doc) => (
                             <DocumentItem
                                 key={doc.id}
@@ -252,8 +288,8 @@ export function DocsSidebar({ projectId, folders, rootDocuments, activeDocumentI
 
                 {/* Empty State */}
                 {folders.length === 0 && rootDocuments.length === 0 && (
-                    <div className="text-center py-8 text-sm text-muted-foreground">
-                        <File className="size-8 mx-auto mb-2 opacity-50" />
+                    <div className="py-8 text-center text-sm text-muted-foreground">
+                        <File className="mx-auto mb-2 size-8 opacity-50" />
                         <p>No documents yet</p>
                         <Button
                             variant="link"
@@ -277,18 +313,30 @@ interface DocumentItemProps {
     onDelete: () => void;
 }
 
-function DocumentItem({ document, projectId, isActive, onDelete }: DocumentItemProps) {
+function DocumentItem({
+    document,
+    projectId,
+    isActive,
+    onDelete,
+}: DocumentItemProps) {
     return (
         <div
-            className={`group flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer ${
+            className={`group flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 ${
                 isActive ? 'bg-primary/10 text-primary' : 'hover:bg-muted/50'
             }`}
-            onClick={() => router.visit(`/projects/${projectId}/docs/${document.id}`)}
+            onClick={() =>
+                router.visit(`/projects/${projectId}/docs/${document.id}`)
+            }
         >
-            <File className={`size-4 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} />
-            <span className="text-sm flex-1 truncate">{document.title}</span>
+            <File
+                className={`size-4 ${isActive ? 'text-primary' : 'text-muted-foreground'}`}
+            />
+            <span className="flex-1 truncate text-sm">{document.title}</span>
             <DropdownMenu>
-                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                <DropdownMenuTrigger
+                    asChild
+                    onClick={(e) => e.stopPropagation()}
+                >
                     <Button
                         variant="ghost"
                         size="icon"
@@ -298,8 +346,11 @@ function DocumentItem({ document, projectId, isActive, onDelete }: DocumentItemP
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={onDelete} className="text-destructive">
-                        <Trash2 className="size-4 mr-2" />
+                    <DropdownMenuItem
+                        onClick={onDelete}
+                        className="text-destructive"
+                    >
+                        <Trash2 className="mr-2 size-4" />
                         Delete
                     </DropdownMenuItem>
                 </DropdownMenuContent>

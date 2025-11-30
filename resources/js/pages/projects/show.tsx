@@ -3,26 +3,36 @@ import { TaskCard } from '@/components/task-card';
 import { TaskListItem } from '@/components/task-list-item';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { useProjectChannel } from '@/hooks/use-project-channel';
-import { fetchHeaders } from '@/lib/csrf';
 import AppLayout from '@/layouts/app-layout';
+import { fetchHeaders } from '@/lib/csrf';
 import { useKanbanStore } from '@/stores/kanban-store';
 import { type BreadcrumbItem } from '@/types';
 import { type Project } from '@/types/project';
 import { type Task } from '@/types/task';
 import {
+    closestCorners,
     DndContext,
     DragOverlay,
     PointerSensor,
     useDroppable,
     useSensor,
     useSensors,
-    closestCorners,
     type DragEndEvent,
     type DragStartEvent,
 } from '@dnd-kit/core';
-import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import {
+    SortableContext,
+    useSortable,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Head, Link, router } from '@inertiajs/react';
 import {
@@ -42,23 +52,55 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-const statusConfig: Record<Project['status'], { label: string; color: string; bg: string }> = {
+const statusConfig: Record<
+    Project['status'],
+    { label: string; color: string; bg: string }
+> = {
     active: { label: 'Active', color: 'text-green-600', bg: 'bg-green-500' },
-    on_hold: { label: 'On Hold', color: 'text-yellow-600', bg: 'bg-yellow-500' },
-    completed: { label: 'Completed', color: 'text-blue-600', bg: 'bg-blue-500' },
+    on_hold: {
+        label: 'On Hold',
+        color: 'text-yellow-600',
+        bg: 'bg-yellow-500',
+    },
+    completed: {
+        label: 'Completed',
+        color: 'text-blue-600',
+        bg: 'bg-blue-500',
+    },
     archived: { label: 'Archived', color: 'text-gray-500', bg: 'bg-gray-400' },
 };
 
 // Subscriber component to ensure hook runs within Echo context
-function ProjectChannelSubscriber({ workspaceId, projectId }: { workspaceId: number; projectId: number }) {
+function ProjectChannelSubscriber({
+    workspaceId,
+    projectId,
+}: {
+    workspaceId: number;
+    projectId: number;
+}) {
     useProjectChannel(workspaceId, projectId);
     return null;
 }
 
 const columnConfig = {
-    todo: { label: 'Todo', icon: Circle, color: 'text-gray-500', border: 'border-t-gray-400' },
-    in_progress: { label: 'In Progress', icon: Loader2, color: 'text-blue-500', border: 'border-t-blue-500' },
-    done: { label: 'Done', icon: CheckCircle2, color: 'text-green-500', border: 'border-t-green-500' },
+    todo: {
+        label: 'Todo',
+        icon: Circle,
+        color: 'text-gray-500',
+        border: 'border-t-gray-400',
+    },
+    in_progress: {
+        label: 'In Progress',
+        icon: Loader2,
+        color: 'text-blue-500',
+        border: 'border-t-blue-500',
+    },
+    done: {
+        label: 'Done',
+        icon: CheckCircle2,
+        color: 'text-green-500',
+        border: 'border-t-green-500',
+    },
 };
 
 interface SortableTaskCardProps {
@@ -83,11 +125,11 @@ function SortableTaskCard({ task, projectId }: SortableTaskCardProps) {
     };
 
     return (
-        <div ref={setNodeRef} style={style} className="relative group">
+        <div ref={setNodeRef} style={style} className="group relative">
             <div
                 {...attributes}
                 {...listeners}
-                className="absolute left-0 top-0 bottom-0 w-6 flex items-center justify-center cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-0 bottom-0 left-0 flex w-6 cursor-grab items-center justify-center opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing"
             >
                 <GripVertical className="size-4 text-muted-foreground" />
             </div>
@@ -117,7 +159,7 @@ function DroppableColumn({ id, children }: DroppableColumnProps) {
     return (
         <div
             ref={setNodeRef}
-            className={`flex-1 overflow-y-auto px-1.5 pb-1.5 space-y-1.5 min-h-[100px] rounded-lg transition-colors ${
+            className={`min-h-[100px] flex-1 space-y-1.5 overflow-y-auto rounded-lg px-1.5 pb-1.5 transition-colors ${
                 isOver ? 'bg-primary/5 ring-2 ring-primary/20' : ''
             }`}
         >
@@ -143,11 +185,18 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
     const [taskLabelFilter, setTaskLabelFilter] = useState<string>('all');
     const [taskAssigneeFilter, setTaskAssigneeFilter] = useState<string>('all');
     const [activeTask, setActiveTask] = useState<Task | null>(null);
-    const [pendingUpdates, setPendingUpdates] = useState<Map<number, Partial<Task>>>(new Map());
+    const [pendingUpdates, setPendingUpdates] = useState<
+        Map<number, Partial<Task>>
+    >(new Map());
     const [viewMode, setViewMode] = useState<'kanban' | 'list'>('kanban');
 
     // Zustand store for real-time updates
-    const { tasks: storeTasks, setTasks, setProjectId, moveTask } = useKanbanStore();
+    const {
+        tasks: storeTasks,
+        setTasks,
+        setProjectId,
+        moveTask,
+    } = useKanbanStore();
 
     // Sync Inertia props to Zustand store
     useEffect(() => {
@@ -157,7 +206,7 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
 
     // Merge store tasks with pending optimistic updates
     const localTasks = useMemo(() => {
-        const tasks = storeTasks.length > 0 ? storeTasks : (project.tasks || []);
+        const tasks = storeTasks.length > 0 ? storeTasks : project.tasks || [];
         if (pendingUpdates.size === 0) return tasks;
 
         return tasks.map((task) => {
@@ -171,7 +220,7 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
             activationConstraint: {
                 distance: 8,
             },
-        })
+        }),
     );
 
     const filteredTasks = useMemo(() => {
@@ -181,29 +230,61 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
             .filter((task) => {
                 const matchesSearch =
                     !taskSearch ||
-                    task.title.toLowerCase().includes(taskSearch.toLowerCase()) ||
-                    task.description?.toLowerCase().includes(taskSearch.toLowerCase());
+                    task.title
+                        .toLowerCase()
+                        .includes(taskSearch.toLowerCase()) ||
+                    task.description
+                        ?.toLowerCase()
+                        .includes(taskSearch.toLowerCase());
 
-                const matchesPriority = taskPriorityFilter === 'all' || task.priority === taskPriorityFilter;
+                const matchesPriority =
+                    taskPriorityFilter === 'all' ||
+                    task.priority === taskPriorityFilter;
 
-                const matchesLabel = taskLabelFilter === 'all' ||
-                    task.labels?.some((l) => l.id.toString() === taskLabelFilter);
+                const matchesLabel =
+                    taskLabelFilter === 'all' ||
+                    task.labels?.some(
+                        (l) => l.id.toString() === taskLabelFilter,
+                    );
 
-                const matchesAssignee = taskAssigneeFilter === 'all' ||
-                    (taskAssigneeFilter === 'unassigned' ? !task.assigned_to : task.assigned_to?.toString() === taskAssigneeFilter);
+                const matchesAssignee =
+                    taskAssigneeFilter === 'all' ||
+                    (taskAssigneeFilter === 'unassigned'
+                        ? !task.assigned_to
+                        : task.assigned_to?.toString() === taskAssigneeFilter);
 
-                return matchesSearch && matchesPriority && matchesLabel && matchesAssignee;
+                return (
+                    matchesSearch &&
+                    matchesPriority &&
+                    matchesLabel &&
+                    matchesAssignee
+                );
             })
             .sort((a, b) => a.position - b.position);
-    }, [localTasks, taskSearch, taskPriorityFilter, taskLabelFilter, taskAssigneeFilter]);
+    }, [
+        localTasks,
+        taskSearch,
+        taskPriorityFilter,
+        taskLabelFilter,
+        taskAssigneeFilter,
+    ]);
 
-    const tasksByStatus = useMemo(() => ({
-        todo: filteredTasks.filter((t) => t.status === 'todo'),
-        in_progress: filteredTasks.filter((t) => t.status === 'in_progress'),
-        done: filteredTasks.filter((t) => t.status === 'done'),
-    }), [filteredTasks]);
+    const tasksByStatus = useMemo(
+        () => ({
+            todo: filteredTasks.filter((t) => t.status === 'todo'),
+            in_progress: filteredTasks.filter(
+                (t) => t.status === 'in_progress',
+            ),
+            done: filteredTasks.filter((t) => t.status === 'done'),
+        }),
+        [filteredTasks],
+    );
 
-    const hasTaskFilters = taskSearch || taskPriorityFilter !== 'all' || taskLabelFilter !== 'all' || taskAssigneeFilter !== 'all';
+    const hasTaskFilters =
+        taskSearch ||
+        taskPriorityFilter !== 'all' ||
+        taskLabelFilter !== 'all' ||
+        taskAssigneeFilter !== 'all';
 
     const clearTaskFilters = () => {
         setTaskSearch('');
@@ -248,7 +329,10 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
         const overId = over.id as string | number;
 
         // Check if dropped on a column
-        if (typeof overId === 'string' && ['todo', 'in_progress', 'done'].includes(overId)) {
+        if (
+            typeof overId === 'string' &&
+            ['todo', 'in_progress', 'done'].includes(overId)
+        ) {
             targetStatus = overId as Task['status'];
             targetPosition = tasksByStatus[targetStatus].length;
         } else {
@@ -263,12 +347,16 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
         }
 
         // Only update if something changed
-        if (task.status === targetStatus && task.position === targetPosition) return;
+        if (task.status === targetStatus && task.position === targetPosition)
+            return;
 
         // Optimistic update via pending updates
         setPendingUpdates((prev) => {
             const next = new Map(prev);
-            next.set(taskId, { status: targetStatus, position: targetPosition });
+            next.set(taskId, {
+                status: targetStatus,
+                position: targetPosition,
+            });
             return next;
         });
 
@@ -281,23 +369,25 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                 status: targetStatus,
                 position: targetPosition,
             }),
-        }).then((response) => {
-            if (response.ok) {
-                router.reload({ only: ['project'] });
-            }
-            setPendingUpdates((prev) => {
-                const next = new Map(prev);
-                next.delete(taskId);
-                return next;
+        })
+            .then((response) => {
+                if (response.ok) {
+                    router.reload({ only: ['project'] });
+                }
+                setPendingUpdates((prev) => {
+                    const next = new Map(prev);
+                    next.delete(taskId);
+                    return next;
+                });
+            })
+            .catch(() => {
+                // Revert optimistic update on error
+                setPendingUpdates((prev) => {
+                    const next = new Map(prev);
+                    next.delete(taskId);
+                    return next;
+                });
             });
-        }).catch(() => {
-            // Revert optimistic update on error
-            setPendingUpdates((prev) => {
-                const next = new Map(prev);
-                next.delete(taskId);
-                return next;
-            });
-        });
     };
 
     const totalTasks = localTasks.length;
@@ -305,15 +395,22 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <ProjectChannelSubscriber workspaceId={project.workspace_id} projectId={project.id} />
+            <ProjectChannelSubscriber
+                workspaceId={project.workspace_id}
+                projectId={project.id}
+            />
             <Head title={project.name} />
             <div className="flex h-full flex-1 flex-col">
                 <PageHeader
                     title={project.name}
                     titleExtra={
                         <>
-                            <span className={`size-2 rounded-full ${statusConfig[project.status].bg}`} />
-                            <span className={`text-sm ${statusConfig[project.status].color}`}>
+                            <span
+                                className={`size-2 rounded-full ${statusConfig[project.status].bg}`}
+                            />
+                            <span
+                                className={`text-sm ${statusConfig[project.status].color}`}
+                            >
                                 {statusConfig[project.status].label}
                             </span>
                         </>
@@ -321,28 +418,35 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                     description={
                         project.description ? (
                             <div
-                                className="max-w-xl line-clamp-2 prose prose-sm dark:prose-invert"
-                                dangerouslySetInnerHTML={{ __html: project.description }}
+                                className="prose prose-sm line-clamp-2 max-w-xl dark:prose-invert"
+                                dangerouslySetInnerHTML={{
+                                    __html: project.description,
+                                }}
                             />
                         ) : undefined
                     }
                     iconText={project.name.charAt(0).toUpperCase()}
                 >
                     {project.due_date && (
-                        <div className="flex items-center gap-1.5 text-sm text-muted-foreground mr-2">
+                        <div className="mr-2 flex items-center gap-1.5 text-sm text-muted-foreground">
                             <Calendar className="size-4" />
-                            <span>Due {new Date(project.due_date).toLocaleDateString()}</span>
+                            <span>
+                                Due{' '}
+                                {new Date(
+                                    project.due_date,
+                                ).toLocaleDateString()}
+                            </span>
                         </div>
                     )}
                     <Button variant="outline" size="sm" asChild>
                         <Link href={`/projects/${project.id}/docs`}>
-                            <FileText className="size-4 mr-1.5" />
+                            <FileText className="mr-1.5 size-4" />
                             Docs
                         </Link>
                     </Button>
                     <Button variant="outline" size="sm" asChild>
                         <Link href={`/projects/${project.id}/edit`}>
-                            <Settings className="size-4 mr-1.5" />
+                            <Settings className="mr-1.5 size-4" />
                             Settings
                         </Link>
                     </Button>
@@ -357,11 +461,13 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                 </PageHeader>
 
                 {/* Toolbar */}
-                <div className="border-b px-4 sm:px-6 py-3 flex flex-wrap items-center gap-2 sm:gap-3">
+                <div className="flex flex-wrap items-center gap-2 border-b px-4 py-3 sm:gap-3 sm:px-6">
                     {/* View switcher - visible first on mobile */}
-                    <div className="flex items-center border rounded-lg p-0.5 order-first sm:order-none">
+                    <div className="order-first flex items-center rounded-lg border p-0.5 sm:order-none">
                         <Button
-                            variant={viewMode === 'kanban' ? 'secondary' : 'ghost'}
+                            variant={
+                                viewMode === 'kanban' ? 'secondary' : 'ghost'
+                            }
                             size="sm"
                             className="h-7 px-2"
                             onClick={() => setViewMode('kanban')}
@@ -369,7 +475,9 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                             <Kanban className="size-4" />
                         </Button>
                         <Button
-                            variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+                            variant={
+                                viewMode === 'list' ? 'secondary' : 'ghost'
+                            }
                             size="sm"
                             className="h-7 px-2"
                             onClick={() => setViewMode('list')}
@@ -377,17 +485,20 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                             <List className="size-4" />
                         </Button>
                     </div>
-                    <div className="relative flex-1 min-w-[120px] max-w-xs order-1 sm:order-none">
-                        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <div className="relative order-1 max-w-xs min-w-[120px] flex-1 sm:order-none">
+                        <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             placeholder="Search tasks..."
                             value={taskSearch}
                             onChange={(e) => setTaskSearch(e.target.value)}
-                            className="pl-9 h-9"
+                            className="h-9 pl-9"
                         />
                     </div>
-                    <Select value={taskPriorityFilter} onValueChange={setTaskPriorityFilter}>
-                        <SelectTrigger className="w-[120px] h-9 hidden sm:flex">
+                    <Select
+                        value={taskPriorityFilter}
+                        onValueChange={setTaskPriorityFilter}
+                    >
+                        <SelectTrigger className="hidden h-9 w-[120px] sm:flex">
                             <SelectValue placeholder="Priority" />
                         </SelectTrigger>
                         <SelectContent>
@@ -398,18 +509,27 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                         </SelectContent>
                     </Select>
                     {project.labels && project.labels.length > 0 && (
-                        <Select value={taskLabelFilter} onValueChange={setTaskLabelFilter}>
-                            <SelectTrigger className="w-[120px] h-9 hidden sm:flex">
+                        <Select
+                            value={taskLabelFilter}
+                            onValueChange={setTaskLabelFilter}
+                        >
+                            <SelectTrigger className="hidden h-9 w-[120px] sm:flex">
                                 <SelectValue placeholder="Label" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">All labels</SelectItem>
                                 {project.labels.map((label) => (
-                                    <SelectItem key={label.id} value={label.id.toString()}>
+                                    <SelectItem
+                                        key={label.id}
+                                        value={label.id.toString()}
+                                    >
                                         <div className="flex items-center gap-2">
                                             <span
                                                 className="size-2 rounded-full"
-                                                style={{ backgroundColor: label.color }}
+                                                style={{
+                                                    backgroundColor:
+                                                        label.color,
+                                                }}
                                             />
                                             {label.name}
                                         </div>
@@ -418,18 +538,28 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                             </SelectContent>
                         </Select>
                     )}
-                    <Select value={taskAssigneeFilter} onValueChange={setTaskAssigneeFilter}>
-                        <SelectTrigger className="w-[120px] h-9 hidden sm:flex">
+                    <Select
+                        value={taskAssigneeFilter}
+                        onValueChange={setTaskAssigneeFilter}
+                    >
+                        <SelectTrigger className="hidden h-9 w-[120px] sm:flex">
                             <SelectValue placeholder="Assignee" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All assignees</SelectItem>
-                            <SelectItem value="unassigned">Unassigned</SelectItem>
+                            <SelectItem value="unassigned">
+                                Unassigned
+                            </SelectItem>
                             {workspaceMembers.map((member) => (
-                                <SelectItem key={member.id} value={member.id.toString()}>
+                                <SelectItem
+                                    key={member.id}
+                                    value={member.id.toString()}
+                                >
                                     <div className="flex items-center gap-2">
-                                        <div className="size-4 rounded-full bg-primary/10 flex items-center justify-center text-[8px] font-medium text-primary">
-                                            {member.name.charAt(0).toUpperCase()}
+                                        <div className="flex size-4 items-center justify-center rounded-full bg-primary/10 text-[8px] font-medium text-primary">
+                                            {member.name
+                                                .charAt(0)
+                                                .toUpperCase()}
                                         </div>
                                         {member.name}
                                     </div>
@@ -438,13 +568,17 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                         </SelectContent>
                     </Select>
                     {hasTaskFilters && (
-                        <Button variant="ghost" size="sm" onClick={clearTaskFilters}>
-                            <X className="size-4 mr-1" />
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={clearTaskFilters}
+                        >
+                            <X className="mr-1 size-4" />
                             Clear
                         </Button>
                     )}
-                    <div className="hidden sm:block flex-1" />
-                    <span className="hidden sm:inline text-sm text-muted-foreground tabular-nums">
+                    <div className="hidden flex-1 sm:block" />
+                    <span className="hidden text-sm text-muted-foreground tabular-nums sm:inline">
                         {completedTasks}/{totalTasks} completed
                     </span>
                     <Button size="sm" asChild className="ml-auto sm:ml-0">
@@ -457,65 +591,93 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
 
                 {/* Kanban Board */}
                 {viewMode === 'kanban' && (
-                    <div className="flex-1 min-h-0 p-3 overflow-x-auto">
+                    <div className="min-h-0 flex-1 overflow-x-auto p-3">
                         <DndContext
                             sensors={sensors}
                             collisionDetection={closestCorners}
                             onDragStart={handleDragStart}
                             onDragEnd={handleDragEnd}
                         >
-                            <div className="grid grid-cols-3 gap-3 h-full min-w-[700px]">
-                                {(['todo', 'in_progress', 'done'] as const).map((status) => {
-                                    const statusTasks = tasksByStatus[status];
-                                    const config = columnConfig[status];
-                                    const Icon = config.icon;
+                            <div className="grid h-full min-w-[700px] grid-cols-3 gap-3">
+                                {(['todo', 'in_progress', 'done'] as const).map(
+                                    (status) => {
+                                        const statusTasks =
+                                            tasksByStatus[status];
+                                        const config = columnConfig[status];
+                                        const Icon = config.icon;
 
-                                    return (
-                                        <div
-                                            key={status}
-                                            className={`flex flex-col rounded-lg border-t-2 ${config.border} bg-muted/30`}
-                                        >
-                                            {/* Column Header */}
-                                            <div className="flex items-center justify-between px-3 py-2">
-                                                <div className="flex items-center gap-1.5">
-                                                    <Icon className={`size-3.5 ${config.color}`} />
-                                                    <span className="font-medium text-xs">{config.label}</span>
-                                                    <span className="text-[10px] text-muted-foreground bg-muted px-1 py-0.5 rounded">
-                                                        {statusTasks.length}
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            {/* Tasks */}
-                                            <SortableContext
-                                                items={statusTasks.map((t) => t.id)}
-                                                strategy={verticalListSortingStrategy}
+                                        return (
+                                            <div
+                                                key={status}
+                                                className={`flex flex-col rounded-lg border-t-2 ${config.border} bg-muted/30`}
                                             >
-                                                <DroppableColumn id={status}>
-                                                    {statusTasks.length === 0 ? (
-                                                        <div className="text-center py-4 text-muted-foreground border border-dashed rounded-md">
-                                                            <p className="text-xs">Drop here</p>
-                                                        </div>
-                                                    ) : (
-                                                        statusTasks.map((task) => (
-                                                            <SortableTaskCard
-                                                                key={task.id}
-                                                                task={task}
-                                                                projectId={project.id}
-                                                            />
-                                                        ))
+                                                {/* Column Header */}
+                                                <div className="flex items-center justify-between px-3 py-2">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <Icon
+                                                            className={`size-3.5 ${config.color}`}
+                                                        />
+                                                        <span className="text-xs font-medium">
+                                                            {config.label}
+                                                        </span>
+                                                        <span className="rounded bg-muted px-1 py-0.5 text-[10px] text-muted-foreground">
+                                                            {statusTasks.length}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                {/* Tasks */}
+                                                <SortableContext
+                                                    items={statusTasks.map(
+                                                        (t) => t.id,
                                                     )}
-                                                </DroppableColumn>
-                                            </SortableContext>
-                                        </div>
-                                    );
-                                })}
+                                                    strategy={
+                                                        verticalListSortingStrategy
+                                                    }
+                                                >
+                                                    <DroppableColumn
+                                                        id={status}
+                                                    >
+                                                        {statusTasks.length ===
+                                                        0 ? (
+                                                            <div className="rounded-md border border-dashed py-4 text-center text-muted-foreground">
+                                                                <p className="text-xs">
+                                                                    Drop here
+                                                                </p>
+                                                            </div>
+                                                        ) : (
+                                                            statusTasks.map(
+                                                                (task) => (
+                                                                    <SortableTaskCard
+                                                                        key={
+                                                                            task.id
+                                                                        }
+                                                                        task={
+                                                                            task
+                                                                        }
+                                                                        projectId={
+                                                                            project.id
+                                                                        }
+                                                                    />
+                                                                ),
+                                                            )
+                                                        )}
+                                                    </DroppableColumn>
+                                                </SortableContext>
+                                            </div>
+                                        );
+                                    },
+                                )}
                             </div>
 
                             <DragOverlay>
                                 {activeTask && (
                                     <div className="w-64">
-                                        <TaskCard task={activeTask} projectId={project.id} isDragging />
+                                        <TaskCard
+                                            task={activeTask}
+                                            projectId={project.id}
+                                            isDragging
+                                        />
                                     </div>
                                 )}
                             </DragOverlay>
@@ -525,15 +687,19 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
 
                 {/* List View */}
                 {viewMode === 'list' && (
-                    <div className="flex-1 min-h-0 overflow-y-auto p-3">
+                    <div className="min-h-0 flex-1 overflow-y-auto p-3">
                         {filteredTasks.length === 0 ? (
-                            <div className="text-center py-12 text-muted-foreground">
+                            <div className="py-12 text-center text-muted-foreground">
                                 <p>No tasks found</p>
                             </div>
                         ) : (
                             <div className="space-y-1.5">
                                 {filteredTasks.map((task) => (
-                                    <TaskListItem key={task.id} task={task} projectId={project.id} />
+                                    <TaskListItem
+                                        key={task.id}
+                                        task={task}
+                                        projectId={project.id}
+                                    />
                                 ))}
                             </div>
                         )}

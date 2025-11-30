@@ -1,7 +1,7 @@
+import { DueDateBadge } from '@/components/due-date-badge';
 import { type Task } from '@/types/task';
 import { Link, router } from '@inertiajs/react';
 import {
-    Calendar,
     CheckSquare,
     Clock,
     FolderKanban,
@@ -39,16 +39,31 @@ function RunningTimer({ startedAt }: { startedAt: string }) {
     }, [startedAt]);
 
     return (
-        <span className="font-mono text-xs tabular-nums text-green-600 dark:text-green-400">
+        <span className="font-mono text-xs text-green-600 tabular-nums dark:text-green-400">
             {formatDuration(elapsed)}
         </span>
     );
 }
 
 const priorityConfig = {
-    low: { label: 'Low', color: 'text-gray-500', dot: 'bg-gray-400', border: 'border-l-gray-400' },
-    medium: { label: 'Medium', color: 'text-yellow-600', dot: 'bg-yellow-500', border: 'border-l-yellow-500' },
-    high: { label: 'High', color: 'text-red-600', dot: 'bg-red-500', border: 'border-l-red-500' },
+    low: {
+        label: 'Low',
+        color: 'text-gray-500',
+        dot: 'bg-gray-400',
+        border: 'border-l-gray-400',
+    },
+    medium: {
+        label: 'Medium',
+        color: 'text-yellow-600',
+        dot: 'bg-yellow-500',
+        border: 'border-l-yellow-500',
+    },
+    high: {
+        label: 'High',
+        color: 'text-red-600',
+        dot: 'bg-red-500',
+        border: 'border-l-red-500',
+    },
 };
 
 interface TaskCardProps {
@@ -58,36 +73,50 @@ interface TaskCardProps {
     showProject?: boolean;
 }
 
-export function TaskCard({ task, projectId, isDragging, showProject }: TaskCardProps) {
+export function TaskCard({
+    task,
+    projectId,
+    isDragging,
+    showProject,
+}: TaskCardProps) {
     const isRunning = !!task.running_time_entry;
     const totalTime = task.total_time || 0;
-    const hasRecordings = task.audio_recordings && task.audio_recordings.length > 0;
+    const hasRecordings =
+        task.audio_recordings && task.audio_recordings.length > 0;
     const subtaskCount = task.subtasks_count || task.subtask_count || 0;
     const hasSubtasks = subtaskCount > 0;
-    const subtaskProgress = hasSubtasks ? ((task.completed_subtask_count || 0) / subtaskCount) * 100 : 0;
+    const subtaskProgress = hasSubtasks
+        ? ((task.completed_subtask_count || 0) / subtaskCount) * 100
+        : 0;
     const commentsCount = task.comments_count || 0;
 
     return (
         <div
-            className={`rounded-md border-l-2 border bg-background px-2.5 py-2 transition-all ${priorityConfig[task.priority].border} ${
-                isDragging ? 'shadow-lg ring-2 ring-primary/20 opacity-90' : 'hover:shadow-sm hover:border-primary/20'
-            } ${isRunning ? 'ring-1 ring-green-500/50 bg-green-500/5' : ''}`}
+            className={`rounded-md border border-l-2 bg-background px-2.5 py-2 transition-all ${priorityConfig[task.priority].border} ${
+                isDragging
+                    ? 'opacity-90 shadow-lg ring-2 ring-primary/20'
+                    : 'hover:border-primary/20 hover:shadow-sm'
+            } ${isRunning ? 'bg-green-500/5 ring-1 ring-green-500/50' : ''}`}
         >
             {/* Short code and Title */}
-            <div className="flex items-start justify-between gap-1.5 mb-1">
+            <div className="mb-1 flex items-start justify-between gap-1.5">
                 <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
-                        <span className="text-[9px] font-mono text-muted-foreground flex-shrink-0">{task.short_code}</span>
+                        <span className="flex-shrink-0 font-mono text-[9px] text-muted-foreground">
+                            {task.short_code}
+                        </span>
                         {task.assignee && (
                             <div
-                                className="size-4 rounded-full bg-primary/10 flex items-center justify-center text-[8px] font-medium text-primary flex-shrink-0"
+                                className="flex size-4 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-[8px] font-medium text-primary"
                                 title={task.assignee.name}
                             >
                                 {task.assignee.name.charAt(0).toUpperCase()}
                             </div>
                         )}
                     </div>
-                    <p className={`text-xs font-medium leading-tight mt-0.5 ${task.status === 'done' ? 'line-through text-muted-foreground' : ''}`}>
+                    <p
+                        className={`mt-0.5 text-xs leading-tight font-medium ${task.status === 'done' ? 'text-muted-foreground line-through' : ''}`}
+                    >
                         {task.title}
                     </p>
                 </div>
@@ -95,11 +124,15 @@ export function TaskCard({ task, projectId, isDragging, showProject }: TaskCardP
                 <div className="flex-shrink-0">
                     {isRunning ? (
                         <button
-                            className="size-5 flex items-center justify-center rounded text-red-600 hover:bg-red-50"
+                            className="flex size-5 items-center justify-center rounded text-red-600 hover:bg-red-50"
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                router.post(`/projects/${projectId}/tasks/${task.id}/time/stop`, {}, { preserveScroll: true });
+                                router.post(
+                                    `/projects/${projectId}/tasks/${task.id}/time/stop`,
+                                    {},
+                                    { preserveScroll: true },
+                                );
                             }}
                             title="Stop timer"
                         >
@@ -107,11 +140,15 @@ export function TaskCard({ task, projectId, isDragging, showProject }: TaskCardP
                         </button>
                     ) : (
                         <button
-                            className="size-5 flex items-center justify-center rounded text-muted-foreground hover:text-green-600 hover:bg-green-50"
+                            className="flex size-5 items-center justify-center rounded text-muted-foreground hover:bg-green-50 hover:text-green-600"
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                router.post(`/projects/${projectId}/tasks/${task.id}/time/start`, {}, { preserveScroll: true });
+                                router.post(
+                                    `/projects/${projectId}/tasks/${task.id}/time/start`,
+                                    {},
+                                    { preserveScroll: true },
+                                );
                             }}
                             title="Start timer"
                         >
@@ -123,7 +160,7 @@ export function TaskCard({ task, projectId, isDragging, showProject }: TaskCardP
 
             {/* Project Badge */}
             {showProject && task.project && (
-                <div className="flex items-center gap-1 text-[9px] text-muted-foreground mb-1">
+                <div className="mb-1 flex items-center gap-1 text-[9px] text-muted-foreground">
                     <FolderKanban className="size-2.5" />
                     <span className="truncate">{task.project.name}</span>
                 </div>
@@ -131,11 +168,11 @@ export function TaskCard({ task, projectId, isDragging, showProject }: TaskCardP
 
             {/* Labels - inline, smaller */}
             {task.labels && task.labels.length > 0 && (
-                <div className="flex flex-wrap gap-0.5 mb-1">
+                <div className="mb-1 flex flex-wrap gap-0.5">
                     {task.labels.slice(0, 3).map((label) => (
                         <span
                             key={label.id}
-                            className="inline-flex items-center px-1 py-px rounded text-[9px] font-medium"
+                            className="inline-flex items-center rounded px-1 py-px text-[9px] font-medium"
                             style={{
                                 backgroundColor: `${label.color}20`,
                                 color: label.color,
@@ -145,16 +182,18 @@ export function TaskCard({ task, projectId, isDragging, showProject }: TaskCardP
                         </span>
                     ))}
                     {task.labels.length > 3 && (
-                        <span className="text-[9px] text-muted-foreground">+{task.labels.length - 3}</span>
+                        <span className="text-[9px] text-muted-foreground">
+                            +{task.labels.length - 3}
+                        </span>
                     )}
                 </div>
             )}
 
             {/* Subtask Progress - more compact */}
             {hasSubtasks && (
-                <div className="flex items-center gap-1.5 mb-1">
+                <div className="mb-1 flex items-center gap-1.5">
                     <CheckSquare className="size-2.5 text-muted-foreground" />
-                    <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
+                    <div className="h-1 flex-1 overflow-hidden rounded-full bg-muted">
                         <div
                             className="h-full bg-green-500 transition-all duration-300"
                             style={{ width: `${subtaskProgress}%` }}
@@ -169,16 +208,15 @@ export function TaskCard({ task, projectId, isDragging, showProject }: TaskCardP
             {/* Meta row - compact */}
             <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-muted-foreground">
                 {task.due_date && (
-                    <span className="flex items-center gap-0.5">
-                        <Calendar className="size-2.5" />
-                        {new Date(task.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                    </span>
+                    <DueDateBadge dueDate={task.due_date} variant="compact" />
                 )}
                 {(totalTime > 0 || isRunning) && (
                     <span className="flex items-center gap-0.5">
                         <Clock className="size-2.5" />
                         {isRunning ? (
-                            <RunningTimer startedAt={task.running_time_entry!.started_at} />
+                            <RunningTimer
+                                startedAt={task.running_time_entry!.started_at}
+                            />
                         ) : (
                             formatDuration(totalTime)
                         )}
@@ -205,13 +243,22 @@ interface TaskCardLinkProps extends TaskCardProps {
     href?: string;
 }
 
-export function TaskCardLink({ task, projectId, showProject, href }: TaskCardLinkProps) {
+export function TaskCardLink({
+    task,
+    projectId,
+    showProject,
+    href,
+}: TaskCardLinkProps) {
     return (
         <Link
             href={href || `/projects/${projectId}/tasks/${task.id}`}
             className="block"
         >
-            <TaskCard task={task} projectId={projectId} showProject={showProject} />
+            <TaskCard
+                task={task}
+                projectId={projectId}
+                showProject={showProject}
+            />
         </Link>
     );
 }

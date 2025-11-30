@@ -2,14 +2,20 @@ import { EditorWrapper } from '@/components/editor-wrapper';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
+import { fetchHeaders } from '@/lib/csrf';
 import { type BreadcrumbItem } from '@/types';
 import { type Label as LabelType } from '@/types/label';
 import { type Project } from '@/types/project';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Plus, Trash2, X } from 'lucide-react';
-import { fetchHeaders } from '@/lib/csrf';
 import { useState } from 'react';
 
 const LABEL_COLORS = [
@@ -78,27 +84,38 @@ export default function ProjectEdit({ project }: Props) {
     };
 
     const handleDeleteLabel = async (labelId: number) => {
-        if (!confirm('Delete this label? It will be removed from all tasks.')) return;
+        if (!confirm('Delete this label? It will be removed from all tasks.'))
+            return;
 
-        const response = await fetch(`/projects/${project.id}/labels/${labelId}`, {
-            method: 'DELETE',
-            headers: fetchHeaders(),
-        });
+        const response = await fetch(
+            `/projects/${project.id}/labels/${labelId}`,
+            {
+                method: 'DELETE',
+                headers: fetchHeaders(),
+            },
+        );
 
         if (response.ok) {
             // Remove from local labels if it was added locally
-            setLocalLabels((prev) => prev.filter(l => l.id !== labelId));
+            setLocalLabels((prev) => prev.filter((l) => l.id !== labelId));
             // Force a page reload to sync with server
             window.location.reload();
         }
     };
 
-    const handleUpdateLabel = async (label: LabelType, name: string, color: string) => {
-        const response = await fetch(`/projects/${project.id}/labels/${label.id}`, {
-            method: 'PUT',
-            headers: fetchHeaders(),
-            body: JSON.stringify({ name, color }),
-        });
+    const handleUpdateLabel = async (
+        label: LabelType,
+        name: string,
+        color: string,
+    ) => {
+        const response = await fetch(
+            `/projects/${project.id}/labels/${label.id}`,
+            {
+                method: 'PUT',
+                headers: fetchHeaders(),
+                body: JSON.stringify({ name, color }),
+            },
+        );
 
         if (response.ok) {
             setEditingLabelId(null);
@@ -113,58 +130,98 @@ export default function ProjectEdit({ project }: Props) {
                 {/* Header */}
                 <div className="border-b px-6 py-4">
                     <div className="flex items-center gap-3">
-                        <Button variant="ghost" size="icon" className="size-8" asChild>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-8"
+                            asChild
+                        >
                             <Link href={`/projects/${project.id}`}>
                                 <ArrowLeft className="size-4" />
                             </Link>
                         </Button>
                         <div>
-                            <h1 className="text-xl font-semibold">Project Settings</h1>
-                            <p className="text-sm text-muted-foreground">Update project details for {project.name}</p>
+                            <h1 className="text-xl font-semibold">
+                                Project Settings
+                            </h1>
+                            <p className="text-sm text-muted-foreground">
+                                Update project details for {project.name}
+                            </p>
                         </div>
                     </div>
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 overflow-y-auto">
-                    <div className="max-w-2xl mx-auto p-6 space-y-10">
+                    <div className="mx-auto max-w-2xl space-y-10 p-6">
                         {/* Project Details Form */}
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <h2 className="text-lg font-medium">General</h2>
-                            
+
                             <div className="space-y-2">
-                                <Label htmlFor="name" className="text-sm font-medium">
-                                    Project Name <span className="text-destructive">*</span>
+                                <Label
+                                    htmlFor="name"
+                                    className="text-sm font-medium"
+                                >
+                                    Project Name{' '}
+                                    <span className="text-destructive">*</span>
                                 </Label>
                                 <Input
                                     id="name"
                                     value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('name', e.target.value)
+                                    }
                                     placeholder="e.g., Website Redesign"
                                     className="h-11"
                                     required
                                 />
-                                {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
+                                {errors.name && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.name}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="description" className="text-sm font-medium">
+                                <Label
+                                    htmlFor="description"
+                                    className="text-sm font-medium"
+                                >
                                     Description
                                 </Label>
                                 <EditorWrapper
                                     value={data.description}
-                                    onChange={(html) => setData('description', html)}
+                                    onChange={(html) =>
+                                        setData('description', html)
+                                    }
                                     placeholder="What is this project about?"
                                     roomId={`project-${project.id}-description`}
                                 />
-                                {errors.description && <p className="text-sm text-destructive">{errors.description}</p>}
+                                {errors.description && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.description}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="status" className="text-sm font-medium">
+                                <Label
+                                    htmlFor="status"
+                                    className="text-sm font-medium"
+                                >
                                     Status
                                 </Label>
-                                <Select value={data.status} onValueChange={(value: 'active' | 'on_hold' | 'completed' | 'archived') => setData('status', value)}>
+                                <Select
+                                    value={data.status}
+                                    onValueChange={(
+                                        value:
+                                            | 'active'
+                                            | 'on_hold'
+                                            | 'completed'
+                                            | 'archived',
+                                    ) => setData('status', value)}
+                                >
                                     <SelectTrigger className="h-11">
                                         <SelectValue placeholder="Select status" />
                                     </SelectTrigger>
@@ -195,42 +252,69 @@ export default function ProjectEdit({ project }: Props) {
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
-                                {errors.status && <p className="text-sm text-destructive">{errors.status}</p>}
+                                {errors.status && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.status}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="space-y-2">
-                                    <Label htmlFor="start_date" className="text-sm font-medium">
+                                    <Label
+                                        htmlFor="start_date"
+                                        className="text-sm font-medium"
+                                    >
                                         Start Date
                                     </Label>
                                     <Input
                                         id="start_date"
                                         type="date"
                                         value={data.start_date}
-                                        onChange={(e) => setData('start_date', e.target.value)}
+                                        onChange={(e) =>
+                                            setData(
+                                                'start_date',
+                                                e.target.value,
+                                            )
+                                        }
                                         className="h-11"
                                     />
-                                    {errors.start_date && <p className="text-sm text-destructive">{errors.start_date}</p>}
+                                    {errors.start_date && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.start_date}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="due_date" className="text-sm font-medium">
+                                    <Label
+                                        htmlFor="due_date"
+                                        className="text-sm font-medium"
+                                    >
                                         Due Date
                                     </Label>
                                     <Input
                                         id="due_date"
                                         type="date"
                                         value={data.due_date}
-                                        onChange={(e) => setData('due_date', e.target.value)}
+                                        onChange={(e) =>
+                                            setData('due_date', e.target.value)
+                                        }
                                         className="h-11"
                                     />
-                                    {errors.due_date && <p className="text-sm text-destructive">{errors.due_date}</p>}
+                                    {errors.due_date && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.due_date}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
-                            <div className="flex items-center justify-end gap-3 pt-4 border-t">
+                            <div className="flex items-center justify-end gap-3 border-t pt-4">
                                 <Button type="button" variant="ghost" asChild>
-                                    <Link href={`/projects/${project.id}`}>Cancel</Link>
+                                    <Link href={`/projects/${project.id}`}>
+                                        Cancel
+                                    </Link>
                                 </Button>
                                 <Button type="submit" disabled={processing}>
                                     {processing ? 'Saving...' : 'Save Changes'}
@@ -239,10 +323,11 @@ export default function ProjectEdit({ project }: Props) {
                         </form>
 
                         {/* Labels Section */}
-                        <div className="space-y-4 pt-6 border-t">
+                        <div className="space-y-4 border-t pt-6">
                             <h2 className="text-lg font-medium">Labels</h2>
                             <p className="text-sm text-muted-foreground">
-                                Create labels to categorize and filter tasks in this project.
+                                Create labels to categorize and filter tasks in
+                                this project.
                             </p>
 
                             {/* Existing Labels */}
@@ -250,26 +335,43 @@ export default function ProjectEdit({ project }: Props) {
                                 {labels.map((label) => (
                                     <div
                                         key={label.id}
-                                        className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30"
+                                        className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3"
                                     >
                                         {editingLabelId === label.id ? (
                                             <EditLabelRow
                                                 label={label}
-                                                onSave={(name, color) => handleUpdateLabel(label, name, color)}
-                                                onCancel={() => setEditingLabelId(null)}
+                                                onSave={(name, color) =>
+                                                    handleUpdateLabel(
+                                                        label,
+                                                        name,
+                                                        color,
+                                                    )
+                                                }
+                                                onCancel={() =>
+                                                    setEditingLabelId(null)
+                                                }
                                             />
                                         ) : (
                                             <>
                                                 <span
-                                                    className="size-4 rounded-full flex-shrink-0"
-                                                    style={{ backgroundColor: label.color }}
+                                                    className="size-4 flex-shrink-0 rounded-full"
+                                                    style={{
+                                                        backgroundColor:
+                                                            label.color,
+                                                    }}
                                                 />
-                                                <span className="flex-1 text-sm font-medium">{label.name}</span>
+                                                <span className="flex-1 text-sm font-medium">
+                                                    {label.name}
+                                                </span>
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
                                                     className="h-7 px-2"
-                                                    onClick={() => setEditingLabelId(label.id)}
+                                                    onClick={() =>
+                                                        setEditingLabelId(
+                                                            label.id,
+                                                        )
+                                                    }
                                                 >
                                                     Edit
                                                 </Button>
@@ -277,7 +379,11 @@ export default function ProjectEdit({ project }: Props) {
                                                     variant="ghost"
                                                     size="icon"
                                                     className="size-7 text-destructive hover:text-destructive"
-                                                    onClick={() => handleDeleteLabel(label.id)}
+                                                    onClick={() =>
+                                                        handleDeleteLabel(
+                                                            label.id,
+                                                        )
+                                                    }
                                                 >
                                                     <Trash2 className="size-4" />
                                                 </Button>
@@ -288,25 +394,31 @@ export default function ProjectEdit({ project }: Props) {
                             </div>
 
                             {/* Add New Label */}
-                            <div className="flex items-center gap-3 p-3 rounded-lg border border-dashed">
+                            <div className="flex items-center gap-3 rounded-lg border border-dashed p-3">
                                 <div className="flex items-center gap-1">
                                     {LABEL_COLORS.map((color) => (
                                         <button
                                             key={color}
                                             type="button"
                                             className={`size-5 rounded-full transition-transform ${
-                                                newLabelColor === color ? 'ring-2 ring-offset-2 ring-primary scale-110' : 'hover:scale-110'
+                                                newLabelColor === color
+                                                    ? 'scale-110 ring-2 ring-primary ring-offset-2'
+                                                    : 'hover:scale-110'
                                             }`}
                                             style={{ backgroundColor: color }}
-                                            onClick={() => setNewLabelColor(color)}
+                                            onClick={() =>
+                                                setNewLabelColor(color)
+                                            }
                                         />
                                     ))}
                                 </div>
                                 <Input
                                     value={newLabelName}
-                                    onChange={(e) => setNewLabelName(e.target.value)}
+                                    onChange={(e) =>
+                                        setNewLabelName(e.target.value)
+                                    }
                                     placeholder="New label name..."
-                                    className="flex-1 h-9"
+                                    className="h-9 flex-1"
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') {
                                             e.preventDefault();
@@ -320,7 +432,7 @@ export default function ProjectEdit({ project }: Props) {
                                     onClick={handleAddLabel}
                                     disabled={!newLabelName.trim()}
                                 >
-                                    <Plus className="size-4 mr-1" />
+                                    <Plus className="mr-1 size-4" />
                                     Add
                                 </Button>
                             </div>
@@ -352,7 +464,9 @@ function EditLabelRow({
                         key={c}
                         type="button"
                         className={`size-4 rounded-full transition-transform ${
-                            color === c ? 'ring-2 ring-offset-1 ring-primary scale-110' : 'hover:scale-110'
+                            color === c
+                                ? 'scale-110 ring-2 ring-primary ring-offset-1'
+                                : 'hover:scale-110'
                         }`}
                         style={{ backgroundColor: c }}
                         onClick={() => setColor(c)}
@@ -362,13 +476,22 @@ function EditLabelRow({
             <Input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="flex-1 h-8"
+                className="h-8 flex-1"
                 autoFocus
             />
-            <Button size="sm" className="h-7" onClick={() => onSave(name, color)}>
+            <Button
+                size="sm"
+                className="h-7"
+                onClick={() => onSave(name, color)}
+            >
                 Save
             </Button>
-            <Button variant="ghost" size="icon" className="size-7" onClick={onCancel}>
+            <Button
+                variant="ghost"
+                size="icon"
+                className="size-7"
+                onClick={onCancel}
+            >
                 <X className="size-4" />
             </Button>
         </>

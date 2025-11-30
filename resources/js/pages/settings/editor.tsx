@@ -49,9 +49,12 @@ export default function Editor({ status }: EditorPageProps) {
                     <form onSubmit={submit} className="space-y-6">
                         {/* Editor Choice */}
                         <div className="space-y-4">
-                            <Label className="text-base font-medium">Text Editor</Label>
+                            <Label className="text-base font-medium">
+                                Text Editor
+                            </Label>
                             <p className="text-sm text-muted-foreground">
-                                Select which editor to use for writing descriptions and content
+                                Select which editor to use for writing
+                                descriptions and content
                             </p>
                             <RadioGroup
                                 value={data.editor_preference}
@@ -61,27 +64,45 @@ export default function Editor({ status }: EditorPageProps) {
                                 className="grid gap-4"
                             >
                                 <div className="flex items-start space-x-3 rounded-lg border p-4">
-                                    <RadioGroupItem value="tiptap" id="tiptap" className="mt-1" />
+                                    <RadioGroupItem
+                                        value="tiptap"
+                                        id="tiptap"
+                                        className="mt-1"
+                                    />
                                     <div className="space-y-1">
-                                        <Label htmlFor="tiptap" className="font-medium cursor-pointer">
+                                        <Label
+                                            htmlFor="tiptap"
+                                            className="cursor-pointer font-medium"
+                                        >
                                             TipTap Editor
-                                            <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
+                                            <span className="ml-2 rounded bg-primary/10 px-2 py-0.5 text-xs text-primary">
                                                 Recommended
                                             </span>
                                         </Label>
                                         <p className="text-sm text-muted-foreground">
-                                            Modern editor with real-time collaboration support, floating menus, and a clean interface
+                                            Modern editor with real-time
+                                            collaboration support, floating
+                                            menus, and a clean interface
                                         </p>
                                     </div>
                                 </div>
                                 <div className="flex items-start space-x-3 rounded-lg border p-4">
-                                    <RadioGroupItem value="lexical" id="lexical" className="mt-1" />
+                                    <RadioGroupItem
+                                        value="lexical"
+                                        id="lexical"
+                                        className="mt-1"
+                                    />
                                     <div className="space-y-1">
-                                        <Label htmlFor="lexical" className="font-medium cursor-pointer">
+                                        <Label
+                                            htmlFor="lexical"
+                                            className="cursor-pointer font-medium"
+                                        >
                                             Lexical Editor
                                         </Label>
                                         <p className="text-sm text-muted-foreground">
-                                            Lightweight editor by Meta with excellent performance and extensibility
+                                            Lightweight editor by Meta with
+                                            excellent performance and
+                                            extensibility
                                         </p>
                                     </div>
                                 </div>
@@ -90,29 +111,42 @@ export default function Editor({ status }: EditorPageProps) {
 
                         {/* Collaboration Toggle */}
                         <div className="space-y-4">
-                            <Label className="text-base font-medium">Real-time Collaboration</Label>
+                            <Label className="text-base font-medium">
+                                Real-time Collaboration
+                            </Label>
                             <div className="flex items-center justify-between rounded-lg border p-4">
                                 <div className="space-y-1">
-                                    <Label htmlFor="collaboration" className="font-medium cursor-pointer">
+                                    <Label
+                                        htmlFor="collaboration"
+                                        className="cursor-pointer font-medium"
+                                    >
                                         Enable collaboration features
                                     </Label>
                                     <p className="text-sm text-muted-foreground">
-                                        See other users editing in real-time with live cursors, presence indicators, and comments
+                                        See other users editing in real-time
+                                        with live cursors, presence indicators,
+                                        and comments
                                     </p>
                                 </div>
                                 <Switch
                                     id="collaboration"
                                     checked={data.collaboration_enabled}
                                     onCheckedChange={(checked) =>
-                                        setData('collaboration_enabled', checked)
+                                        setData(
+                                            'collaboration_enabled',
+                                            checked,
+                                        )
                                     }
                                 />
                             </div>
-                            {data.editor_preference === 'lexical' && data.collaboration_enabled && (
-                                <p className="text-sm text-amber-600 dark:text-amber-400">
-                                    Note: Real-time collaboration is currently only available with the TipTap editor
-                                </p>
-                            )}
+                            {data.editor_preference === 'lexical' &&
+                                data.collaboration_enabled && (
+                                    <p className="text-sm text-amber-600 dark:text-amber-400">
+                                        Note: Real-time collaboration is
+                                        currently only available with the TipTap
+                                        editor
+                                    </p>
+                                )}
                         </div>
 
                         <div className="flex items-center gap-4">
@@ -120,7 +154,9 @@ export default function Editor({ status }: EditorPageProps) {
                                 Save preferences
                             </Button>
                             {recentlySuccessful && (
-                                <p className="text-sm text-muted-foreground">Saved.</p>
+                                <p className="text-sm text-muted-foreground">
+                                    Saved.
+                                </p>
                             )}
                         </div>
                     </form>

@@ -3,7 +3,10 @@ import { KeyboardProvider } from '@/components/keyboard-provider';
 import { QuickThoughtCaptureButton } from '@/components/quick-thought-capture-button';
 import { useWorkspaceChannel } from '@/hooks/use-workspace-channel';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
-import { LiveblocksProvider, LIVEBLOCKS_AUTH_ENDPOINT } from '@/liveblocks.config';
+import {
+    LIVEBLOCKS_AUTH_ENDPOINT,
+    LiveblocksProvider,
+} from '@/liveblocks.config';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { type ReactNode } from 'react';
@@ -23,7 +26,11 @@ interface UserInfo {
 }
 
 // Inner component that uses workspace channel (must be inside EchoProvider)
-function WorkspaceChannelSubscriber({ workspaceId }: { workspaceId: number | undefined }) {
+function WorkspaceChannelSubscriber({
+    workspaceId,
+}: {
+    workspaceId: number | undefined;
+}) {
     useWorkspaceChannel(workspaceId);
     return null;
 }
@@ -39,12 +46,12 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json',
+                        Accept: 'application/json',
                         'X-XSRF-TOKEN': decodeURIComponent(
                             document.cookie
                                 .split('; ')
-                                .find(row => row.startsWith('XSRF-TOKEN='))
-                                ?.split('=')[1] || ''
+                                .find((row) => row.startsWith('XSRF-TOKEN='))
+                                ?.split('=')[1] || '',
                         ),
                     },
                     credentials: 'include',
@@ -59,25 +66,30 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
             }}
             resolveUsers={async ({ userIds }) => {
                 try {
-                    const response = await fetch(`/api/users?ids=${userIds.join(',')}`, {
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-XSRF-TOKEN': decodeURIComponent(
-                                document.cookie
-                                    .split('; ')
-                                    .find(row => row.startsWith('XSRF-TOKEN='))
-                                    ?.split('=')[1] || ''
-                            ),
+                    const response = await fetch(
+                        `/api/users?ids=${userIds.join(',')}`,
+                        {
+                            headers: {
+                                Accept: 'application/json',
+                                'X-XSRF-TOKEN': decodeURIComponent(
+                                    document.cookie
+                                        .split('; ')
+                                        .find((row) =>
+                                            row.startsWith('XSRF-TOKEN='),
+                                        )
+                                        ?.split('=')[1] || '',
+                                ),
+                            },
+                            credentials: 'include',
                         },
-                        credentials: 'include',
-                    });
+                    );
 
                     if (!response.ok) {
                         throw new Error('Failed to fetch users');
                     }
 
                     const users: UserInfo[] = await response.json();
-                    return users.map(u => ({
+                    return users.map((u) => ({
                         name: u.name,
                         avatar: u.avatar,
                         color: u.color,
@@ -85,39 +97,49 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
                 } catch {
                     // Fallback: return basic user info
                     return userIds.map((id) => ({
-                        name: id === user?.id?.toString() ? user?.name : `User ${id}`,
+                        name:
+                            id === user?.id?.toString()
+                                ? user?.name
+                                : `User ${id}`,
                         color: `hsl(${Math.abs(parseInt(id) * 137) % 360}, 70%, 50%)`,
                     }));
                 }
             }}
             resolveMentionSuggestions={async ({ text }) => {
                 try {
-                    const response = await fetch(`/api/users/search?q=${encodeURIComponent(text)}`, {
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-XSRF-TOKEN': decodeURIComponent(
-                                document.cookie
-                                    .split('; ')
-                                    .find(row => row.startsWith('XSRF-TOKEN='))
-                                    ?.split('=')[1] || ''
-                            ),
+                    const response = await fetch(
+                        `/api/users/search?q=${encodeURIComponent(text)}`,
+                        {
+                            headers: {
+                                Accept: 'application/json',
+                                'X-XSRF-TOKEN': decodeURIComponent(
+                                    document.cookie
+                                        .split('; ')
+                                        .find((row) =>
+                                            row.startsWith('XSRF-TOKEN='),
+                                        )
+                                        ?.split('=')[1] || '',
+                                ),
+                            },
+                            credentials: 'include',
                         },
-                        credentials: 'include',
-                    });
+                    );
 
                     if (!response.ok) {
                         return [];
                     }
 
                     const users: UserInfo[] = await response.json();
-                    return users.map(u => u.id);
+                    return users.map((u) => u.id);
                 } catch {
                     return [];
                 }
             }}
         >
             <EchoProvider userId={user?.id ?? null}>
-                <WorkspaceChannelSubscriber workspaceId={currentWorkspace?.id} />
+                <WorkspaceChannelSubscriber
+                    workspaceId={currentWorkspace?.id}
+                />
                 <KeyboardProvider>
                     <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
                         {children}

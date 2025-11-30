@@ -12,7 +12,6 @@ import { type Subtask } from '@/types/subtask';
 import { router, useForm } from '@inertiajs/react';
 import {
     AlertTriangle,
-    Calendar,
     CheckSquare,
     GripVertical,
     Plus,
@@ -20,7 +19,7 @@ import {
     User,
     X,
 } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface WorkspaceMember {
     id: number;
@@ -38,7 +37,10 @@ interface SubtasksSectionProps {
 function formatDate(dateString: string | null): string {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    return date.toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+    });
 }
 
 function isOverdue(dateString: string | null): boolean {
@@ -90,9 +92,12 @@ function SubtaskItem({
         form.transform((data) => ({
             ...data,
             is_completed: !subtask.is_completed,
-        })).put(`/projects/${projectId}/tasks/${taskId}/subtasks/${subtask.id}`, {
-            preserveScroll: true,
-        });
+        })).put(
+            `/projects/${projectId}/tasks/${taskId}/subtasks/${subtask.id}`,
+            {
+                preserveScroll: true,
+            },
+        );
     };
 
     const handleSaveTitle = () => {
@@ -104,10 +109,13 @@ function SubtaskItem({
         form.transform((data) => ({
             ...data,
             title: editTitle,
-        })).put(`/projects/${projectId}/tasks/${taskId}/subtasks/${subtask.id}`, {
-            preserveScroll: true,
-            onSuccess: () => setIsEditing(false),
-        });
+        })).put(
+            `/projects/${projectId}/tasks/${taskId}/subtasks/${subtask.id}`,
+            {
+                preserveScroll: true,
+                onSuccess: () => setIsEditing(false),
+            },
+        );
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -124,9 +132,12 @@ function SubtaskItem({
         form.transform((data) => ({
             ...data,
             assigned_to: assignedTo,
-        })).put(`/projects/${projectId}/tasks/${taskId}/subtasks/${subtask.id}`, {
-            preserveScroll: true,
-        });
+        })).put(
+            `/projects/${projectId}/tasks/${taskId}/subtasks/${subtask.id}`,
+            {
+                preserveScroll: true,
+            },
+        );
     };
 
     const handleDueDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,29 +145,35 @@ function SubtaskItem({
         form.transform((data) => ({
             ...data,
             due_date: dueDate,
-        })).put(`/projects/${projectId}/tasks/${taskId}/subtasks/${subtask.id}`, {
-            preserveScroll: true,
-        });
+        })).put(
+            `/projects/${projectId}/tasks/${taskId}/subtasks/${subtask.id}`,
+            {
+                preserveScroll: true,
+            },
+        );
     };
 
     const handleDelete = () => {
         if (confirm('Delete this subtask?')) {
-            form.delete(`/projects/${projectId}/tasks/${taskId}/subtasks/${subtask.id}`, {
-                preserveScroll: true,
-            });
+            form.delete(
+                `/projects/${projectId}/tasks/${taskId}/subtasks/${subtask.id}`,
+                {
+                    preserveScroll: true,
+                },
+            );
         }
     };
 
     const overdue = !subtask.is_completed && isOverdue(subtask.due_date);
 
     return (
-        <div className="group flex items-center gap-2 py-2 px-2 -mx-2 rounded hover:bg-muted/50 transition-colors">
+        <div className="group -mx-2 flex items-center gap-2 rounded px-2 py-2 transition-colors hover:bg-muted/50">
             {/* Drag handle / reorder buttons */}
-            <div className="flex flex-col opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex flex-col opacity-0 transition-opacity group-hover:opacity-100">
                 <button
                     onClick={() => onReorder(subtask.id, 'up')}
                     disabled={isFirst}
-                    className="p-0.5 hover:bg-muted rounded disabled:opacity-30"
+                    className="rounded p-0.5 hover:bg-muted disabled:opacity-30"
                     title="Move up"
                 >
                     <GripVertical className="size-3 text-muted-foreground" />
@@ -171,7 +188,7 @@ function SubtaskItem({
             />
 
             {/* Title */}
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
                 {isEditing ? (
                     <Input
                         ref={inputRef}
@@ -184,8 +201,10 @@ function SubtaskItem({
                 ) : (
                     <button
                         onClick={() => setIsEditing(true)}
-                        className={`text-sm text-left w-full truncate ${
-                            subtask.is_completed ? 'line-through text-muted-foreground' : ''
+                        className={`w-full truncate text-left text-sm ${
+                            subtask.is_completed
+                                ? 'text-muted-foreground line-through'
+                                : ''
                         }`}
                     >
                         {subtask.title}
@@ -198,7 +217,7 @@ function SubtaskItem({
                 value={subtask.assigned_to?.toString() ?? 'unassigned'}
                 onValueChange={handleAssigneeChange}
             >
-                <SelectTrigger className="h-7 w-auto min-w-[100px] text-xs border-none shadow-none hover:bg-muted">
+                <SelectTrigger className="h-7 w-auto min-w-[100px] border-none text-xs shadow-none hover:bg-muted">
                     <SelectValue>
                         {subtask.assignee ? (
                             <span className="flex items-center gap-1">
@@ -206,7 +225,7 @@ function SubtaskItem({
                                 {subtask.assignee.name.split(' ')[0]}
                             </span>
                         ) : (
-                            <span className="text-muted-foreground flex items-center gap-1">
+                            <span className="flex items-center gap-1 text-muted-foreground">
                                 <User className="size-3" />
                                 Assign
                             </span>
@@ -216,7 +235,10 @@ function SubtaskItem({
                 <SelectContent>
                     <SelectItem value="unassigned">Unassigned</SelectItem>
                     {workspaceMembers.map((member) => (
-                        <SelectItem key={member.id} value={member.id.toString()}>
+                        <SelectItem
+                            key={member.id}
+                            value={member.id.toString()}
+                        >
                             {member.name}
                         </SelectItem>
                     ))}
@@ -229,12 +251,12 @@ function SubtaskItem({
                     type="date"
                     value={subtask.due_date ?? ''}
                     onChange={handleDueDateChange}
-                    className={`h-7 w-auto text-xs bg-transparent border-none cursor-pointer ${
+                    className={`h-7 w-auto cursor-pointer border-none bg-transparent text-xs ${
                         overdue ? 'text-red-500' : 'text-muted-foreground'
                     }`}
                 />
                 {overdue && (
-                    <AlertTriangle className="absolute -right-4 top-1/2 -translate-y-1/2 size-3 text-red-500" />
+                    <AlertTriangle className="absolute top-1/2 -right-4 size-3 -translate-y-1/2 text-red-500" />
                 )}
             </div>
 
@@ -242,7 +264,7 @@ function SubtaskItem({
             <Button
                 variant="ghost"
                 size="icon"
-                className="size-6 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive"
+                className="size-6 text-destructive opacity-0 transition-opacity group-hover:opacity-100 hover:text-destructive"
                 onClick={handleDelete}
             >
                 <Trash2 className="size-3" />
@@ -274,7 +296,8 @@ export function SubtasksSection({
 
     const completedCount = subtasks.filter((s) => s.is_completed).length;
     const totalCount = subtasks.length;
-    const progressPercent = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+    const progressPercent =
+        totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
     const handleAddSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -300,7 +323,8 @@ export function SubtasksSection({
         const currentIndex = subtasks.findIndex((s) => s.id === subtaskId);
         if (currentIndex === -1) return;
 
-        const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+        const newIndex =
+            direction === 'up' ? currentIndex - 1 : currentIndex + 1;
         if (newIndex < 0 || newIndex >= subtasks.length) return;
 
         // Build new order
@@ -310,11 +334,15 @@ export function SubtasksSection({
 
         const subtaskIds = newOrder.map((s) => s.id);
 
-        router.post(`/projects/${projectId}/tasks/${taskId}/subtasks/reorder`, {
-            subtask_ids: subtaskIds,
-        }, {
-            preserveScroll: true,
-        });
+        router.post(
+            `/projects/${projectId}/tasks/${taskId}/subtasks/reorder`,
+            {
+                subtask_ids: subtaskIds,
+            },
+            {
+                preserveScroll: true,
+            },
+        );
     };
 
     return (
@@ -328,7 +356,7 @@ export function SubtasksSection({
                 </div>
                 {/* Progress bar */}
                 {totalCount > 0 && (
-                    <div className="flex-1 max-w-[120px] h-1.5 bg-muted rounded-full overflow-hidden ml-3">
+                    <div className="ml-3 h-1.5 max-w-[120px] flex-1 overflow-hidden rounded-full bg-muted">
                         <div
                             className="h-full bg-green-500 transition-all duration-300"
                             style={{ width: `${progressPercent}%` }}
@@ -356,7 +384,7 @@ export function SubtasksSection({
             ) : (
                 !isAdding && (
                     <div className="flex flex-col items-center justify-center py-4 text-muted-foreground">
-                        <CheckSquare className="size-6 mb-1 opacity-50" />
+                        <CheckSquare className="mb-1 size-6 opacity-50" />
                         <p className="text-xs">No subtasks yet</p>
                     </div>
                 )
@@ -364,17 +392,28 @@ export function SubtasksSection({
 
             {/* Add subtask form */}
             {isAdding ? (
-                <form onSubmit={handleAddSubmit} className="flex items-center gap-2">
+                <form
+                    onSubmit={handleAddSubmit}
+                    className="flex items-center gap-2"
+                >
                     <Checkbox disabled className="flex-shrink-0 opacity-50" />
                     <Input
                         ref={addInputRef}
                         placeholder="Subtask title..."
                         value={addForm.data.title}
-                        onChange={(e) => addForm.setData('title', e.target.value)}
+                        onChange={(e) =>
+                            addForm.setData('title', e.target.value)
+                        }
                         onKeyDown={handleAddKeyDown}
-                        className="flex-1 h-8 text-sm"
+                        className="h-8 flex-1 text-sm"
                     />
-                    <Button type="submit" size="sm" disabled={addForm.processing || !addForm.data.title.trim()}>
+                    <Button
+                        type="submit"
+                        size="sm"
+                        disabled={
+                            addForm.processing || !addForm.data.title.trim()
+                        }
+                    >
                         Add
                     </Button>
                     <Button
@@ -396,13 +435,15 @@ export function SubtasksSection({
                     className="w-full justify-start text-muted-foreground"
                     onClick={() => setIsAdding(true)}
                 >
-                    <Plus className="size-4 mr-1" />
+                    <Plus className="mr-1 size-4" />
                     Add subtask
                 </Button>
             )}
 
             {addForm.errors.title && (
-                <p className="text-xs text-destructive">{addForm.errors.title}</p>
+                <p className="text-xs text-destructive">
+                    {addForm.errors.title}
+                </p>
             )}
         </div>
     );

@@ -1,6 +1,9 @@
 import { useEcho } from '@/components/echo-provider';
 import { useTimersStore } from '@/stores/timers-store';
-import type { TimeEntryStartedEvent, TimeEntryStoppedEvent } from '@/types/events';
+import type {
+    TimeEntryStartedEvent,
+    TimeEntryStoppedEvent,
+} from '@/types/events';
 import { useEffect } from 'react';
 
 /**
@@ -31,7 +34,10 @@ export function useWorkspaceChannel(workspaceId: number | undefined) {
                 });
             })
             .listen('.time-entry.stopped', (e: TimeEntryStoppedEvent) => {
-                console.log('[Reverb] Workspace timer stopped:', e.timeEntry.id);
+                console.log(
+                    '[Reverb] Workspace timer stopped:',
+                    e.timeEntry.id,
+                );
                 removeActiveTimer(e.timeEntry.id);
             });
 

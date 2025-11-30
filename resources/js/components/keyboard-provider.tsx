@@ -1,5 +1,11 @@
 import { router, usePage } from '@inertiajs/react';
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useState,
+    type ReactNode,
+} from 'react';
 import { CommandPalette } from './command-palette';
 import { KeyboardShortcutsModal } from './keyboard-shortcuts-modal';
 
@@ -36,7 +42,9 @@ export function KeyboardProvider({ children }: KeyboardProviderProps) {
 
         const handleKeyDown = (e: KeyboardEvent) => {
             const target = e.target as HTMLElement;
-            const isInput = ['INPUT', 'TEXTAREA'].includes(target.tagName) || target.isContentEditable;
+            const isInput =
+                ['INPUT', 'TEXTAREA'].includes(target.tagName) ||
+                target.isContentEditable;
 
             // Cmd+K or Ctrl+K - always works
             if ((e.metaKey || e.ctrlKey) && e.key === 'k') {

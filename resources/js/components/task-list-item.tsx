@@ -1,7 +1,7 @@
+import { DueDateBadge } from '@/components/due-date-badge';
 import { type Task } from '@/types/task';
 import { Link } from '@inertiajs/react';
 import {
-    Calendar,
     CheckCircle2,
     CheckSquare,
     Circle,
@@ -41,7 +41,7 @@ function RunningTimer({ startedAt }: { startedAt: string }) {
     }, [startedAt]);
 
     return (
-        <span className="font-mono text-xs tabular-nums text-green-600 dark:text-green-400">
+        <span className="font-mono text-xs text-green-600 tabular-nums dark:text-green-400">
             {formatDuration(elapsed)}
         </span>
     );
@@ -59,10 +59,15 @@ interface TaskListItemProps {
     showProject?: boolean;
 }
 
-export function TaskListItem({ task, projectId, showProject }: TaskListItemProps) {
+export function TaskListItem({
+    task,
+    projectId,
+    showProject,
+}: TaskListItemProps) {
     const isRunning = !!task.running_time_entry;
     const totalTime = task.total_time || 0;
-    const hasRecordings = task.audio_recordings && task.audio_recordings.length > 0;
+    const hasRecordings =
+        task.audio_recordings && task.audio_recordings.length > 0;
     const subtaskCount = task.subtasks_count || task.subtask_count || 0;
     const hasSubtasks = subtaskCount > 0;
     const commentsCount = task.comments_count || 0;
@@ -71,14 +76,16 @@ export function TaskListItem({ task, projectId, showProject }: TaskListItemProps
     return (
         <Link
             href={`/projects/${projectId}/tasks/${task.id}`}
-            className={`block bg-background border border-border/50 rounded-md hover:bg-muted/50 hover:border-border transition-colors ${
-                isRunning ? 'bg-green-500/5 border-green-500/30' : ''
+            className={`block rounded-md border border-border/50 bg-background transition-colors hover:border-border hover:bg-muted/50 ${
+                isRunning ? 'border-green-500/30 bg-green-500/5' : ''
             }`}
         >
             <div className="px-4 py-2.5">
                 <div className="flex items-center gap-3">
                     {/* Priority indicator */}
-                    <div className={`w-1 h-8 rounded-full flex-shrink-0 ${priorityConfig[task.priority].dot}`} />
+                    <div
+                        className={`h-8 w-1 flex-shrink-0 rounded-full ${priorityConfig[task.priority].dot}`}
+                    />
 
                     {/* Status indicator */}
                     <div className="flex-shrink-0">
@@ -92,27 +99,29 @@ export function TaskListItem({ task, projectId, showProject }: TaskListItemProps
                     </div>
 
                     {/* Short code */}
-                    <span className="text-[10px] font-mono text-muted-foreground flex-shrink-0 w-16">
+                    <span className="w-16 flex-shrink-0 font-mono text-[10px] text-muted-foreground">
                         {task.short_code}
                     </span>
 
                     {/* Title, description and labels */}
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                            <p className={`text-sm font-medium flex-shrink-0 ${task.status === 'done' ? 'line-through text-muted-foreground' : ''}`}>
+                            <p
+                                className={`flex-shrink-0 text-sm font-medium ${task.status === 'done' ? 'text-muted-foreground line-through' : ''}`}
+                            >
                                 {task.title}
                             </p>
                             {task.description && (
-                                <span className="text-xs text-muted-foreground truncate">
+                                <span className="truncate text-xs text-muted-foreground">
                                     — {task.description.replace(/<[^>]*>/g, '')}
                                 </span>
                             )}
                             {task.labels && task.labels.length > 0 && (
-                                <div className="flex flex-wrap gap-1 flex-shrink-0">
+                                <div className="flex flex-shrink-0 flex-wrap gap-1">
                                     {task.labels.slice(0, 3).map((label) => (
                                         <span
                                             key={label.id}
-                                            className="inline-flex items-center px-1 py-px rounded text-[9px] font-medium"
+                                            className="inline-flex items-center rounded px-1 py-px text-[9px] font-medium"
                                             style={{
                                                 backgroundColor: `${label.color}20`,
                                                 color: label.color,
@@ -122,7 +131,9 @@ export function TaskListItem({ task, projectId, showProject }: TaskListItemProps
                                         </span>
                                     ))}
                                     {task.labels.length > 3 && (
-                                        <span className="text-[9px] text-muted-foreground">+{task.labels.length - 3}</span>
+                                        <span className="text-[9px] text-muted-foreground">
+                                            +{task.labels.length - 3}
+                                        </span>
                                     )}
                                 </div>
                             )}
@@ -130,71 +141,106 @@ export function TaskListItem({ task, projectId, showProject }: TaskListItemProps
                     </div>
 
                     {/* Metadata section - right aligned */}
-                    <div className="flex items-center gap-3 flex-shrink-0">
+                    <div className="flex flex-shrink-0 items-center gap-3">
                         {/* Project badge */}
                         {showProject && task.project && (
-                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground" title={task.project.name}>
+                            <div
+                                className="flex items-center gap-1 text-[10px] text-muted-foreground"
+                                title={task.project.name}
+                            >
                                 <FolderKanban className="size-3.5" />
-                                <span className="truncate max-w-[80px]">{task.project.name}</span>
+                                <span className="max-w-[80px] truncate">
+                                    {task.project.name}
+                                </span>
                             </div>
                         )}
 
                         {/* Subtask progress */}
                         {hasSubtasks && (
-                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground" title="Subtasks">
+                            <div
+                                className="flex items-center gap-1 text-[10px] text-muted-foreground"
+                                title="Subtasks"
+                            >
                                 <CheckSquare className="size-3.5" />
-                                <span className="tabular-nums">{task.completed_subtask_count || 0}/{subtaskCount}</span>
+                                <span className="tabular-nums">
+                                    {task.completed_subtask_count || 0}/
+                                    {subtaskCount}
+                                </span>
                             </div>
                         )}
 
                         {/* Comments count */}
                         {hasComments && (
-                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground" title="Comments">
+                            <div
+                                className="flex items-center gap-1 text-[10px] text-muted-foreground"
+                                title="Comments"
+                            >
                                 <MessageSquare className="size-3.5" />
-                                <span className="tabular-nums">{commentsCount}</span>
+                                <span className="tabular-nums">
+                                    {commentsCount}
+                                </span>
                             </div>
                         )}
 
                         {/* Audio recordings */}
                         {hasRecordings && (
-                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground" title="Audio recordings">
+                            <div
+                                className="flex items-center gap-1 text-[10px] text-muted-foreground"
+                                title="Audio recordings"
+                            >
                                 <Mic className="size-3.5" />
-                                <span className="tabular-nums">{task.audio_recordings!.length}</span>
+                                <span className="tabular-nums">
+                                    {task.audio_recordings!.length}
+                                </span>
                             </div>
                         )}
 
                         {/* Time tracked */}
                         {(totalTime > 0 || isRunning) && (
-                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground min-w-[60px]" title="Time tracked">
+                            <div
+                                className="flex min-w-[60px] items-center gap-1 text-[10px] text-muted-foreground"
+                                title="Time tracked"
+                            >
                                 <Clock className="size-3.5" />
                                 {isRunning ? (
-                                    <RunningTimer startedAt={task.running_time_entry!.started_at} />
+                                    <RunningTimer
+                                        startedAt={
+                                            task.running_time_entry!.started_at
+                                        }
+                                    />
                                 ) : (
-                                    <span className="tabular-nums">{formatDuration(totalTime)}</span>
+                                    <span className="tabular-nums">
+                                        {formatDuration(totalTime)}
+                                    </span>
                                 )}
                             </div>
                         )}
 
                         {/* Due date */}
                         {task.due_date && (
-                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground min-w-[70px]" title="Due date">
-                                <Calendar className="size-3.5" />
-                                <span>{new Date(task.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
+                            <div className="min-w-[90px]" title="Due date">
+                                <DueDateBadge
+                                    dueDate={task.due_date}
+                                    variant="default"
+                                />
                             </div>
                         )}
 
                         {/* Assignee */}
                         {task.assignee ? (
-                            <div className="flex items-center gap-1.5 min-w-[100px]" title={`Assigned to ${task.assignee.name}`}>
-                                <div className="size-5 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-medium text-primary">
+                            <div
+                                className="flex min-w-[100px] items-center gap-1.5"
+                                title={`Assigned to ${task.assignee.name}`}
+                            >
+                                <div className="flex size-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-medium text-primary">
                                     {task.assignee.name.charAt(0).toUpperCase()}
                                 </div>
-                                <span className="text-[10px] text-muted-foreground truncate max-w-[75px]">
+                                <span className="max-w-[75px] truncate text-[10px] text-muted-foreground">
                                     {task.assignee.name}
                                 </span>
                             </div>
                         ) : (
-                            <div className="flex items-center gap-1.5 min-w-[100px] text-[10px] text-muted-foreground/50">
+                            <div className="flex min-w-[100px] items-center gap-1.5 text-[10px] text-muted-foreground/50">
                                 <User className="size-3.5" />
                                 <span>Unassigned</span>
                             </div>

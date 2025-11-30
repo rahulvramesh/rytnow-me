@@ -36,7 +36,10 @@ interface KeyboardShortcutsModalProps {
     onOpenChange: (open: boolean) => void;
 }
 
-export function KeyboardShortcutsModal({ open, onOpenChange }: KeyboardShortcutsModalProps) {
+export function KeyboardShortcutsModal({
+    open,
+    onOpenChange,
+}: KeyboardShortcutsModalProps) {
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && open) {
@@ -59,14 +62,16 @@ export function KeyboardShortcutsModal({ open, onOpenChange }: KeyboardShortcuts
             />
 
             {/* Dialog */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
-                <div className="bg-background rounded-xl border shadow-2xl overflow-hidden">
+            <div className="absolute top-1/2 left-1/2 w-full max-w-lg -translate-x-1/2 -translate-y-1/2">
+                <div className="overflow-hidden rounded-xl border bg-background shadow-2xl">
                     {/* Header */}
-                    <div className="flex items-center justify-between px-6 py-4 border-b">
-                        <h2 className="text-lg font-semibold">Keyboard Shortcuts</h2>
+                    <div className="flex items-center justify-between border-b px-6 py-4">
+                        <h2 className="text-lg font-semibold">
+                            Keyboard Shortcuts
+                        </h2>
                         <button
                             onClick={() => onOpenChange(false)}
-                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            className="text-muted-foreground transition-colors hover:text-foreground"
                         >
                             <kbd className="inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium">
                                 ESC
@@ -75,10 +80,10 @@ export function KeyboardShortcutsModal({ open, onOpenChange }: KeyboardShortcuts
                     </div>
 
                     {/* Content */}
-                    <div className="p-6 max-h-[60vh] overflow-y-auto space-y-6">
+                    <div className="max-h-[60vh] space-y-6 overflow-y-auto p-6">
                         {shortcutGroups.map((group) => (
                             <div key={group.title}>
-                                <h3 className="text-sm font-medium text-muted-foreground mb-3">
+                                <h3 className="mb-3 text-sm font-medium text-muted-foreground">
                                     {group.title}
                                 </h3>
                                 <div className="space-y-2">
@@ -87,15 +92,20 @@ export function KeyboardShortcutsModal({ open, onOpenChange }: KeyboardShortcuts
                                             key={i}
                                             className="flex items-center justify-between py-1"
                                         >
-                                            <span className="text-sm">{shortcut.description}</span>
+                                            <span className="text-sm">
+                                                {shortcut.description}
+                                            </span>
                                             <div className="flex items-center gap-1">
                                                 {shortcut.keys.map((key, j) => (
                                                     <span key={j}>
                                                         <kbd className="inline-flex h-6 min-w-6 items-center justify-center rounded border bg-muted px-1.5 font-mono text-xs font-medium">
                                                             {key}
                                                         </kbd>
-                                                        {j < shortcut.keys.length - 1 && (
-                                                            <span className="mx-0.5 text-muted-foreground text-xs">
+                                                        {j <
+                                                            shortcut.keys
+                                                                .length -
+                                                                1 && (
+                                                            <span className="mx-0.5 text-xs text-muted-foreground">
                                                                 +
                                                             </span>
                                                         )}
@@ -123,7 +133,9 @@ export function useKeyboardShortcuts() {
             // ? key (when not in an input)
             if (
                 e.key === '?' &&
-                !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)
+                !['INPUT', 'TEXTAREA'].includes(
+                    (e.target as HTMLElement).tagName,
+                )
             ) {
                 e.preventDefault();
                 setOpen(true);

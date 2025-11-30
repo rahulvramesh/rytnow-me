@@ -1,13 +1,22 @@
 import { createEcho, isReverbConfigured } from '@/lib/echo';
 import type Echo from 'laravel-echo';
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useState,
+    type ReactNode,
+} from 'react';
 
 interface EchoContextValue {
     echo: Echo<'reverb'> | null;
     isConnected: boolean;
 }
 
-const EchoContext = createContext<EchoContextValue>({ echo: null, isConnected: false });
+const EchoContext = createContext<EchoContextValue>({
+    echo: null,
+    isConnected: false,
+});
 
 interface EchoProviderProps {
     children: ReactNode;
@@ -15,7 +24,11 @@ interface EchoProviderProps {
     enabled?: boolean;
 }
 
-export function EchoProvider({ children, userId, enabled = true }: EchoProviderProps) {
+export function EchoProvider({
+    children,
+    userId,
+    enabled = true,
+}: EchoProviderProps) {
     const [echo, setEcho] = useState<Echo<'reverb'> | null>(null);
     const [isConnected, setIsConnected] = useState(false);
 
@@ -47,9 +60,12 @@ export function EchoProvider({ children, userId, enabled = true }: EchoProviderP
             }
         });
 
-        echoInstance.connector.pusher.connection.bind('error', (error: unknown) => {
-            console.error('[Echo] Connection error:', error);
-        });
+        echoInstance.connector.pusher.connection.bind(
+            'error',
+            (error: unknown) => {
+                console.error('[Echo] Connection error:', error);
+            },
+        );
 
         return () => {
             isMounted = false;
@@ -59,7 +75,11 @@ export function EchoProvider({ children, userId, enabled = true }: EchoProviderP
         };
     }, [userId, enabled]);
 
-    return <EchoContext.Provider value={{ echo, isConnected }}>{children}</EchoContext.Provider>;
+    return (
+        <EchoContext.Provider value={{ echo, isConnected }}>
+            {children}
+        </EchoContext.Provider>
+    );
 }
 
 export function useEcho() {

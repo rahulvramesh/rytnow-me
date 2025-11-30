@@ -35,7 +35,12 @@ interface ConvertToTaskDialogProps {
     onOpenChange: (open: boolean) => void;
 }
 
-export function ConvertToTaskDialog({ thought, projects, open, onOpenChange }: ConvertToTaskDialogProps) {
+export function ConvertToTaskDialog({
+    thought,
+    projects,
+    open,
+    onOpenChange,
+}: ConvertToTaskDialogProps) {
     const [projectId, setProjectId] = useState<string>('');
     const [title, setTitle] = useState('');
     const [deleteThought, setDeleteThought] = useState(true);
@@ -58,20 +63,24 @@ export function ConvertToTaskDialog({ thought, projects, open, onOpenChange }: C
 
         setIsSubmitting(true);
 
-        router.post(`/quick-thoughts/${thought.id}/convert`, {
-            project_id: projectId,
-            title: title.trim(),
-            delete_thought: deleteThought,
-        }, {
-            preserveScroll: true,
-            onSuccess: () => {
-                setIsSubmitting(false);
-                onOpenChange(false);
+        router.post(
+            `/quick-thoughts/${thought.id}/convert`,
+            {
+                project_id: projectId,
+                title: title.trim(),
+                delete_thought: deleteThought,
             },
-            onError: () => {
-                setIsSubmitting(false);
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setIsSubmitting(false);
+                    onOpenChange(false);
+                },
+                onError: () => {
+                    setIsSubmitting(false);
+                },
             },
-        });
+        );
     };
 
     return (
@@ -80,7 +89,8 @@ export function ConvertToTaskDialog({ thought, projects, open, onOpenChange }: C
                 <DialogHeader>
                     <DialogTitle>Convert to Task</DialogTitle>
                     <DialogDescription>
-                        Create a new task from this thought. The thought content will be used as the task description.
+                        Create a new task from this thought. The thought content
+                        will be used as the task description.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -93,8 +103,11 @@ export function ConvertToTaskDialog({ thought, projects, open, onOpenChange }: C
                             </SelectTrigger>
                             <SelectContent>
                                 {projects.map((project) => (
-                                    <SelectItem key={project.id} value={project.id.toString()}>
-                                        <span className="font-mono text-xs text-muted-foreground mr-2">
+                                    <SelectItem
+                                        key={project.id}
+                                        value={project.id.toString()}
+                                    >
+                                        <span className="mr-2 font-mono text-xs text-muted-foreground">
                                             {project.key}
                                         </span>
                                         {project.name}
@@ -117,7 +130,8 @@ export function ConvertToTaskDialog({ thought, projects, open, onOpenChange }: C
 
                     {thought?.recordings && thought.recordings.length > 0 && (
                         <p className="text-sm text-muted-foreground">
-                            {thought.recordings.length} audio recording(s) will be moved to the task.
+                            {thought.recordings.length} audio recording(s) will
+                            be moved to the task.
                         </p>
                     )}
 
@@ -125,9 +139,14 @@ export function ConvertToTaskDialog({ thought, projects, open, onOpenChange }: C
                         <Checkbox
                             id="delete-thought"
                             checked={deleteThought}
-                            onCheckedChange={(checked) => setDeleteThought(checked === true)}
+                            onCheckedChange={(checked) =>
+                                setDeleteThought(checked === true)
+                            }
                         />
-                        <Label htmlFor="delete-thought" className="text-sm font-normal cursor-pointer">
+                        <Label
+                            htmlFor="delete-thought"
+                            className="cursor-pointer text-sm font-normal"
+                        >
                             Delete thought after creating task
                         </Label>
                     </div>
@@ -141,8 +160,15 @@ export function ConvertToTaskDialog({ thought, projects, open, onOpenChange }: C
                         >
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={!projectId || !title.trim() || isSubmitting}>
-                            {isSubmitting && <Loader2 className="size-4 animate-spin mr-1.5" />}
+                        <Button
+                            type="submit"
+                            disabled={
+                                !projectId || !title.trim() || isSubmitting
+                            }
+                        >
+                            {isSubmitting && (
+                                <Loader2 className="mr-1.5 size-4 animate-spin" />
+                            )}
                             Create Task
                         </Button>
                     </DialogFooter>

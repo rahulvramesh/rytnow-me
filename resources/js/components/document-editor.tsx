@@ -1,16 +1,15 @@
-import { Button } from '@/components/ui/button';
-import { BubbleMenu, EditorContent, FloatingMenu, useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { Table } from '@tiptap/extension-table';
-import { TableRow } from '@tiptap/extension-table-row';
-import { TableCell } from '@tiptap/extension-table-cell';
-import { TableHeader } from '@tiptap/extension-table-header';
-import { Placeholder } from '@tiptap/extension-placeholder';
-import { TaskList } from '@tiptap/extension-task-list';
-import { TaskItem } from '@tiptap/extension-task-item';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 import { Image } from '@tiptap/extension-image';
 import { Link } from '@tiptap/extension-link';
+import { Placeholder } from '@tiptap/extension-placeholder';
+import { Table } from '@tiptap/extension-table';
+import { TableCell } from '@tiptap/extension-table-cell';
+import { TableHeader } from '@tiptap/extension-table-header';
+import { TableRow } from '@tiptap/extension-table-row';
+import { TaskItem } from '@tiptap/extension-task-item';
+import { TaskList } from '@tiptap/extension-task-list';
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import { common, createLowlight } from 'lowlight';
 import {
     Bold,
@@ -47,14 +46,20 @@ interface ToolbarButtonProps {
     title: string;
 }
 
-function ToolbarButton({ onClick, isActive, disabled, children, title }: ToolbarButtonProps) {
+function ToolbarButton({
+    onClick,
+    isActive,
+    disabled,
+    children,
+    title,
+}: ToolbarButtonProps) {
     return (
         <button
             type="button"
             onClick={onClick}
             disabled={disabled}
             title={title}
-            className={`p-1.5 rounded hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+            className={`rounded p-1.5 transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50 ${
                 isActive ? 'bg-muted text-primary' : 'text-muted-foreground'
             }`}
         >
@@ -75,19 +80,22 @@ const slashCommands: SlashCommandItem[] = [
         title: 'Heading 1',
         description: 'Large section heading',
         icon: <Heading1 className="size-4" />,
-        command: (editor) => editor?.chain().focus().toggleHeading({ level: 1 }).run(),
+        command: (editor) =>
+            editor?.chain().focus().toggleHeading({ level: 1 }).run(),
     },
     {
         title: 'Heading 2',
         description: 'Medium section heading',
         icon: <Heading2 className="size-4" />,
-        command: (editor) => editor?.chain().focus().toggleHeading({ level: 2 }).run(),
+        command: (editor) =>
+            editor?.chain().focus().toggleHeading({ level: 2 }).run(),
     },
     {
         title: 'Heading 3',
         description: 'Small section heading',
         icon: <Heading3 className="size-4" />,
-        command: (editor) => editor?.chain().focus().toggleHeading({ level: 3 }).run(),
+        command: (editor) =>
+            editor?.chain().focus().toggleHeading({ level: 3 }).run(),
     },
     {
         title: 'Bullet List',
@@ -129,7 +137,12 @@ const slashCommands: SlashCommandItem[] = [
         title: 'Table',
         description: 'Add a table',
         icon: <TableIcon className="size-4" />,
-        command: (editor) => editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
+        command: (editor) =>
+            editor
+                ?.chain()
+                .focus()
+                .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+                .run(),
     },
 ];
 
@@ -141,7 +154,13 @@ interface SlashCommandMenuProps {
     onImageUpload: () => void;
 }
 
-function SlashCommandMenu({ editor, isOpen, onClose, position, onImageUpload }: SlashCommandMenuProps) {
+function SlashCommandMenu({
+    editor,
+    isOpen,
+    onClose,
+    position,
+    onImageUpload,
+}: SlashCommandMenuProps) {
     const [filter, setFilter] = useState('');
     const [selectedIndex, setSelectedIndex] = useState(0);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -149,18 +168,28 @@ function SlashCommandMenu({ editor, isOpen, onClose, position, onImageUpload }: 
     const filteredCommands = slashCommands.filter(
         (cmd) =>
             cmd.title.toLowerCase().includes(filter.toLowerCase()) ||
-            cmd.description.toLowerCase().includes(filter.toLowerCase())
+            cmd.description.toLowerCase().includes(filter.toLowerCase()),
     );
 
-    const allCommands: (SlashCommandItem | { title: string; description: string; icon: React.ReactNode; isImage: true })[] = [
+    const allCommands: (
+        | SlashCommandItem
+        | {
+              title: string;
+              description: string;
+              icon: React.ReactNode;
+              isImage: true;
+          }
+    )[] = [
         ...filteredCommands,
         ...(filter === '' || 'image'.includes(filter.toLowerCase())
-            ? [{
-                title: 'Image',
-                description: 'Upload an image',
-                icon: <ImageIcon className="size-4" />,
-                isImage: true as const,
-            }]
+            ? [
+                  {
+                      title: 'Image',
+                      description: 'Upload an image',
+                      icon: <ImageIcon className="size-4" />,
+                      isImage: true as const,
+                  },
+              ]
             : []),
     ];
 
@@ -186,7 +215,10 @@ function SlashCommandMenu({ editor, isOpen, onClose, position, onImageUpload }: 
             if (e.key === 'ArrowDown') {
                 setSelectedIndex((prev) => (prev + 1) % allCommands.length);
             } else if (e.key === 'ArrowUp') {
-                setSelectedIndex((prev) => (prev - 1 + allCommands.length) % allCommands.length);
+                setSelectedIndex(
+                    (prev) =>
+                        (prev - 1 + allCommands.length) % allCommands.length,
+                );
             } else if (e.key === 'Enter') {
                 const selected = allCommands[selectedIndex];
                 if (selected) {
@@ -211,32 +243,48 @@ function SlashCommandMenu({ editor, isOpen, onClose, position, onImageUpload }: 
         };
 
         document.addEventListener('keydown', handleKeyDown, true); // Use capture phase
-        return () => document.removeEventListener('keydown', handleKeyDown, true);
-    }, [isOpen, selectedIndex, allCommands, editor, onClose, filter, onImageUpload]);
+        return () =>
+            document.removeEventListener('keydown', handleKeyDown, true);
+    }, [
+        isOpen,
+        selectedIndex,
+        allCommands,
+        editor,
+        onClose,
+        filter,
+        onImageUpload,
+    ]);
 
     if (!isOpen) return null;
 
     return (
         <div
             ref={menuRef}
-            className="fixed z-50 w-64 bg-popover border rounded-lg shadow-lg overflow-hidden"
+            className="fixed z-50 w-64 overflow-hidden rounded-lg border bg-popover shadow-lg"
             style={{ top: position.top, left: position.left }}
         >
             {filter && (
-                <div className="px-3 py-2 border-b text-sm text-muted-foreground">
-                    Filtering: <span className="font-medium text-foreground">{filter}</span>
+                <div className="border-b px-3 py-2 text-sm text-muted-foreground">
+                    Filtering:{' '}
+                    <span className="font-medium text-foreground">
+                        {filter}
+                    </span>
                 </div>
             )}
             <div className="max-h-64 overflow-y-auto p-1">
                 {allCommands.length === 0 ? (
-                    <div className="px-3 py-2 text-sm text-muted-foreground">No commands found</div>
+                    <div className="px-3 py-2 text-sm text-muted-foreground">
+                        No commands found
+                    </div>
                 ) : (
                     allCommands.map((cmd, index) => (
                         <button
                             key={cmd.title}
                             type="button"
-                            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-left ${
-                                index === selectedIndex ? 'bg-muted' : 'hover:bg-muted/50'
+                            className={`flex w-full items-center gap-3 rounded-md px-3 py-2 text-left ${
+                                index === selectedIndex
+                                    ? 'bg-muted'
+                                    : 'hover:bg-muted/50'
                             }`}
                             onClick={() => {
                                 if ('isImage' in cmd) {
@@ -247,12 +295,16 @@ function SlashCommandMenu({ editor, isOpen, onClose, position, onImageUpload }: 
                                 onClose();
                             }}
                         >
-                            <div className="size-8 rounded-md bg-muted flex items-center justify-center">
+                            <div className="flex size-8 items-center justify-center rounded-md bg-muted">
                                 {cmd.icon}
                             </div>
                             <div>
-                                <div className="text-sm font-medium">{cmd.title}</div>
-                                <div className="text-xs text-muted-foreground">{cmd.description}</div>
+                                <div className="text-sm font-medium">
+                                    {cmd.title}
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                    {cmd.description}
+                                </div>
                             </div>
                         </button>
                     ))
@@ -261,7 +313,6 @@ function SlashCommandMenu({ editor, isOpen, onClose, position, onImageUpload }: 
         </div>
     );
 }
-
 
 interface DocumentEditorProps {
     content: string;
@@ -279,9 +330,15 @@ export function DocumentEditor({
     className = '',
 }: DocumentEditorProps) {
     const [slashMenuOpen, setSlashMenuOpen] = useState(false);
-    const [slashMenuPosition, setSlashMenuPosition] = useState({ top: 0, left: 0 });
+    const [slashMenuPosition, setSlashMenuPosition] = useState({
+        top: 0,
+        left: 0,
+    });
     const [isInTable, setIsInTable] = useState(false);
-    const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
+    const [contextMenu, setContextMenu] = useState<{
+        x: number;
+        y: number;
+    } | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const editorContainerRef = useRef<HTMLDivElement>(null);
 
@@ -324,7 +381,7 @@ export function DocumentEditor({
                 if (slashMenuOpen) {
                     return true; // Prevent typing into editor while menu is open
                 }
-                if (event.key === '/' ) {
+                if (event.key === '/') {
                     const { from } = view.state.selection;
                     const coords = view.coordsAtPos(from);
                     setSlashMenuPosition({
@@ -356,22 +413,25 @@ export function DocumentEditor({
         fileInputRef.current?.click();
     }, []);
 
-    const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file || !editor) return;
+    const handleFileChange = useCallback(
+        async (e: React.ChangeEvent<HTMLInputElement>) => {
+            const file = e.target.files?.[0];
+            if (!file || !editor) return;
 
-        try {
-            const url = await onImageUpload(file);
-            editor.chain().focus().setImage({ src: url }).run();
-        } catch (error) {
-            console.error('Image upload failed:', error);
-        }
+            try {
+                const url = await onImageUpload(file);
+                editor.chain().focus().setImage({ src: url }).run();
+            } catch (error) {
+                console.error('Image upload failed:', error);
+            }
 
-        // Reset input
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
-    }, [editor, onImageUpload]);
+            // Reset input
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        },
+        [editor, onImageUpload],
+    );
 
     // Handle paste for images
     useEffect(() => {
@@ -426,7 +486,11 @@ export function DocumentEditor({
 
         const editorElement = document.querySelector('.ProseMirror');
         editorElement?.addEventListener('drop', handleDrop as EventListener);
-        return () => editorElement?.removeEventListener('drop', handleDrop as EventListener);
+        return () =>
+            editorElement?.removeEventListener(
+                'drop',
+                handleDrop as EventListener,
+            );
     }, [editor, onImageUpload]);
 
     const setLink = useCallback(() => {
@@ -440,7 +504,12 @@ export function DocumentEditor({
             return;
         }
 
-        editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+        editor
+            .chain()
+            .focus()
+            .extendMarkRange('link')
+            .setLink({ href: url })
+            .run();
     }, [editor]);
 
     // Handle right-click context menu for tables
@@ -465,7 +534,10 @@ export function DocumentEditor({
         document.addEventListener('keydown', handleClickOutside);
 
         return () => {
-            editorElement?.removeEventListener('contextmenu', handleContextMenu);
+            editorElement?.removeEventListener(
+                'contextmenu',
+                handleContextMenu,
+            );
             document.removeEventListener('click', handleClickOutside);
             document.removeEventListener('keydown', handleClickOutside);
         };
@@ -479,32 +551,40 @@ export function DocumentEditor({
     if (!editor) return null;
 
     return (
-        <div className={`border rounded-lg overflow-hidden bg-background ${className}`}>
+        <div
+            className={`overflow-hidden rounded-lg border bg-background ${className}`}
+        >
             {/* Toolbar */}
-            <div className="flex flex-wrap items-center gap-0.5 p-2 border-b bg-muted/30">
+            <div className="flex flex-wrap items-center gap-0.5 border-b bg-muted/30 p-2">
                 <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                    onClick={() =>
+                        editor.chain().focus().toggleHeading({ level: 1 }).run()
+                    }
                     isActive={editor.isActive('heading', { level: 1 })}
                     title="Heading 1"
                 >
                     <Heading1 className="size-4" />
                 </ToolbarButton>
                 <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                    onClick={() =>
+                        editor.chain().focus().toggleHeading({ level: 2 }).run()
+                    }
                     isActive={editor.isActive('heading', { level: 2 })}
                     title="Heading 2"
                 >
                     <Heading2 className="size-4" />
                 </ToolbarButton>
                 <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                    onClick={() =>
+                        editor.chain().focus().toggleHeading({ level: 3 }).run()
+                    }
                     isActive={editor.isActive('heading', { level: 3 })}
                     title="Heading 3"
                 >
                     <Heading3 className="size-4" />
                 </ToolbarButton>
 
-                <div className="w-px h-5 bg-border mx-1" />
+                <div className="mx-1 h-5 w-px bg-border" />
 
                 <ToolbarButton
                     onClick={() => editor.chain().focus().toggleBold().run()}
@@ -534,52 +614,76 @@ export function DocumentEditor({
                 >
                     <Code className="size-4" />
                 </ToolbarButton>
-                <ToolbarButton onClick={setLink} isActive={editor.isActive('link')} title="Link">
+                <ToolbarButton
+                    onClick={setLink}
+                    isActive={editor.isActive('link')}
+                    title="Link"
+                >
                     <LinkIcon className="size-4" />
                 </ToolbarButton>
 
-                <div className="w-px h-5 bg-border mx-1" />
+                <div className="mx-1 h-5 w-px bg-border" />
 
                 <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleBulletList().run()}
+                    onClick={() =>
+                        editor.chain().focus().toggleBulletList().run()
+                    }
                     isActive={editor.isActive('bulletList')}
                     title="Bullet List"
                 >
                     <List className="size-4" />
                 </ToolbarButton>
                 <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                    onClick={() =>
+                        editor.chain().focus().toggleOrderedList().run()
+                    }
                     isActive={editor.isActive('orderedList')}
                     title="Numbered List"
                 >
                     <ListOrdered className="size-4" />
                 </ToolbarButton>
                 <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleTaskList().run()}
+                    onClick={() =>
+                        editor.chain().focus().toggleTaskList().run()
+                    }
                     isActive={editor.isActive('taskList')}
                     title="Task List"
                 >
                     <ListChecks className="size-4" />
                 </ToolbarButton>
 
-                <div className="w-px h-5 bg-border mx-1" />
+                <div className="mx-1 h-5 w-px bg-border" />
 
                 <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                    onClick={() =>
+                        editor.chain().focus().toggleCodeBlock().run()
+                    }
                     isActive={editor.isActive('codeBlock')}
                     title="Code Block"
                 >
                     <Code className="size-4" />
                 </ToolbarButton>
                 <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                    onClick={() =>
+                        editor.chain().focus().toggleBlockquote().run()
+                    }
                     isActive={editor.isActive('blockquote')}
                     title="Quote"
                 >
                     <Quote className="size-4" />
                 </ToolbarButton>
                 <ToolbarButton
-                    onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+                    onClick={() =>
+                        editor
+                            .chain()
+                            .focus()
+                            .insertTable({
+                                rows: 3,
+                                cols: 3,
+                                withHeaderRow: true,
+                            })
+                            .run()
+                    }
                     title="Insert Table"
                 >
                     <TableIcon className="size-4" />
@@ -588,7 +692,7 @@ export function DocumentEditor({
                     <ImageIcon className="size-4" />
                 </ToolbarButton>
 
-                <div className="w-px h-5 bg-border mx-1" />
+                <div className="mx-1 h-5 w-px bg-border" />
 
                 <ToolbarButton
                     onClick={() => editor.chain().focus().undo().run()}
@@ -608,10 +712,14 @@ export function DocumentEditor({
 
             {/* Table Toolbar - shows when cursor is in a table */}
             {isInTable && (
-                <div className="flex items-center gap-1 p-2 bg-muted/50 border-b">
-                    <span className="text-xs text-muted-foreground mr-2">Table:</span>
+                <div className="flex items-center gap-1 border-b bg-muted/50 p-2">
+                    <span className="mr-2 text-xs text-muted-foreground">
+                        Table:
+                    </span>
                     <ToolbarButton
-                        onClick={() => editor.chain().focus().addRowBefore().run()}
+                        onClick={() =>
+                            editor.chain().focus().addRowBefore().run()
+                        }
                         title="Add row above"
                     >
                         <div className="flex items-center gap-0.5">
@@ -620,7 +728,9 @@ export function DocumentEditor({
                         </div>
                     </ToolbarButton>
                     <ToolbarButton
-                        onClick={() => editor.chain().focus().addRowAfter().run()}
+                        onClick={() =>
+                            editor.chain().focus().addRowAfter().run()
+                        }
                         title="Add row below"
                     >
                         <div className="flex items-center gap-0.5">
@@ -638,10 +748,12 @@ export function DocumentEditor({
                         </div>
                     </ToolbarButton>
 
-                    <div className="w-px h-4 bg-border mx-1" />
+                    <div className="mx-1 h-4 w-px bg-border" />
 
                     <ToolbarButton
-                        onClick={() => editor.chain().focus().addColumnBefore().run()}
+                        onClick={() =>
+                            editor.chain().focus().addColumnBefore().run()
+                        }
                         title="Add column left"
                     >
                         <div className="flex items-center gap-0.5">
@@ -650,7 +762,9 @@ export function DocumentEditor({
                         </div>
                     </ToolbarButton>
                     <ToolbarButton
-                        onClick={() => editor.chain().focus().addColumnAfter().run()}
+                        onClick={() =>
+                            editor.chain().focus().addColumnAfter().run()
+                        }
                         title="Add column right"
                     >
                         <div className="flex items-center gap-0.5">
@@ -659,7 +773,9 @@ export function DocumentEditor({
                         </div>
                     </ToolbarButton>
                     <ToolbarButton
-                        onClick={() => editor.chain().focus().deleteColumn().run()}
+                        onClick={() =>
+                            editor.chain().focus().deleteColumn().run()
+                        }
                         title="Delete column"
                     >
                         <div className="flex items-center gap-0.5 text-destructive">
@@ -668,10 +784,12 @@ export function DocumentEditor({
                         </div>
                     </ToolbarButton>
 
-                    <div className="w-px h-4 bg-border mx-1" />
+                    <div className="mx-1 h-4 w-px bg-border" />
 
                     <ToolbarButton
-                        onClick={() => editor.chain().focus().deleteTable().run()}
+                        onClick={() =>
+                            editor.chain().focus().deleteTable().run()
+                        }
                         title="Delete table"
                     >
                         <div className="flex items-center gap-0.5 text-destructive">
@@ -689,70 +807,106 @@ export function DocumentEditor({
                 {/* Table Context Menu */}
                 {contextMenu && (
                     <div
-                        className="fixed z-50 min-w-[180px] bg-popover border rounded-lg shadow-lg overflow-hidden py-1"
+                        className="fixed z-50 min-w-[180px] overflow-hidden rounded-lg border bg-popover py-1 shadow-lg"
                         style={{ top: contextMenu.y, left: contextMenu.x }}
                     >
-                        <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground border-b mb-1">
+                        <div className="mb-1 border-b px-2 py-1.5 text-xs font-medium text-muted-foreground">
                             Table Actions
                         </div>
                         <button
                             type="button"
-                            className="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-muted text-left"
-                            onClick={() => handleContextMenuAction(() => editor.chain().focus().addRowBefore().run())}
+                            className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-muted"
+                            onClick={() =>
+                                handleContextMenuAction(() =>
+                                    editor.chain().focus().addRowBefore().run(),
+                                )
+                            }
                         >
                             <Rows className="size-4" />
                             Add row above
                         </button>
                         <button
                             type="button"
-                            className="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-muted text-left"
-                            onClick={() => handleContextMenuAction(() => editor.chain().focus().addRowAfter().run())}
+                            className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-muted"
+                            onClick={() =>
+                                handleContextMenuAction(() =>
+                                    editor.chain().focus().addRowAfter().run(),
+                                )
+                            }
                         >
                             <Rows className="size-4" />
                             Add row below
                         </button>
                         <button
                             type="button"
-                            className="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-muted text-left text-destructive"
-                            onClick={() => handleContextMenuAction(() => editor.chain().focus().deleteRow().run())}
+                            className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-destructive hover:bg-muted"
+                            onClick={() =>
+                                handleContextMenuAction(() =>
+                                    editor.chain().focus().deleteRow().run(),
+                                )
+                            }
                         >
                             <Trash2 className="size-4" />
                             Delete row
                         </button>
 
-                        <div className="h-px bg-border my-1" />
+                        <div className="my-1 h-px bg-border" />
 
                         <button
                             type="button"
-                            className="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-muted text-left"
-                            onClick={() => handleContextMenuAction(() => editor.chain().focus().addColumnBefore().run())}
+                            className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-muted"
+                            onClick={() =>
+                                handleContextMenuAction(() =>
+                                    editor
+                                        .chain()
+                                        .focus()
+                                        .addColumnBefore()
+                                        .run(),
+                                )
+                            }
                         >
                             <Columns className="size-4" />
                             Add column left
                         </button>
                         <button
                             type="button"
-                            className="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-muted text-left"
-                            onClick={() => handleContextMenuAction(() => editor.chain().focus().addColumnAfter().run())}
+                            className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-muted"
+                            onClick={() =>
+                                handleContextMenuAction(() =>
+                                    editor
+                                        .chain()
+                                        .focus()
+                                        .addColumnAfter()
+                                        .run(),
+                                )
+                            }
                         >
                             <Columns className="size-4" />
                             Add column right
                         </button>
                         <button
                             type="button"
-                            className="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-muted text-left text-destructive"
-                            onClick={() => handleContextMenuAction(() => editor.chain().focus().deleteColumn().run())}
+                            className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-destructive hover:bg-muted"
+                            onClick={() =>
+                                handleContextMenuAction(() =>
+                                    editor.chain().focus().deleteColumn().run(),
+                                )
+                            }
                         >
                             <Trash2 className="size-4" />
                             Delete column
                         </button>
 
-                        <div className="h-px bg-border my-1" />
+                        <div className="my-1 h-px bg-border" />
 
                         <button
                             type="button"
-                            className="w-full flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-muted text-left text-destructive"
-                            onClick={() => handleContextMenuAction(() => editor.chain().focus().deleteTable().run())}
+                            className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-destructive hover:bg-muted"
+                            onClick={() =>
+                                handleContextMenuAction(() =>
+                                    editor.chain().focus().deleteTable().run(),
+                                )
+                            }
                         >
                             <TableIcon className="size-4" />
                             Delete table

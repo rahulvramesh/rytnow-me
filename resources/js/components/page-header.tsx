@@ -26,17 +26,25 @@ export function PageHeader({
     const { currentWorkspace } = usePage<SharedData>().props;
     const workspaceColor = currentWorkspace?.color ?? '#6366f1';
 
-    const dotColors = useMemo(() => ({
-        color: hexToRgba(workspaceColor, 0.25),
-        darkColor: hexToRgba(workspaceColor, 0.3),
-        glowColor: hexToRgba(workspaceColor, 0.5),
-        darkGlowColor: hexToRgba(workspaceColor, 0.6),
-    }), [workspaceColor]);
+    const dotColors = useMemo(
+        () => ({
+            color: hexToRgba(workspaceColor, 0.25),
+            darkColor: hexToRgba(workspaceColor, 0.3),
+            glowColor: hexToRgba(workspaceColor, 0.5),
+            darkGlowColor: hexToRgba(workspaceColor, 0.6),
+        }),
+        [workspaceColor],
+    );
 
     const showIconBox = icon || iconText;
 
     return (
-        <div className={cn('relative overflow-hidden border-b px-6 py-4', className)}>
+        <div
+            className={cn(
+                'relative overflow-hidden border-b px-6 py-4',
+                className,
+            )}
+        >
             <DottedGlowBackground
                 gap={14}
                 radius={1.5}
@@ -53,11 +61,18 @@ export function PageHeader({
                 <div className="flex items-center gap-3">
                     {showIconBox && (
                         <div
-                            className="size-10 rounded-lg flex items-center justify-center"
-                            style={{ backgroundColor: hexToRgba(workspaceColor, 0.15) }}
+                            className="flex size-10 items-center justify-center rounded-lg"
+                            style={{
+                                backgroundColor: hexToRgba(
+                                    workspaceColor,
+                                    0.15,
+                                ),
+                            }}
                         >
                             {icon ? (
-                                <span style={{ color: workspaceColor }}>{icon}</span>
+                                <span style={{ color: workspaceColor }}>
+                                    {icon}
+                                </span>
                             ) : iconText ? (
                                 <span
                                     className="text-base font-semibold"
@@ -73,23 +88,20 @@ export function PageHeader({
                             <h1 className="text-xl font-semibold">{title}</h1>
                             {titleExtra}
                         </div>
-                        {description && (
-                            typeof description === 'string' ? (
-                                <p className="text-sm text-muted-foreground mt-0.5">
+                        {description &&
+                            (typeof description === 'string' ? (
+                                <p className="mt-0.5 text-sm text-muted-foreground">
                                     {description}
                                 </p>
                             ) : (
-                                <div className="text-sm text-muted-foreground mt-0.5">
+                                <div className="mt-0.5 text-sm text-muted-foreground">
                                     {description}
                                 </div>
-                            )
-                        )}
+                            ))}
                     </div>
                 </div>
                 {children && (
-                    <div className="flex items-center gap-2">
-                        {children}
-                    </div>
+                    <div className="flex items-center gap-2">{children}</div>
                 )}
             </div>
         </div>

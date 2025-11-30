@@ -1,20 +1,19 @@
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
+import { Placeholder } from '@tiptap/extension-placeholder';
 import { Table } from '@tiptap/extension-table';
-import { TableRow } from '@tiptap/extension-table-row';
 import { TableCell } from '@tiptap/extension-table-cell';
 import { TableHeader } from '@tiptap/extension-table-header';
-import { Placeholder } from '@tiptap/extension-placeholder';
+import { TableRow } from '@tiptap/extension-table-row';
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import {
     Bold,
     Italic,
-    Underline,
     List,
     ListOrdered,
-    Undo,
     Redo,
     Strikethrough,
     Table as TableIcon,
+    Undo,
 } from 'lucide-react';
 import { useCallback, useEffect } from 'react';
 
@@ -26,14 +25,20 @@ interface ToolbarButtonProps {
     title: string;
 }
 
-function ToolbarButton({ onClick, isActive, disabled, children, title }: ToolbarButtonProps) {
+function ToolbarButton({
+    onClick,
+    isActive,
+    disabled,
+    children,
+    title,
+}: ToolbarButtonProps) {
     return (
         <button
             type="button"
             onClick={onClick}
             disabled={disabled}
             title={title}
-            className={`p-1.5 rounded hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+            className={`rounded p-1.5 transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50 ${
                 isActive ? 'bg-muted text-primary' : 'text-muted-foreground'
             }`}
         >
@@ -49,7 +54,12 @@ interface TipTapEditorProps {
     className?: string;
 }
 
-export function TipTapEditor({ value, onChange, placeholder = 'Start typing...', className = '' }: TipTapEditorProps) {
+export function TipTapEditor({
+    value,
+    onChange,
+    placeholder = 'Start typing...',
+    className = '',
+}: TipTapEditorProps) {
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
@@ -87,7 +97,11 @@ export function TipTapEditor({ value, onChange, placeholder = 'Start typing...',
 
     const insertTable = useCallback(() => {
         if (editor) {
-            editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: false }).run();
+            editor
+                .chain()
+                .focus()
+                .insertTable({ rows: 3, cols: 3, withHeaderRow: false })
+                .run();
         }
     }, [editor]);
 
@@ -96,9 +110,11 @@ export function TipTapEditor({ value, onChange, placeholder = 'Start typing...',
     }
 
     return (
-        <div className={`border rounded-lg overflow-hidden bg-background ${className}`}>
+        <div
+            className={`overflow-hidden rounded-lg border bg-background ${className}`}
+        >
             {/* Toolbar */}
-            <div className="flex items-center gap-0.5 p-2 border-b bg-muted/30">
+            <div className="flex items-center gap-0.5 border-b bg-muted/30 p-2">
                 <ToolbarButton
                     onClick={() => editor.chain().focus().toggleBold().run()}
                     isActive={editor.isActive('bold')}
@@ -121,33 +137,34 @@ export function TipTapEditor({ value, onChange, placeholder = 'Start typing...',
                     <Strikethrough className="size-4" />
                 </ToolbarButton>
 
-                <div className="w-px h-5 bg-border mx-1" />
+                <div className="mx-1 h-5 w-px bg-border" />
 
                 <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleBulletList().run()}
+                    onClick={() =>
+                        editor.chain().focus().toggleBulletList().run()
+                    }
                     isActive={editor.isActive('bulletList')}
                     title="Bullet List"
                 >
                     <List className="size-4" />
                 </ToolbarButton>
                 <ToolbarButton
-                    onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                    onClick={() =>
+                        editor.chain().focus().toggleOrderedList().run()
+                    }
                     isActive={editor.isActive('orderedList')}
                     title="Numbered List"
                 >
                     <ListOrdered className="size-4" />
                 </ToolbarButton>
 
-                <div className="w-px h-5 bg-border mx-1" />
+                <div className="mx-1 h-5 w-px bg-border" />
 
-                <ToolbarButton
-                    onClick={insertTable}
-                    title="Insert Table (3x3)"
-                >
+                <ToolbarButton onClick={insertTable} title="Insert Table (3x3)">
                     <TableIcon className="size-4" />
                 </ToolbarButton>
 
-                <div className="w-px h-5 bg-border mx-1" />
+                <div className="mx-1 h-5 w-px bg-border" />
 
                 <ToolbarButton
                     onClick={() => editor.chain().focus().undo().run()}

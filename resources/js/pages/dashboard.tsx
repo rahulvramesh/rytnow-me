@@ -1,3 +1,4 @@
+import { DueDateBadge } from '@/components/due-date-badge';
 import { PageHeader } from '@/components/page-header';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
@@ -69,7 +70,10 @@ function StatusIcon({ status }: { status: Task['status'] }) {
 }
 
 export default function Dashboard({ projects, upcomingTasks, stats }: Props) {
-    const completionRate = stats.total_tasks > 0 ? Math.round((stats.completed_tasks / stats.total_tasks) * 100) : 0;
+    const completionRate =
+        stats.total_tasks > 0
+            ? Math.round((stats.completed_tasks / stats.total_tasks) * 100)
+            : 0;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -83,43 +87,64 @@ export default function Dashboard({ projects, upcomingTasks, stats }: Props) {
 
                 <div className="flex-1 overflow-y-auto p-6">
                     {/* Stats Grid */}
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 mb-8">
+                    <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
                         <div className="rounded-lg border bg-card p-4">
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm text-muted-foreground">Projects</span>
+                            <div className="mb-2 flex items-center justify-between">
+                                <span className="text-sm text-muted-foreground">
+                                    Projects
+                                </span>
                                 <FolderOpen className="size-4 text-muted-foreground" />
                             </div>
-                            <div className="text-2xl font-semibold tabular-nums">{stats.total_projects}</div>
-                            <p className="text-xs text-muted-foreground mt-1">{stats.active_projects} active</p>
-                        </div>
-
-                        <div className="rounded-lg border bg-card p-4">
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm text-muted-foreground">Tasks</span>
-                                <Circle className="size-4 text-muted-foreground" />
+                            <div className="text-2xl font-semibold tabular-nums">
+                                {stats.total_projects}
                             </div>
-                            <div className="text-2xl font-semibold tabular-nums">{stats.total_tasks}</div>
-                            <p className="text-xs text-muted-foreground mt-1">
-                                {stats.total_tasks - stats.completed_tasks} pending
+                            <p className="mt-1 text-xs text-muted-foreground">
+                                {stats.active_projects} active
                             </p>
                         </div>
 
                         <div className="rounded-lg border bg-card p-4">
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm text-muted-foreground">Completed</span>
-                                <CheckCircle2 className="size-4 text-green-500" />
+                            <div className="mb-2 flex items-center justify-between">
+                                <span className="text-sm text-muted-foreground">
+                                    Tasks
+                                </span>
+                                <Circle className="size-4 text-muted-foreground" />
                             </div>
-                            <div className="text-2xl font-semibold tabular-nums">{stats.completed_tasks}</div>
-                            <p className="text-xs text-muted-foreground mt-1">tasks done</p>
+                            <div className="text-2xl font-semibold tabular-nums">
+                                {stats.total_tasks}
+                            </div>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                                {stats.total_tasks - stats.completed_tasks}{' '}
+                                pending
+                            </p>
                         </div>
 
                         <div className="rounded-lg border bg-card p-4">
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm text-muted-foreground">Progress</span>
+                            <div className="mb-2 flex items-center justify-between">
+                                <span className="text-sm text-muted-foreground">
+                                    Completed
+                                </span>
+                                <CheckCircle2 className="size-4 text-green-500" />
+                            </div>
+                            <div className="text-2xl font-semibold tabular-nums">
+                                {stats.completed_tasks}
+                            </div>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                                tasks done
+                            </p>
+                        </div>
+
+                        <div className="rounded-lg border bg-card p-4">
+                            <div className="mb-2 flex items-center justify-between">
+                                <span className="text-sm text-muted-foreground">
+                                    Progress
+                                </span>
                                 <TrendingUp className="size-4 text-muted-foreground" />
                             </div>
-                            <div className="text-2xl font-semibold tabular-nums">{completionRate}%</div>
-                            <div className="h-1.5 w-full rounded-full bg-secondary mt-2">
+                            <div className="text-2xl font-semibold tabular-nums">
+                                {completionRate}%
+                            </div>
+                            <div className="mt-2 h-1.5 w-full rounded-full bg-secondary">
                                 <div
                                     className="h-1.5 rounded-full bg-primary transition-all"
                                     style={{ width: `${completionRate}%` }}
@@ -128,25 +153,33 @@ export default function Dashboard({ projects, upcomingTasks, stats }: Props) {
                         </div>
 
                         <div className="rounded-lg border bg-card p-4">
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm text-muted-foreground">Time</span>
+                            <div className="mb-2 flex items-center justify-between">
+                                <span className="text-sm text-muted-foreground">
+                                    Time
+                                </span>
                                 <Clock className="size-4 text-muted-foreground" />
                             </div>
                             <div className="text-2xl font-semibold tabular-nums">
-                                {stats.total_time_tracked > 0 ? formatDuration(stats.total_time_tracked) : '0m'}
+                                {stats.total_time_tracked > 0
+                                    ? formatDuration(stats.total_time_tracked)
+                                    : '0m'}
                             </div>
-                            <p className="text-xs text-muted-foreground mt-1">tracked</p>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                                tracked
+                            </p>
                         </div>
                     </div>
 
                     <div className="grid gap-6 lg:grid-cols-2">
                         {/* Projects */}
                         <div>
-                            <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-sm font-medium">Recent Projects</h2>
+                            <div className="mb-4 flex items-center justify-between">
+                                <h2 className="text-sm font-medium">
+                                    Recent Projects
+                                </h2>
                                 <Link
                                     href="/projects"
-                                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                                    className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
                                 >
                                     View all <ArrowRight className="size-3" />
                                 </Link>
@@ -154,8 +187,10 @@ export default function Dashboard({ projects, upcomingTasks, stats }: Props) {
 
                             {projects.length === 0 ? (
                                 <div className="rounded-lg border border-dashed p-8 text-center">
-                                    <FolderOpen className="size-8 mx-auto text-muted-foreground/50 mb-3" />
-                                    <p className="text-sm text-muted-foreground mb-3">No projects yet</p>
+                                    <FolderOpen className="mx-auto mb-3 size-8 text-muted-foreground/50" />
+                                    <p className="mb-3 text-sm text-muted-foreground">
+                                        No projects yet
+                                    </p>
                                     <Link
                                         href="/projects/create"
                                         className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
@@ -167,40 +202,55 @@ export default function Dashboard({ projects, upcomingTasks, stats }: Props) {
                             ) : (
                                 <div className="space-y-2">
                                     {projects.map((project) => {
-                                        const progress = project.tasks_count > 0
-                                            ? (project.completed_tasks_count / project.tasks_count) * 100
-                                            : 0;
+                                        const progress =
+                                            project.tasks_count > 0
+                                                ? (project.completed_tasks_count /
+                                                      project.tasks_count) *
+                                                  100
+                                                : 0;
 
                                         return (
                                             <Link
                                                 key={project.id}
                                                 href={`/projects/${project.id}`}
-                                                className="flex items-center gap-4 rounded-lg border p-3 hover:bg-muted/50 transition-colors group"
+                                                className="group flex items-center gap-4 rounded-lg border p-3 transition-colors hover:bg-muted/50"
                                             >
-                                                <div className="size-9 rounded-md bg-primary/10 flex items-center justify-center text-sm font-medium text-primary">
-                                                    {project.name.charAt(0).toUpperCase()}
+                                                <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-sm font-medium text-primary">
+                                                    {project.name
+                                                        .charAt(0)
+                                                        .toUpperCase()}
                                                 </div>
-                                                <div className="flex-1 min-w-0">
+                                                <div className="min-w-0 flex-1">
                                                     <div className="flex items-center gap-2">
-                                                        <span className="font-medium truncate group-hover:text-primary transition-colors">
+                                                        <span className="truncate font-medium transition-colors group-hover:text-primary">
                                                             {project.name}
                                                         </span>
                                                     </div>
-                                                    <div className="flex items-center gap-3 mt-1">
+                                                    <div className="mt-1 flex items-center gap-3">
                                                         <span className="text-xs text-muted-foreground">
-                                                            {project.completed_tasks_count}/{project.tasks_count} tasks
+                                                            {
+                                                                project.completed_tasks_count
+                                                            }
+                                                            /
+                                                            {
+                                                                project.tasks_count
+                                                            }{' '}
+                                                            tasks
                                                         </span>
-                                                        {project.tasks_count > 0 && (
-                                                            <div className="flex-1 max-w-24 h-1 rounded-full bg-secondary">
+                                                        {project.tasks_count >
+                                                            0 && (
+                                                            <div className="h-1 max-w-24 flex-1 rounded-full bg-secondary">
                                                                 <div
                                                                     className="h-1 rounded-full bg-primary transition-all"
-                                                                    style={{ width: `${progress}%` }}
+                                                                    style={{
+                                                                        width: `${progress}%`,
+                                                                    }}
                                                                 />
                                                             </div>
                                                         )}
                                                     </div>
                                                 </div>
-                                                <ArrowRight className="size-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                <ArrowRight className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
                                             </Link>
                                         );
                                     })}
@@ -210,51 +260,53 @@ export default function Dashboard({ projects, upcomingTasks, stats }: Props) {
 
                         {/* Upcoming Tasks */}
                         <div>
-                            <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-sm font-medium">Upcoming Tasks</h2>
+                            <div className="mb-4 flex items-center justify-between">
+                                <h2 className="text-sm font-medium">
+                                    Upcoming Tasks
+                                </h2>
                             </div>
 
                             {upcomingTasks.length === 0 ? (
                                 <div className="rounded-lg border border-dashed p-8 text-center">
-                                    <Calendar className="size-8 mx-auto text-muted-foreground/50 mb-3" />
-                                    <p className="text-sm text-muted-foreground">No upcoming tasks</p>
+                                    <Calendar className="mx-auto mb-3 size-8 text-muted-foreground/50" />
+                                    <p className="text-sm text-muted-foreground">
+                                        No upcoming tasks
+                                    </p>
                                 </div>
                             ) : (
                                 <div className="space-y-1">
-                                    {upcomingTasks.map((task) => {
-                                        const isOverdue = task.due_date && new Date(task.due_date) < new Date();
-
-                                        return (
-                                            <Link
-                                                key={task.id}
-                                                href={`/projects/${task.project_id}/tasks/${task.id}`}
-                                                className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-muted/50 transition-colors group"
-                                            >
-                                                <StatusIcon status={task.status} />
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className={`text-sm truncate ${task.status === 'done' ? 'line-through text-muted-foreground' : ''}`}>
-                                                            {task.title}
-                                                        </span>
-                                                        <span className={`size-1.5 rounded-full ${priorityConfig[task.priority].bg}`} />
-                                                    </div>
-                                                    {task.project && (
-                                                        <span className="text-xs text-muted-foreground">
-                                                            {task.project.name}
-                                                        </span>
-                                                    )}
+                                    {upcomingTasks.map((task) => (
+                                        <Link
+                                            key={task.id}
+                                            href={`/projects/${task.project_id}/tasks/${task.id}`}
+                                            className="group flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-muted/50"
+                                        >
+                                            <StatusIcon status={task.status} />
+                                            <div className="min-w-0 flex-1">
+                                                <div className="flex items-center gap-2">
+                                                    <span
+                                                        className={`truncate text-sm ${task.status === 'done' ? 'text-muted-foreground line-through' : ''}`}
+                                                    >
+                                                        {task.title}
+                                                    </span>
+                                                    <span
+                                                        className={`size-1.5 rounded-full ${priorityConfig[task.priority].bg}`}
+                                                    />
                                                 </div>
-                                                {task.due_date && (
-                                                    <span className={`text-xs tabular-nums ${isOverdue ? 'text-red-500' : 'text-muted-foreground'}`}>
-                                                        {new Date(task.due_date).toLocaleDateString(undefined, {
-                                                            month: 'short',
-                                                            day: 'numeric',
-                                                        })}
+                                                {task.project && (
+                                                    <span className="text-xs text-muted-foreground">
+                                                        {task.project.name}
                                                     </span>
                                                 )}
-                                            </Link>
-                                        );
-                                    })}
+                                            </div>
+                                            {task.due_date && (
+                                                <DueDateBadge
+                                                    dueDate={task.due_date}
+                                                    variant="compact"
+                                                />
+                                            )}
+                                        </Link>
+                                    ))}
                                 </div>
                             )}
                         </div>

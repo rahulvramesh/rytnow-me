@@ -23,16 +23,23 @@ function formatFileSize(bytes: number | null): string {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-export function AudioRecordingsList({ projectId, taskId, recordings }: AudioRecordingsListProps) {
+export function AudioRecordingsList({
+    projectId,
+    taskId,
+    recordings,
+}: AudioRecordingsListProps) {
     if (!recordings || recordings.length === 0) {
         return null;
     }
 
     const handleDelete = (recordingId: number) => {
         if (confirm('Delete this recording?')) {
-            router.delete(`/projects/${projectId}/tasks/${taskId}/recordings/${recordingId}`, {
-                preserveScroll: true,
-            });
+            router.delete(
+                `/projects/${projectId}/tasks/${taskId}/recordings/${recordingId}`,
+                {
+                    preserveScroll: true,
+                },
+            );
         }
     };
 
@@ -46,7 +53,7 @@ export function AudioRecordingsList({ projectId, taskId, recordings }: AudioReco
                     <audio
                         src={`/projects/${projectId}/tasks/${taskId}/recordings/${recording.id}`}
                         controls
-                        className="h-8 flex-1 max-w-[300px]"
+                        className="h-8 max-w-[300px] flex-1"
                     />
                     <span className="text-xs text-muted-foreground">
                         {formatDuration(recording.duration)}

@@ -31,8 +31,8 @@ export function ColorPicker({ value, onChange, className }: ColorPickerProps) {
                     type="button"
                     onClick={() => onChange(color)}
                     className={cn(
-                        'size-8 rounded-full transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
-                        value === color && 'ring-2 ring-ring ring-offset-2'
+                        'size-8 rounded-full transition-all hover:scale-110 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none',
+                        value === color && 'ring-2 ring-ring ring-offset-2',
                     )}
                     style={{ backgroundColor: color }}
                     aria-label={`Select color ${color}`}

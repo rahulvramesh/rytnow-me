@@ -24,5 +24,7 @@ export function createEcho(): Echo<'reverb'> {
 }
 
 export function isReverbConfigured(): boolean {
-    return !!(import.meta.env.VITE_REVERB_APP_KEY && import.meta.env.VITE_REVERB_HOST);
+    return !!(
+        import.meta.env.VITE_REVERB_APP_KEY && import.meta.env.VITE_REVERB_HOST
+    );
 }

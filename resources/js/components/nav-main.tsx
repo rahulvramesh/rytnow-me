@@ -1,4 +1,8 @@
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import {
     SidebarGroup,
@@ -26,7 +30,9 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
         if (!projectSearch.trim()) return sidebarProjects;
         const search = projectSearch.toLowerCase();
         return sidebarProjects.filter(
-            (p) => p.name.toLowerCase().includes(search) || p.key.toLowerCase().includes(search)
+            (p) =>
+                p.name.toLowerCase().includes(search) ||
+                p.key.toLowerCase().includes(search),
         );
     }, [sidebarProjects, projectSearch]);
 
@@ -78,24 +84,34 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 <CollapsibleContent>
                                     <SidebarMenuSub>
                                         {/* Search input */}
-                                        {sidebarProjects && sidebarProjects.length > 3 && (
-                                            <div className="px-2 pb-1.5">
-                                                <div className="relative">
-                                                    <Search className="absolute left-2 top-1/2 size-3 -translate-y-1/2 text-muted-foreground" />
-                                                    <Input
-                                                        placeholder="Search..."
-                                                        value={projectSearch}
-                                                        onChange={(e) => setProjectSearch(e.target.value)}
-                                                        className="h-7 pl-7 text-xs"
-                                                    />
+                                        {sidebarProjects &&
+                                            sidebarProjects.length > 3 && (
+                                                <div className="px-2 pb-1.5">
+                                                    <div className="relative">
+                                                        <Search className="absolute top-1/2 left-2 size-3 -translate-y-1/2 text-muted-foreground" />
+                                                        <Input
+                                                            placeholder="Search..."
+                                                            value={
+                                                                projectSearch
+                                                            }
+                                                            onChange={(e) =>
+                                                                setProjectSearch(
+                                                                    e.target
+                                                                        .value,
+                                                                )
+                                                            }
+                                                            className="h-7 pl-7 text-xs"
+                                                        />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
+                                            )}
                                         {/* All Projects link */}
                                         <SidebarMenuSubItem>
                                             <SidebarMenuSubButton
                                                 asChild
-                                                isActive={page.url === '/projects'}
+                                                isActive={
+                                                    page.url === '/projects'
+                                                }
                                             >
                                                 <Link href="/projects" prefetch>
                                                     <LayoutGrid className="size-3.5" />
@@ -105,26 +121,38 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                         </SidebarMenuSubItem>
                                         {/* Individual projects */}
                                         {filteredProjects.map((project) => (
-                                            <SidebarMenuSubItem key={project.id}>
+                                            <SidebarMenuSubItem
+                                                key={project.id}
+                                            >
                                                 <SidebarMenuSubButton
                                                     asChild
-                                                    isActive={page.url.startsWith(`/projects/${project.id}`)}
+                                                    isActive={page.url.startsWith(
+                                                        `/projects/${project.id}`,
+                                                    )}
                                                 >
-                                                    <Link href={`/projects/${project.id}`} prefetch>
+                                                    <Link
+                                                        href={`/projects/${project.id}`}
+                                                        prefetch
+                                                    >
                                                         <Folder className="size-3.5" />
-                                                        <span className="truncate">{project.name}</span>
+                                                        <span className="truncate">
+                                                            {project.name}
+                                                        </span>
                                                     </Link>
                                                 </SidebarMenuSubButton>
                                             </SidebarMenuSubItem>
                                         ))}
-                                        {sidebarProjects && sidebarProjects.length > 0 && filteredProjects.length === 0 && (
-                                            <SidebarMenuSubItem>
-                                                <span className="px-2 py-1.5 text-xs text-muted-foreground">
-                                                    No matches found
-                                                </span>
-                                            </SidebarMenuSubItem>
-                                        )}
-                                        {(!sidebarProjects || sidebarProjects.length === 0) && (
+                                        {sidebarProjects &&
+                                            sidebarProjects.length > 0 &&
+                                            filteredProjects.length === 0 && (
+                                                <SidebarMenuSubItem>
+                                                    <span className="px-2 py-1.5 text-xs text-muted-foreground">
+                                                        No matches found
+                                                    </span>
+                                                </SidebarMenuSubItem>
+                                            )}
+                                        {(!sidebarProjects ||
+                                            sidebarProjects.length === 0) && (
                                             <SidebarMenuSubItem>
                                                 <span className="px-2 py-1.5 text-xs text-muted-foreground">
                                                     No projects yet

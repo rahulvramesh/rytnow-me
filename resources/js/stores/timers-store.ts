@@ -32,12 +32,17 @@ export const useTimersStore = create<TimersStore>((set) => ({
     addActiveTimer: (timer) =>
         set((state) => ({
             // Remove any existing timer for this user first
-            activeTimers: [...state.activeTimers.filter((t) => t.userId !== timer.userId), timer],
+            activeTimers: [
+                ...state.activeTimers.filter((t) => t.userId !== timer.userId),
+                timer,
+            ],
         })),
 
     removeActiveTimer: (timeEntryId) =>
         set((state) => ({
-            activeTimers: state.activeTimers.filter((t) => t.timeEntryId !== timeEntryId),
+            activeTimers: state.activeTimers.filter(
+                (t) => t.timeEntryId !== timeEntryId,
+            ),
         })),
 
     removeUserTimer: (userId) =>

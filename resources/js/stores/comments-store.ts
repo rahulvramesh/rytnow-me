@@ -30,7 +30,9 @@ export const useCommentsStore = create<CommentsStore>((set) => ({
 
     updateComment: (commentId, changes) =>
         set((state) => ({
-            comments: state.comments.map((c) => (c.id === commentId ? { ...c, ...changes } : c)),
+            comments: state.comments.map((c) =>
+                c.id === commentId ? { ...c, ...changes } : c,
+            ),
         })),
 
     removeComment: (commentId) =>

@@ -63,11 +63,14 @@ function TimeEntryItem({ entry, projectId, taskId }: TimeEntryItemProps) {
 
     const handleSave = async () => {
         setIsSaving(true);
-        const response = await fetch(`/projects/${projectId}/tasks/${taskId}/time/${entry.id}`, {
-            method: 'PUT',
-            headers: fetchHeaders(),
-            body: JSON.stringify({ description: note }),
-        });
+        const response = await fetch(
+            `/projects/${projectId}/tasks/${taskId}/time/${entry.id}`,
+            {
+                method: 'PUT',
+                headers: fetchHeaders(),
+                body: JSON.stringify({ description: note }),
+            },
+        );
 
         if (response.ok) {
             setIsEditing(false);
@@ -78,19 +81,22 @@ function TimeEntryItem({ entry, projectId, taskId }: TimeEntryItemProps) {
 
     const handleDelete = () => {
         if (confirm('Delete this time entry?')) {
-            router.delete(`/projects/${projectId}/tasks/${taskId}/time/${entry.id}`, {
-                preserveScroll: true,
-            });
+            router.delete(
+                `/projects/${projectId}/tasks/${taskId}/time/${entry.id}`,
+                {
+                    preserveScroll: true,
+                },
+            );
         }
     };
 
     const isRunning = !entry.stopped_at;
 
     return (
-        <div className="group border rounded-xl p-5 hover:border-primary/50 transition-colors bg-card">
+        <div className="group rounded-xl border bg-card p-5 transition-colors hover:border-primary/50">
             <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
+                <div className="min-w-0 flex-1">
+                    <div className="mb-2 flex items-center gap-2">
                         {isRunning ? (
                             <span className="flex items-center gap-2 text-green-600 dark:text-green-400">
                                 <span className="size-2.5 animate-pulse rounded-full bg-green-500" />
@@ -106,14 +112,16 @@ function TimeEntryItem({ entry, projectId, taskId }: TimeEntryItemProps) {
                         <span>{formatTime(entry.started_at)}</span>
                         {entry.stopped_at && (
                             <>
-                                <span className="text-muted-foreground/50">→</span>
+                                <span className="text-muted-foreground/50">
+                                    →
+                                </span>
                                 <span>{formatTime(entry.stopped_at)}</span>
                             </>
                         )}
                     </div>
                 </div>
                 {!isRunning && (
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                         <Button
                             variant="ghost"
                             size="icon"
@@ -145,7 +153,11 @@ function TimeEntryItem({ entry, projectId, taskId }: TimeEntryItemProps) {
                         className="text-sm"
                     />
                     <div className="flex gap-2">
-                        <Button size="sm" onClick={handleSave} disabled={isSaving}>
+                        <Button
+                            size="sm"
+                            onClick={handleSave}
+                            disabled={isSaving}
+                        >
                             {isSaving ? 'Saving...' : 'Save'}
                         </Button>
                         <Button
@@ -156,13 +168,13 @@ function TimeEntryItem({ entry, projectId, taskId }: TimeEntryItemProps) {
                                 setNote(entry.description || '');
                             }}
                         >
-                            <X className="size-3 mr-1" />
+                            <X className="mr-1 size-3" />
                             Cancel
                         </Button>
                     </div>
                 </div>
             ) : entry.description ? (
-                <p className="mt-4 text-sm text-muted-foreground bg-muted/50 rounded-lg px-4 py-3">
+                <p className="mt-4 rounded-lg bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
                     {entry.description}
                 </p>
             ) : null}
@@ -170,7 +182,12 @@ function TimeEntryItem({ entry, projectId, taskId }: TimeEntryItemProps) {
     );
 }
 
-export function TimeEntriesSheet({ projectId, taskId, timeEntries, totalTime }: TimeEntriesSheetProps) {
+export function TimeEntriesSheet({
+    projectId,
+    taskId,
+    timeEntries,
+    totalTime,
+}: TimeEntriesSheetProps) {
     const [showAddForm, setShowAddForm] = useState(false);
     const [hours, setHours] = useState('0');
     const [minutes, setMinutes] = useState('0');
@@ -196,27 +213,34 @@ export function TimeEntriesSheet({ projectId, taskId, timeEntries, totalTime }: 
                     setIsAdding(false);
                 },
                 onError: () => setIsAdding(false),
-            }
+            },
         );
     };
 
     // Group entries by date
-    const entriesByDate = timeEntries.reduce((acc, entry) => {
-        const date = formatDate(entry.started_at);
-        if (!acc[date]) acc[date] = [];
-        acc[date].push(entry);
-        return acc;
-    }, {} as Record<string, TimeEntry[]>);
+    const entriesByDate = timeEntries.reduce(
+        (acc, entry) => {
+            const date = formatDate(entry.started_at);
+            if (!acc[date]) acc[date] = [];
+            acc[date].push(entry);
+            return acc;
+        },
+        {} as Record<string, TimeEntry[]>,
+    );
 
     return (
         <Sheet>
             <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="gap-1.5 text-muted-foreground hover:text-foreground"
+                >
                     <History className="size-4" />
                     View All
                 </Button>
             </SheetTrigger>
-            <SheetContent className="w-full sm:max-w-lg overflow-y-auto p-6">
+            <SheetContent className="w-full overflow-y-auto p-6 sm:max-w-lg">
                 <SheetHeader className="pb-6">
                     <SheetTitle className="flex items-center gap-2 text-lg">
                         <Clock className="size-5" />
@@ -225,11 +249,16 @@ export function TimeEntriesSheet({ projectId, taskId, timeEntries, totalTime }: 
                 </SheetHeader>
 
                 {/* Summary */}
-                <div className="bg-muted/50 rounded-xl p-5 mb-8">
-                    <div className="text-sm text-muted-foreground mb-1">Total Time Logged</div>
-                    <div className="text-3xl font-bold">{formatDuration(totalTime)}</div>
-                    <div className="text-sm text-muted-foreground mt-1">
-                        {timeEntries.length} {timeEntries.length === 1 ? 'entry' : 'entries'}
+                <div className="mb-8 rounded-xl bg-muted/50 p-5">
+                    <div className="mb-1 text-sm text-muted-foreground">
+                        Total Time Logged
+                    </div>
+                    <div className="text-3xl font-bold">
+                        {formatDuration(totalTime)}
+                    </div>
+                    <div className="mt-1 text-sm text-muted-foreground">
+                        {timeEntries.length}{' '}
+                        {timeEntries.length === 1 ? 'entry' : 'entries'}
                     </div>
                 </div>
 
@@ -237,40 +266,46 @@ export function TimeEntriesSheet({ projectId, taskId, timeEntries, totalTime }: 
                 {!showAddForm ? (
                     <Button
                         variant="outline"
-                        className="w-full mb-8 gap-2 h-11"
+                        className="mb-8 h-11 w-full gap-2"
                         onClick={() => setShowAddForm(true)}
                     >
                         <Plus className="size-4" />
                         Add Manual Entry
                     </Button>
                 ) : (
-                    <div className="border rounded-xl p-5 mb-8 space-y-4">
+                    <div className="mb-8 space-y-4 rounded-xl border p-5">
                         <div className="font-medium">Add Time Entry</div>
                         <div className="flex gap-4">
                             <div className="flex-1">
-                                <label className="text-xs text-muted-foreground">Hours</label>
+                                <label className="text-xs text-muted-foreground">
+                                    Hours
+                                </label>
                                 <input
                                     type="number"
                                     min="0"
                                     value={hours}
                                     onChange={(e) => setHours(e.target.value)}
-                                    className="w-full mt-1 rounded-md border bg-background px-3 py-2 text-sm"
+                                    className="mt-1 w-full rounded-md border bg-background px-3 py-2 text-sm"
                                 />
                             </div>
                             <div className="flex-1">
-                                <label className="text-xs text-muted-foreground">Minutes</label>
+                                <label className="text-xs text-muted-foreground">
+                                    Minutes
+                                </label>
                                 <input
                                     type="number"
                                     min="0"
                                     max="59"
                                     value={minutes}
                                     onChange={(e) => setMinutes(e.target.value)}
-                                    className="w-full mt-1 rounded-md border bg-background px-3 py-2 text-sm"
+                                    className="mt-1 w-full rounded-md border bg-background px-3 py-2 text-sm"
                                 />
                             </div>
                         </div>
                         <div>
-                            <label className="text-xs text-muted-foreground">Note (optional)</label>
+                            <label className="text-xs text-muted-foreground">
+                                Note (optional)
+                            </label>
                             <Textarea
                                 placeholder="What did you work on?"
                                 value={description}
@@ -280,7 +315,11 @@ export function TimeEntriesSheet({ projectId, taskId, timeEntries, totalTime }: 
                             />
                         </div>
                         <div className="flex gap-2">
-                            <Button onClick={handleAddEntry} disabled={isAdding} className="flex-1">
+                            <Button
+                                onClick={handleAddEntry}
+                                disabled={isAdding}
+                                className="flex-1"
+                            >
                                 {isAdding ? 'Adding...' : 'Add Entry'}
                             </Button>
                             <Button
@@ -300,30 +339,36 @@ export function TimeEntriesSheet({ projectId, taskId, timeEntries, totalTime }: 
 
                 {/* Entries List */}
                 {timeEntries.length === 0 ? (
-                    <div className="text-center py-16 text-muted-foreground">
-                        <Clock className="size-14 mx-auto mb-4 opacity-30" />
-                        <p className="font-medium text-base">No time entries yet</p>
-                        <p className="text-sm mt-1">Start the timer or add a manual entry</p>
+                    <div className="py-16 text-center text-muted-foreground">
+                        <Clock className="mx-auto mb-4 size-14 opacity-30" />
+                        <p className="text-base font-medium">
+                            No time entries yet
+                        </p>
+                        <p className="mt-1 text-sm">
+                            Start the timer or add a manual entry
+                        </p>
                     </div>
                 ) : (
                     <div className="space-y-8">
-                        {Object.entries(entriesByDate).map(([date, entries]) => (
-                            <div key={date}>
-                                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-1">
-                                    {date}
+                        {Object.entries(entriesByDate).map(
+                            ([date, entries]) => (
+                                <div key={date}>
+                                    <div className="mb-4 px-1 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                                        {date}
+                                    </div>
+                                    <div className="space-y-3">
+                                        {entries.map((entry) => (
+                                            <TimeEntryItem
+                                                key={entry.id}
+                                                entry={entry}
+                                                projectId={projectId}
+                                                taskId={taskId}
+                                            />
+                                        ))}
+                                    </div>
                                 </div>
-                                <div className="space-y-3">
-                                    {entries.map((entry) => (
-                                        <TimeEntryItem
-                                            key={entry.id}
-                                            entry={entry}
-                                            projectId={projectId}
-                                            taskId={taskId}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
+                            ),
+                        )}
                     </div>
                 )}
             </SheetContent>

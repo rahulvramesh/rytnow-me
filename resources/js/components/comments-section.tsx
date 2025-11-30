@@ -48,7 +48,12 @@ interface CommentItemProps {
     currentUserId: number;
 }
 
-function CommentItem({ comment, projectId, taskId, currentUserId }: CommentItemProps) {
+function CommentItem({
+    comment,
+    projectId,
+    taskId,
+    currentUserId,
+}: CommentItemProps) {
     const [isEditing, setIsEditing] = useState(false);
     const isOwner = comment.user_id === currentUserId;
 
@@ -58,17 +63,23 @@ function CommentItem({ comment, projectId, taskId, currentUserId }: CommentItemP
 
     const handleUpdate = (e: React.FormEvent) => {
         e.preventDefault();
-        editForm.put(`/projects/${projectId}/tasks/${taskId}/comments/${comment.id}`, {
-            preserveScroll: true,
-            onSuccess: () => setIsEditing(false),
-        });
+        editForm.put(
+            `/projects/${projectId}/tasks/${taskId}/comments/${comment.id}`,
+            {
+                preserveScroll: true,
+                onSuccess: () => setIsEditing(false),
+            },
+        );
     };
 
     const handleDelete = () => {
         if (confirm('Delete this comment?')) {
-            editForm.delete(`/projects/${projectId}/tasks/${taskId}/comments/${comment.id}`, {
-                preserveScroll: true,
-            });
+            editForm.delete(
+                `/projects/${projectId}/tasks/${taskId}/comments/${comment.id}`,
+                {
+                    preserveScroll: true,
+                },
+            );
         }
     };
 
@@ -76,22 +87,31 @@ function CommentItem({ comment, projectId, taskId, currentUserId }: CommentItemP
 
     return (
         <div className="flex gap-3">
-            <div className={`flex-shrink-0 size-8 rounded-full flex items-center justify-center text-xs font-medium ${isTimeEntryNote ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-primary/10 text-primary'}`}>
+            <div
+                className={`flex size-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-medium ${isTimeEntryNote ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-primary/10 text-primary'}`}
+            >
                 {isTimeEntryNote ? (
                     <Clock className="size-4" />
+                ) : comment.user ? (
+                    getInitials(comment.user.name)
                 ) : (
-                    comment.user ? getInitials(comment.user.name) : '?'
+                    '?'
                 )}
             </div>
-            <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-medium text-sm">{comment.user?.name || 'Unknown'}</span>
+            <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-sm font-medium">
+                        {comment.user?.name || 'Unknown'}
+                    </span>
                     {isTimeEntryNote && comment.time_entry?.duration && (
-                        <span className="text-xs px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                            Time logged: {formatDuration(comment.time_entry.duration)}
+                        <span className="rounded bg-blue-100 px-1.5 py-0.5 text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                            Time logged:{' '}
+                            {formatDuration(comment.time_entry.duration)}
                         </span>
                     )}
-                    <span className="text-xs text-muted-foreground">{formatRelativeTime(comment.created_at)}</span>
+                    <span className="text-xs text-muted-foreground">
+                        {formatRelativeTime(comment.created_at)}
+                    </span>
                     {isOwner && !isEditing && !isTimeEntryNote && (
                         <div className="ml-auto flex items-center gap-1">
                             <Button
@@ -117,15 +137,23 @@ function CommentItem({ comment, projectId, taskId, currentUserId }: CommentItemP
                     <form onSubmit={handleUpdate} className="mt-2">
                         <textarea
                             value={editForm.data.content}
-                            onChange={(e) => editForm.setData('content', e.target.value)}
-                            className="w-full rounded-md border bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+                            onChange={(e) =>
+                                editForm.setData('content', e.target.value)
+                            }
+                            className="w-full resize-none rounded-md border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-ring focus:outline-none"
                             rows={3}
                         />
                         {editForm.errors.content && (
-                            <p className="text-xs text-destructive mt-1">{editForm.errors.content}</p>
+                            <p className="mt-1 text-xs text-destructive">
+                                {editForm.errors.content}
+                            </p>
                         )}
-                        <div className="flex gap-2 mt-2">
-                            <Button type="submit" size="sm" disabled={editForm.processing}>
+                        <div className="mt-2 flex gap-2">
+                            <Button
+                                type="submit"
+                                size="sm"
+                                disabled={editForm.processing}
+                            >
                                 Save
                             </Button>
                             <Button
@@ -134,23 +162,32 @@ function CommentItem({ comment, projectId, taskId, currentUserId }: CommentItemP
                                 size="sm"
                                 onClick={() => {
                                     setIsEditing(false);
-                                    editForm.setData('content', comment.content);
+                                    editForm.setData(
+                                        'content',
+                                        comment.content,
+                                    );
                                 }}
                             >
-                                <X className="size-3 mr-1" />
+                                <X className="mr-1 size-3" />
                                 Cancel
                             </Button>
                         </div>
                     </form>
                 ) : (
-                    <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{comment.content}</p>
+                    <p className="mt-1 text-sm whitespace-pre-wrap text-muted-foreground">
+                        {comment.content}
+                    </p>
                 )}
             </div>
         </div>
     );
 }
 
-export function CommentsSection({ projectId, taskId, comments }: CommentsSectionProps) {
+export function CommentsSection({
+    projectId,
+    taskId,
+    comments,
+}: CommentsSectionProps) {
     const { auth } = usePage().props as { auth: { user: { id: number } } };
     const currentUserId = auth.user.id;
 
@@ -175,17 +212,25 @@ export function CommentsSection({ projectId, taskId, comments }: CommentsSection
                     <textarea
                         placeholder="Add a comment..."
                         value={form.data.content}
-                        onChange={(e) => form.setData('content', e.target.value)}
-                        className="flex-1 rounded-md border bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring min-h-[80px]"
+                        onChange={(e) =>
+                            form.setData('content', e.target.value)
+                        }
+                        className="min-h-[80px] flex-1 resize-none rounded-md border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-ring focus:outline-none"
                         rows={2}
                     />
                 </div>
                 {form.errors.content && (
-                    <p className="text-xs text-destructive mt-1">{form.errors.content}</p>
+                    <p className="mt-1 text-xs text-destructive">
+                        {form.errors.content}
+                    </p>
                 )}
-                <div className="flex justify-end mt-2">
-                    <Button type="submit" size="sm" disabled={form.processing || !form.data.content.trim()}>
-                        <Send className="size-3 mr-1" />
+                <div className="mt-2 flex justify-end">
+                    <Button
+                        type="submit"
+                        size="sm"
+                        disabled={form.processing || !form.data.content.trim()}
+                    >
+                        <Send className="mr-1 size-3" />
                         Comment
                     </Button>
                 </div>
@@ -205,7 +250,7 @@ export function CommentsSection({ projectId, taskId, comments }: CommentsSection
                 </div>
             ) : (
                 <div className="flex flex-col items-center justify-center py-6 text-muted-foreground">
-                    <MessageSquare className="size-8 mb-2 opacity-50" />
+                    <MessageSquare className="mb-2 size-8 opacity-50" />
                     <p className="text-sm">No comments yet</p>
                     <p className="text-xs">Be the first to comment</p>
                 </div>

@@ -1,12 +1,25 @@
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type Project } from '@/types/project';
 import { Head, Link, router } from '@inertiajs/react';
-import { Calendar, FolderKanban, FolderOpen, Plus, Search, X } from 'lucide-react';
+import {
+    Calendar,
+    FolderKanban,
+    FolderOpen,
+    Plus,
+    Search,
+    X,
+} from 'lucide-react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -14,10 +27,21 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Projects', href: '/projects' },
 ];
 
-const statusConfig: Record<Project['status'], { label: string; color: string; bg: string }> = {
+const statusConfig: Record<
+    Project['status'],
+    { label: string; color: string; bg: string }
+> = {
     active: { label: 'Active', color: 'text-green-600', bg: 'bg-green-500' },
-    on_hold: { label: 'On Hold', color: 'text-yellow-600', bg: 'bg-yellow-500' },
-    completed: { label: 'Completed', color: 'text-blue-600', bg: 'bg-blue-500' },
+    on_hold: {
+        label: 'On Hold',
+        color: 'text-yellow-600',
+        bg: 'bg-yellow-500',
+    },
+    completed: {
+        label: 'Completed',
+        color: 'text-blue-600',
+        bg: 'bg-blue-500',
+    },
     archived: { label: 'Archived', color: 'text-gray-500', bg: 'bg-gray-400' },
 };
 
@@ -40,7 +64,11 @@ export default function ProjectsIndex({ projects, filters }: Props) {
         if (searchVal) params.set('search', searchVal);
         if (statusVal && statusVal !== 'all') params.set('status', statusVal);
 
-        router.get(`/projects?${params.toString()}`, {}, { preserveState: true, replace: true });
+        router.get(
+            `/projects?${params.toString()}`,
+            {},
+            { preserveState: true, replace: true },
+        );
     };
 
     const clearFilters = () => {
@@ -61,16 +89,16 @@ export default function ProjectsIndex({ projects, filters }: Props) {
                 >
                     <Button asChild>
                         <Link href="/projects/create">
-                            <Plus className="size-4 mr-1.5" />
+                            <Plus className="mr-1.5 size-4" />
                             New Project
                         </Link>
                     </Button>
                 </PageHeader>
 
                 {/* Filters */}
-                <div className="border-b px-6 py-3 flex items-center gap-3">
-                    <div className="relative flex-1 max-w-xs">
-                        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <div className="flex items-center gap-3 border-b px-6 py-3">
+                    <div className="relative max-w-xs flex-1">
+                        <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             placeholder="Search projects..."
                             value={search}
@@ -80,14 +108,16 @@ export default function ProjectsIndex({ projects, filters }: Props) {
                                     applyFilters({ search });
                                 }
                             }}
-                            className="pl-9 h-9"
+                            className="h-9 pl-9"
                         />
                     </div>
                     <Select
                         value={filters.status || 'all'}
-                        onValueChange={(value) => applyFilters({ status: value })}
+                        onValueChange={(value) =>
+                            applyFilters({ status: value })
+                        }
                     >
-                        <SelectTrigger className="w-[140px] h-9">
+                        <SelectTrigger className="h-9 w-[140px]">
                             <SelectValue placeholder="All statuses" />
                         </SelectTrigger>
                         <SelectContent>
@@ -99,8 +129,12 @@ export default function ProjectsIndex({ projects, filters }: Props) {
                         </SelectContent>
                     </Select>
                     {hasFilters && (
-                        <Button variant="ghost" size="sm" onClick={clearFilters}>
-                            <X className="size-4 mr-1" />
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={clearFilters}
+                        >
+                            <X className="mr-1 size-4" />
                             Clear
                         </Button>
                     )}
@@ -109,26 +143,31 @@ export default function ProjectsIndex({ projects, filters }: Props) {
                 {/* Content */}
                 <div className="flex-1 overflow-y-auto">
                     {projects.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center h-full text-center px-6">
-                            <div className="size-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                        <div className="flex h-full flex-col items-center justify-center px-6 text-center">
+                            <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-muted">
                                 <FolderOpen className="size-8 text-muted-foreground" />
                             </div>
-                            <h2 className="text-lg font-medium mb-1">
-                                {hasFilters ? 'No projects found' : 'No projects yet'}
+                            <h2 className="mb-1 text-lg font-medium">
+                                {hasFilters
+                                    ? 'No projects found'
+                                    : 'No projects yet'}
                             </h2>
-                            <p className="text-sm text-muted-foreground mb-4 max-w-sm">
+                            <p className="mb-4 max-w-sm text-sm text-muted-foreground">
                                 {hasFilters
                                     ? 'Try adjusting your search or filters'
                                     : 'Get started by creating your first project to organize your work'}
                             </p>
                             {hasFilters ? (
-                                <Button variant="outline" onClick={clearFilters}>
+                                <Button
+                                    variant="outline"
+                                    onClick={clearFilters}
+                                >
                                     Clear filters
                                 </Button>
                             ) : (
                                 <Button asChild>
                                     <Link href="/projects/create">
-                                        <Plus className="size-4 mr-1.5" />
+                                        <Plus className="mr-1.5 size-4" />
                                         Create Project
                                     </Link>
                                 </Button>
@@ -140,41 +179,55 @@ export default function ProjectsIndex({ projects, filters }: Props) {
                                 <Link
                                     key={project.id}
                                     href={`/projects/${project.id}`}
-                                    className="flex items-center gap-4 px-6 py-4 hover:bg-muted/50 transition-colors group"
+                                    className="group flex items-center gap-4 px-6 py-4 transition-colors hover:bg-muted/50"
                                 >
-                                    <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-base font-semibold text-primary flex-shrink-0">
+                                    <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10 text-base font-semibold text-primary">
                                         {project.name.charAt(0).toUpperCase()}
                                     </div>
-                                    <div className="flex-1 min-w-0">
+                                    <div className="min-w-0 flex-1">
                                         <div className="flex items-center gap-2">
-                                            <span className="font-medium truncate group-hover:text-primary transition-colors">
+                                            <span className="truncate font-medium transition-colors group-hover:text-primary">
                                                 {project.name}
                                             </span>
-                                            <span className={`size-2 rounded-full ${statusConfig[project.status].bg}`} />
-                                            <span className={`text-xs ${statusConfig[project.status].color}`}>
-                                                {statusConfig[project.status].label}
+                                            <span
+                                                className={`size-2 rounded-full ${statusConfig[project.status].bg}`}
+                                            />
+                                            <span
+                                                className={`text-xs ${statusConfig[project.status].color}`}
+                                            >
+                                                {
+                                                    statusConfig[project.status]
+                                                        .label
+                                                }
                                             </span>
                                         </div>
                                         {project.description && (
-                                            <div 
-                                                className="text-sm text-muted-foreground line-clamp-1 mt-0.5"
-                                                dangerouslySetInnerHTML={{ __html: project.description }}
+                                            <div
+                                                className="mt-0.5 line-clamp-1 text-sm text-muted-foreground"
+                                                dangerouslySetInnerHTML={{
+                                                    __html: project.description,
+                                                }}
                                             />
                                         )}
                                     </div>
-                                    <div className="flex items-center gap-6 text-sm text-muted-foreground flex-shrink-0">
+                                    <div className="flex flex-shrink-0 items-center gap-6 text-sm text-muted-foreground">
                                         {project.due_date && (
                                             <div className="flex items-center gap-1.5">
                                                 <Calendar className="size-3.5" />
                                                 <span className="tabular-nums">
-                                                    {new Date(project.due_date).toLocaleDateString(undefined, {
-                                                        month: 'short',
-                                                        day: 'numeric',
-                                                    })}
+                                                    {new Date(
+                                                        project.due_date,
+                                                    ).toLocaleDateString(
+                                                        undefined,
+                                                        {
+                                                            month: 'short',
+                                                            day: 'numeric',
+                                                        },
+                                                    )}
                                                 </span>
                                             </div>
                                         )}
-                                        <span className="tabular-nums w-16 text-right">
+                                        <span className="w-16 text-right tabular-nums">
                                             {project.tasks?.length || 0} tasks
                                         </span>
                                     </div>

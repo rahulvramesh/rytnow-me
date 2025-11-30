@@ -59,10 +59,17 @@ function TaskStatusIcon({ status }: { status: Task['status'] }) {
     }
 }
 
-export function CommandPalette({ open, onOpenChange, projectId }: CommandPaletteProps) {
+export function CommandPalette({
+    open,
+    onOpenChange,
+    projectId,
+}: CommandPaletteProps) {
     const [search, setSearch] = useState('');
     const [selectedIndex, setSelectedIndex] = useState(0);
-    const [searchResults, setSearchResults] = useState<SearchResults>({ projects: [], tasks: [] });
+    const [searchResults, setSearchResults] = useState<SearchResults>({
+        projects: [],
+        tasks: [],
+    });
     const [isSearching, setIsSearching] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const listRef = useRef<HTMLDivElement>(null);
@@ -108,7 +115,8 @@ export function CommandPalette({ open, onOpenChange, projectId }: CommandPalette
                       label: 'Create New Task',
                       icon: <Plus className="size-4" />,
                       shortcut: 'N',
-                      action: () => router.visit(`/projects/${projectId}/tasks/create`),
+                      action: () =>
+                          router.visit(`/projects/${projectId}/tasks/create`),
                       category: 'actions' as const,
                   },
                   {
@@ -134,7 +142,9 @@ export function CommandPalette({ open, onOpenChange, projectId }: CommandPalette
 
         searchTimeoutRef.current = setTimeout(async () => {
             try {
-                const response = await fetch(`/search?q=${encodeURIComponent(search)}`);
+                const response = await fetch(
+                    `/search?q=${encodeURIComponent(search)}`,
+                );
                 const data = await response.json();
                 setSearchResults(data);
             } catch (error) {
@@ -148,29 +158,48 @@ export function CommandPalette({ open, onOpenChange, projectId }: CommandPalette
     }, [search]);
 
     const filteredCommands = commands.filter((cmd) =>
-        cmd.label.toLowerCase().includes(search.toLowerCase())
+        cmd.label.toLowerCase().includes(search.toLowerCase()),
     );
 
-    const hasSearchResults = searchResults.projects.length > 0 || searchResults.tasks.length > 0;
+    const hasSearchResults =
+        searchResults.projects.length > 0 || searchResults.tasks.length > 0;
     const showCommands = search.length < 2 || filteredCommands.length > 0;
 
     // Build flat list of all items for keyboard navigation
     const allItems = useMemo(() => {
-        const items: { type: 'command' | 'project' | 'task'; item: CommandItem | Project | Task }[] = [];
+        const items: {
+            type: 'command' | 'project' | 'task';
+            item: CommandItem | Project | Task;
+        }[] = [];
 
         if (showCommands) {
-            filteredCommands.forEach((cmd) => items.push({ type: 'command', item: cmd }));
+            filteredCommands.forEach((cmd) =>
+                items.push({ type: 'command', item: cmd }),
+            );
         }
         if (hasSearchResults) {
-            searchResults.projects.forEach((p) => items.push({ type: 'project', item: p }));
-            searchResults.tasks.forEach((t) => items.push({ type: 'task', item: t }));
+            searchResults.projects.forEach((p) =>
+                items.push({ type: 'project', item: p }),
+            );
+            searchResults.tasks.forEach((t) =>
+                items.push({ type: 'task', item: t }),
+            );
         }
 
         return items;
-    }, [showCommands, filteredCommands, hasSearchResults, searchResults.projects, searchResults.tasks]);
+    }, [
+        showCommands,
+        filteredCommands,
+        hasSearchResults,
+        searchResults.projects,
+        searchResults.tasks,
+    ]);
 
     const executeItem = useCallback(
-        (item: { type: 'command' | 'project' | 'task'; item: CommandItem | Project | Task }) => {
+        (item: {
+            type: 'command' | 'project' | 'task';
+            item: CommandItem | Project | Task;
+        }) => {
             onOpenChange(false);
             setSearch('');
 
@@ -183,7 +212,7 @@ export function CommandPalette({ open, onOpenChange, projectId }: CommandPalette
                 router.visit(`/projects/${task.project_id}/tasks/${task.id}`);
             }
         },
-        [onOpenChange]
+        [onOpenChange],
     );
 
     useEffect(() => {
@@ -206,7 +235,9 @@ export function CommandPalette({ open, onOpenChange, projectId }: CommandPalette
             switch (e.key) {
                 case 'ArrowDown':
                     e.preventDefault();
-                    setSelectedIndex((i) => Math.min(i + 1, allItems.length - 1));
+                    setSelectedIndex((i) =>
+                        Math.min(i + 1, allItems.length - 1),
+                    );
                     break;
                 case 'ArrowUp':
                     e.preventDefault();
@@ -253,18 +284,18 @@ export function CommandPalette({ open, onOpenChange, projectId }: CommandPalette
             />
 
             {/* Dialog */}
-            <div className="absolute left-1/2 top-[20%] -translate-x-1/2 w-full max-w-lg">
-                <div className="bg-background rounded-xl border shadow-2xl overflow-hidden">
+            <div className="absolute top-[20%] left-1/2 w-full max-w-lg -translate-x-1/2">
+                <div className="overflow-hidden rounded-xl border bg-background shadow-2xl">
                     {/* Search Input */}
-                    <div className="flex items-center gap-3 px-4 border-b">
-                        <Search className="size-4 text-muted-foreground flex-shrink-0" />
+                    <div className="flex items-center gap-3 border-b px-4">
+                        <Search className="size-4 flex-shrink-0 text-muted-foreground" />
                         <input
                             ref={inputRef}
                             type="text"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Search or type a command..."
-                            className="flex-1 h-14 bg-transparent border-0 outline-none text-base placeholder:text-muted-foreground"
+                            className="h-14 flex-1 border-0 bg-transparent text-base outline-none placeholder:text-muted-foreground"
                             autoComplete="off"
                             autoCorrect="off"
                             autoCapitalize="off"
@@ -273,8 +304,10 @@ export function CommandPalette({ open, onOpenChange, projectId }: CommandPalette
                             data-lpignore="true"
                             data-form-type="other"
                         />
-                        {isSearching && <Loader2 className="size-4 text-muted-foreground animate-spin" />}
-                        <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+                        {isSearching && (
+                            <Loader2 className="size-4 animate-spin text-muted-foreground" />
+                        )}
+                        <kbd className="hidden h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground sm:inline-flex">
                             ESC
                         </kbd>
                     </div>
@@ -288,37 +321,51 @@ export function CommandPalette({ open, onOpenChange, projectId }: CommandPalette
                         ) : (
                             <>
                                 {/* Commands */}
-                                {showCommands && filteredCommands.length > 0 && (
-                                    <div className="mb-2">
-                                        <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
-                                            Commands
+                                {showCommands &&
+                                    filteredCommands.length > 0 && (
+                                        <div className="mb-2">
+                                            <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+                                                Commands
+                                            </div>
+                                            {filteredCommands.map((cmd) => {
+                                                const isSelected =
+                                                    currentIndex ===
+                                                    selectedIndex;
+                                                currentIndex++;
+                                                return (
+                                                    <button
+                                                        key={cmd.id}
+                                                        data-selected={
+                                                            isSelected
+                                                        }
+                                                        onClick={() =>
+                                                            executeItem({
+                                                                type: 'command',
+                                                                item: cmd,
+                                                            })
+                                                        }
+                                                        className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
+                                                            isSelected
+                                                                ? 'bg-accent text-accent-foreground'
+                                                                : 'hover:bg-muted'
+                                                        }`}
+                                                    >
+                                                        <span className="text-muted-foreground">
+                                                            {cmd.icon}
+                                                        </span>
+                                                        <span className="flex-1 text-left">
+                                                            {cmd.label}
+                                                        </span>
+                                                        {cmd.shortcut && (
+                                                            <kbd className="hidden h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground sm:inline-flex">
+                                                                {cmd.shortcut}
+                                                            </kbd>
+                                                        )}
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
-                                        {filteredCommands.map((cmd) => {
-                                            const isSelected = currentIndex === selectedIndex;
-                                            currentIndex++;
-                                            return (
-                                                <button
-                                                    key={cmd.id}
-                                                    data-selected={isSelected}
-                                                    onClick={() => executeItem({ type: 'command', item: cmd })}
-                                                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                                                        isSelected
-                                                            ? 'bg-accent text-accent-foreground'
-                                                            : 'hover:bg-muted'
-                                                    }`}
-                                                >
-                                                    <span className="text-muted-foreground">{cmd.icon}</span>
-                                                    <span className="flex-1 text-left">{cmd.label}</span>
-                                                    {cmd.shortcut && (
-                                                        <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-                                                            {cmd.shortcut}
-                                                        </kbd>
-                                                    )}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                )}
+                                    )}
 
                                 {/* Projects */}
                                 {searchResults.projects.length > 0 && (
@@ -326,28 +373,45 @@ export function CommandPalette({ open, onOpenChange, projectId }: CommandPalette
                                         <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
                                             Projects
                                         </div>
-                                        {searchResults.projects.map((project) => {
-                                            const isSelected = currentIndex === selectedIndex;
-                                            currentIndex++;
-                                            return (
-                                                <button
-                                                    key={`project-${project.id}`}
-                                                    data-selected={isSelected}
-                                                    onClick={() => executeItem({ type: 'project', item: project })}
-                                                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                                                        isSelected
-                                                            ? 'bg-accent text-accent-foreground'
-                                                            : 'hover:bg-muted'
-                                                    }`}
-                                                >
-                                                    <div className="size-6 rounded bg-primary/10 flex items-center justify-center text-xs font-medium text-primary">
-                                                        {project.name.charAt(0).toUpperCase()}
-                                                    </div>
-                                                    <span className="flex-1 text-left truncate">{project.name}</span>
-                                                    <span className="text-xs text-muted-foreground">Project</span>
-                                                </button>
-                                            );
-                                        })}
+                                        {searchResults.projects.map(
+                                            (project) => {
+                                                const isSelected =
+                                                    currentIndex ===
+                                                    selectedIndex;
+                                                currentIndex++;
+                                                return (
+                                                    <button
+                                                        key={`project-${project.id}`}
+                                                        data-selected={
+                                                            isSelected
+                                                        }
+                                                        onClick={() =>
+                                                            executeItem({
+                                                                type: 'project',
+                                                                item: project,
+                                                            })
+                                                        }
+                                                        className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
+                                                            isSelected
+                                                                ? 'bg-accent text-accent-foreground'
+                                                                : 'hover:bg-muted'
+                                                        }`}
+                                                    >
+                                                        <div className="flex size-6 items-center justify-center rounded bg-primary/10 text-xs font-medium text-primary">
+                                                            {project.name
+                                                                .charAt(0)
+                                                                .toUpperCase()}
+                                                        </div>
+                                                        <span className="flex-1 truncate text-left">
+                                                            {project.name}
+                                                        </span>
+                                                        <span className="text-xs text-muted-foreground">
+                                                            Project
+                                                        </span>
+                                                    </button>
+                                                );
+                                            },
+                                        )}
                                     </div>
                                 )}
 
@@ -358,23 +422,33 @@ export function CommandPalette({ open, onOpenChange, projectId }: CommandPalette
                                             Tasks
                                         </div>
                                         {searchResults.tasks.map((task) => {
-                                            const isSelected = currentIndex === selectedIndex;
+                                            const isSelected =
+                                                currentIndex === selectedIndex;
                                             currentIndex++;
                                             return (
                                                 <button
                                                     key={`task-${task.id}`}
                                                     data-selected={isSelected}
-                                                    onClick={() => executeItem({ type: 'task', item: task })}
-                                                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                                                    onClick={() =>
+                                                        executeItem({
+                                                            type: 'task',
+                                                            item: task,
+                                                        })
+                                                    }
+                                                    className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
                                                         isSelected
                                                             ? 'bg-accent text-accent-foreground'
                                                             : 'hover:bg-muted'
                                                     }`}
                                                 >
-                                                    <TaskStatusIcon status={task.status} />
-                                                    <span className="flex-1 text-left truncate">{task.title}</span>
+                                                    <TaskStatusIcon
+                                                        status={task.status}
+                                                    />
+                                                    <span className="flex-1 truncate text-left">
+                                                        {task.title}
+                                                    </span>
                                                     {task.project && (
-                                                        <span className="text-xs text-muted-foreground truncate max-w-24">
+                                                        <span className="max-w-24 truncate text-xs text-muted-foreground">
                                                             {task.project.name}
                                                         </span>
                                                     )}
@@ -388,7 +462,7 @@ export function CommandPalette({ open, onOpenChange, projectId }: CommandPalette
                     </div>
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between px-4 py-2 border-t bg-muted/50 text-xs text-muted-foreground">
+                    <div className="flex items-center justify-between border-t bg-muted/50 px-4 py-2 text-xs text-muted-foreground">
                         <div className="flex items-center gap-2">
                             <kbd className="inline-flex h-5 items-center gap-1 rounded border bg-background px-1.5 font-mono text-[10px]">
                                 ↑↓

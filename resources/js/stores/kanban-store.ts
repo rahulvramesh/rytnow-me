@@ -12,7 +12,11 @@ interface KanbanStore {
     addTask: (task: Task) => void;
     updateTask: (taskId: number, changes: Partial<Task>) => void;
     removeTask: (taskId: number) => void;
-    moveTask: (taskId: number, status: Task['status'], position: number) => void;
+    moveTask: (
+        taskId: number,
+        status: Task['status'],
+        position: number,
+    ) => void;
     reorderTasks: (status: Task['status'], orderedIds: number[]) => void;
 
     // Selectors
@@ -34,7 +38,9 @@ export const useKanbanStore = create<KanbanStore>((set, get) => ({
 
     updateTask: (taskId, changes) =>
         set((state) => ({
-            tasks: state.tasks.map((t) => (t.id === taskId ? { ...t, ...changes } : t)),
+            tasks: state.tasks.map((t) =>
+                t.id === taskId ? { ...t, ...changes } : t,
+            ),
         })),
 
     removeTask: (taskId) =>
@@ -44,7 +50,9 @@ export const useKanbanStore = create<KanbanStore>((set, get) => ({
 
     moveTask: (taskId, status, position) =>
         set((state) => {
-            const tasks = state.tasks.map((t) => (t.id === taskId ? { ...t, status, position } : t));
+            const tasks = state.tasks.map((t) =>
+                t.id === taskId ? { ...t, status, position } : t,
+            );
             return { tasks };
         }),
 
@@ -53,7 +61,9 @@ export const useKanbanStore = create<KanbanStore>((set, get) => ({
             const tasks = state.tasks.map((task) => {
                 if (task.status !== status) return task;
                 const newPosition = orderedIds.indexOf(task.id);
-                return newPosition >= 0 ? { ...task, position: newPosition } : task;
+                return newPosition >= 0
+                    ? { ...task, position: newPosition }
+                    : task;
             });
             return { tasks };
         }),

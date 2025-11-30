@@ -1,9 +1,13 @@
+import {
+    ClientSideSuspense,
+    isLiveblocksConfigured,
+    RoomProvider,
+} from '@/liveblocks.config';
+import type { SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
+import { CollaborativeTipTapEditor } from './collaborative-tiptap-editor';
 import { RichTextEditor } from './rich-text-editor';
 import { TipTapEditor } from './tiptap-editor';
-import { CollaborativeTipTapEditor } from './collaborative-tiptap-editor';
-import { RoomProvider, ClientSideSuspense, isLiveblocksConfigured } from '@/liveblocks.config';
-import type { SharedData } from '@/types';
 
 interface EditorWrapperProps {
     value: string;
@@ -15,10 +19,10 @@ interface EditorWrapperProps {
 
 function EditorSkeleton() {
     return (
-        <div className="border rounded-lg overflow-hidden bg-background animate-pulse">
+        <div className="animate-pulse overflow-hidden rounded-lg border bg-background">
             <div className="min-h-[120px] px-4 py-3">
-                <div className="h-4 bg-muted rounded w-3/4 mb-2" />
-                <div className="h-4 bg-muted rounded w-1/2" />
+                <div className="mb-2 h-4 w-3/4 rounded bg-muted" />
+                <div className="h-4 w-1/2 rounded bg-muted" />
             </div>
         </div>
     );
@@ -29,7 +33,7 @@ export function EditorWrapper({
     onChange,
     placeholder,
     className,
-    roomId
+    roomId,
 }: EditorWrapperProps) {
     const { auth } = usePage<SharedData>().props;
     const editorPreference = auth?.user?.editor_preference || 'tiptap';
@@ -50,10 +54,7 @@ export function EditorWrapper({
     // For TipTap with collaboration enabled and roomId provided
     if (collaborationEnabled && roomId && isLiveblocksConfigured()) {
         return (
-            <RoomProvider
-                id={roomId}
-                initialPresence={{ cursor: null }}
-            >
+            <RoomProvider id={roomId} initialPresence={{ cursor: null }}>
                 <ClientSideSuspense fallback={<EditorSkeleton />}>
                     <CollaborativeTipTapEditor
                         initialContent={value}

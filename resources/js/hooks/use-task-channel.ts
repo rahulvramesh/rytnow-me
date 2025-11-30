@@ -13,7 +13,10 @@ import { useEffect } from 'react';
 /**
  * Subscribe to task-level real-time events (comments, time entries)
  */
-export function useTaskChannel(workspaceId: number | undefined, taskId: number | undefined) {
+export function useTaskChannel(
+    workspaceId: number | undefined,
+    taskId: number | undefined,
+) {
     const { echo, isConnected } = useEcho();
     const { addComment, updateComment, removeComment } = useCommentsStore();
     const { addActiveTimer, removeActiveTimer } = useTimersStore();
@@ -62,5 +65,15 @@ export function useTaskChannel(workspaceId: number | undefined, taskId: number |
             echo.leave(channelName);
             console.log('[Reverb] Left task channel:', channelName);
         };
-    }, [echo, isConnected, workspaceId, taskId, addComment, updateComment, removeComment, addActiveTimer, removeActiveTimer]);
+    }, [
+        echo,
+        isConnected,
+        workspaceId,
+        taskId,
+        addComment,
+        updateComment,
+        removeComment,
+        addActiveTimer,
+        removeActiveTimer,
+    ]);
 }
