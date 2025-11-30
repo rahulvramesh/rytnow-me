@@ -36,10 +36,10 @@
 - [x] Create Label model and relationships
 - [x] Add labels CRUD API
 - [x] Add label attach/sync endpoint for tasks
-- [ ] Create label management UI in project settings
-- [ ] Add label picker to task forms
-- [ ] Display labels on task cards
-- [ ] Filter tasks by label
+- [x] Create label management UI in project settings
+- [x] Add label picker to task forms
+- [x] Display labels on task cards
+- [x] Filter tasks by label
 
 ---
 
