@@ -1,0 +1,131 @@
+# Trakx Application Configuration
+replicaCount: 1
+
+image:
+  repository: ghcr.io/rahulvramesh/rytnow-me
+  tag: latest
+  pullPolicy: Always
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Application environment
+app:
+  name: Trakx
+  env: production
+  debug: "false"
+  url: "https://rytnow-me.trakx.app"
+  key: ""  # Set via --set or secrets
+
+# Laravel specific
+laravel:
+  bcryptRounds: "12"
+  logChannel: "stack"
+  logLevel: "error"
+  sessionDriver: "redis"
+  sessionLifetime: "120"
+  cacheStore: "redis"
+  queueConnection: "redis"
+  filesystemDisk: "local"
+
+# Reverb (WebSocket)
+reverb:
+  appId: "trakx-prod"
+  appKey: ""  # Set via --set or secrets
+  appSecret: ""  # Set via --set or secrets
+  host: "rytnow-me.trakx.app"
+  port: "443"
+  scheme: "https"
+
+# Liveblocks (optional)
+liveblocks:
+  publicKey: ""
+  secretKey: ""
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 80
+  reverbPort: 8080
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: traefik
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: rytnow-me.trakx.app
+      paths:
+        - path: /
+          pathType: Prefix
+          port: 80
+        - path: /app
+          pathType: Prefix
+          port: 8080
+  tls:
+    - secretName: trakx-tls
+      hosts:
+        - rytnow-me.trakx.app
+
+# Resources
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+# Health checks
+healthCheck:
+  path: /health
+  initialDelaySeconds: 60
+  periodSeconds: 10
+
+# Persistent storage for app uploads
+persistence:
+  enabled: true
+  storageClass: local-path
+  size: 5Gi
+
+# PostgreSQL (Bitnami/Supabase-style)
+postgresql:
+  enabled: true
+  auth:
+    username: trakx
+    password: ""  # Set via --set
+    database: trakx
+  primary:
+    persistence:
+      enabled: true
+      storageClass: local-path
+      size: 10Gi
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+
+# Redis (Bitnami)
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: true
+      storageClass: local-path
+      size: 1Gi
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"

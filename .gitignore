@@ -27,3 +27,4 @@ yarn-error.log
 /.vscode
 /.zed
 k8s-config.yaml
+helm/trakx/values-prod.yaml
