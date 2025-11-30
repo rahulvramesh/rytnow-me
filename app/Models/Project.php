@@ -74,7 +74,7 @@ class Project extends Model
         while (static::where('workspace_id', $this->workspace_id)
             ->where('key', $key)
             ->exists()) {
-            $key = $baseKey . $counter;
+            $key = $baseKey.$counter;
             $counter++;
         }
 
@@ -88,6 +88,7 @@ class Project extends Model
     {
         $number = $this->next_task_number;
         $this->increment('next_task_number');
+
         return $number;
     }
 

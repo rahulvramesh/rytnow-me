@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Models\Project;
 use App\Models\Label;
+use App\Models\Project;
 use Illuminate\Http\Request;
 
 class LabelController extends Controller
 {
     public function index(Request $request, Project $project)
     {
-        if (!$project->workspace->hasMember($request->user())) {
+        if (! $project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -24,7 +24,7 @@ class LabelController extends Controller
 
     public function store(Request $request, Project $project)
     {
-        if (!$project->workspace->hasMember($request->user())) {
+        if (! $project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -40,7 +40,7 @@ class LabelController extends Controller
 
     public function show(Request $request, Project $project, Label $label)
     {
-        if (!$project->workspace->hasMember($request->user())) {
+        if (! $project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -49,7 +49,7 @@ class LabelController extends Controller
 
     public function update(Request $request, Project $project, Label $label)
     {
-        if (!$project->workspace->hasMember($request->user())) {
+        if (! $project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -65,7 +65,7 @@ class LabelController extends Controller
 
     public function destroy(Request $request, Project $project, Label $label)
     {
-        if (!$project->workspace->hasMember($request->user())) {
+        if (! $project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 

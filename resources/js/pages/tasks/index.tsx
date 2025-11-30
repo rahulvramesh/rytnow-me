@@ -14,6 +14,7 @@ import {
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { type Task, type TaskProject } from '@/types/task';
+import { type Label } from '@/types/label';
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
     CheckCircle2,
@@ -55,14 +56,16 @@ type ViewMode = 'flat' | 'grouped' | 'kanban';
 interface Props {
     tasks: Task[];
     projects: TaskProject[];
+    labels: Label[];
 }
 
-export default function TasksIndex({ tasks, projects }: Props) {
+export default function TasksIndex({ tasks, projects, labels }: Props) {
     const { currentWorkspace } = usePage<SharedData>().props;
     const [search, setSearch] = useState('');
     const [priorityFilter, setPriorityFilter] = useState<string>('all');
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [projectFilter, setProjectFilter] = useState<string>('all');
+    const [labelFilter, setLabelFilter] = useState<string>('all');
     const [viewMode, setViewMode] = useState<ViewMode>('flat');
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -84,15 +87,19 @@ export default function TasksIndex({ tasks, projects }: Props) {
             const matchesProject =
                 projectFilter === 'all' ||
                 task.project_id.toString() === projectFilter;
+            const matchesLabel =
+                labelFilter === 'all' ||
+                task.labels?.some((l) => l.id.toString() === labelFilter);
 
             return (
                 matchesSearch &&
                 matchesPriority &&
                 matchesStatus &&
-                matchesProject
+                matchesProject &&
+                matchesLabel
             );
         });
-    }, [tasks, search, priorityFilter, statusFilter, projectFilter]);
+    }, [tasks, search, priorityFilter, statusFilter, projectFilter, labelFilter]);
 
     const tasksByStatus = useMemo(
         () => ({
@@ -128,13 +135,15 @@ export default function TasksIndex({ tasks, projects }: Props) {
         search ||
         priorityFilter !== 'all' ||
         statusFilter !== 'all' ||
-        projectFilter !== 'all';
+        projectFilter !== 'all' ||
+        labelFilter !== 'all';
 
     const clearFilters = () => {
         setSearch('');
         setPriorityFilter('all');
         setStatusFilter('all');
         setProjectFilter('all');
+        setLabelFilter('all');
     };
 
     const completedTasks = tasks.filter((t) => t.status === 'done').length;
@@ -254,6 +263,35 @@ export default function TasksIndex({ tasks, projects }: Props) {
                             <SelectItem value="low">Low</SelectItem>
                         </SelectContent>
                     </Select>
+                    {labels.length > 0 && (
+                        <Select
+                            value={labelFilter}
+                            onValueChange={setLabelFilter}
+                        >
+                            <SelectTrigger className="hidden h-9 w-[140px] sm:flex">
+                                <SelectValue placeholder="Label" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All labels</SelectItem>
+                                {labels.map((label) => (
+                                    <SelectItem
+                                        key={label.id}
+                                        value={label.id.toString()}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <span
+                                                className="size-2 rounded-full"
+                                                style={{
+                                                    backgroundColor: label.color,
+                                                }}
+                                            />
+                                            {label.name}
+                                        </div>
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    )}
                     {hasFilters && (
                         <Button
                             variant="ghost"

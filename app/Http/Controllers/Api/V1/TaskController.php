@@ -10,14 +10,14 @@ class TaskController extends Controller
 {
     public function index(Request $request, Project $project)
     {
-        if (!$project->workspace->hasMember($request->user())) {
+        if (! $project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
         $tasks = $project->tasks()
-            ->when($request->status, fn($q, $s) => $q->where('status', $s))
-            ->when($request->priority, fn($q, $p) => $q->where('priority', $p))
-            ->when($request->assigned_to, fn($q, $a) => $q->where('assigned_to', $a))
+            ->when($request->status, fn ($q, $s) => $q->where('status', $s))
+            ->when($request->priority, fn ($q, $p) => $q->where('priority', $p))
+            ->when($request->assigned_to, fn ($q, $a) => $q->where('assigned_to', $a))
             ->with(['assignee:id,name,email', 'labels'])
             ->withCount('subtasks', 'comments')
             ->orderBy('position')
@@ -28,7 +28,7 @@ class TaskController extends Controller
 
     public function store(Request $request, Project $project)
     {
-        if (!$project->workspace->hasMember($request->user())) {
+        if (! $project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -58,7 +58,7 @@ class TaskController extends Controller
 
     public function show(Request $request, Project $project, Task $task)
     {
-        if (!$project->workspace->hasMember($request->user())) {
+        if (! $project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -72,7 +72,7 @@ class TaskController extends Controller
 
     public function update(Request $request, Project $project, Task $task)
     {
-        if (!$project->workspace->hasMember($request->user())) {
+        if (! $project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -99,7 +99,7 @@ class TaskController extends Controller
 
     public function destroy(Request $request, Project $project, Task $task)
     {
-        if (!$project->workspace->hasMember($request->user())) {
+        if (! $project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -110,7 +110,7 @@ class TaskController extends Controller
 
     public function updateStatus(Request $request, Project $project, Task $task)
     {
-        if (!$project->workspace->hasMember($request->user())) {
+        if (! $project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 

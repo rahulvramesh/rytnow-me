@@ -32,7 +32,7 @@ return new class extends Migration
     {
         Schema::table('projects', function (Blueprint $table) {
             $table->foreignId('user_id')->nullable()->after('workspace_id')
-                  ->constrained()->cascadeOnDelete();
+                ->constrained()->cascadeOnDelete();
         });
     }
 };

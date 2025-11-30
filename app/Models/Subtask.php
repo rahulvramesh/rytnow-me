@@ -64,6 +64,6 @@ class Subtask extends Model
 
     public function isOverdue(): bool
     {
-        return !$this->is_completed && $this->due_date && $this->due_date->isPast();
+        return ! $this->is_completed && $this->due_date && $this->due_date->isPast();
     }
 }

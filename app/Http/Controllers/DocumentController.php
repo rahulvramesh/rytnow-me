@@ -95,7 +95,7 @@ class DocumentController extends Controller
             $folderExists = $project->docFolders()
                 ->where('id', $folderId)
                 ->exists();
-            if (!$folderExists) {
+            if (! $folderExists) {
                 abort(422, 'Invalid folder.');
             }
         }
@@ -183,7 +183,7 @@ class DocumentController extends Controller
             $folderExists = $project->docFolders()
                 ->where('id', $folderId)
                 ->exists();
-            if (!$folderExists) {
+            if (! $folderExists) {
                 abort(422, 'Invalid folder.');
             }
         }

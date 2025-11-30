@@ -11,7 +11,7 @@ class TimeEntryController extends Controller
 {
     public function index(Request $request, Task $task)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -25,7 +25,7 @@ class TimeEntryController extends Controller
 
     public function store(Request $request, Task $task)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -45,7 +45,7 @@ class TimeEntryController extends Controller
 
     public function show(Request $request, Task $task, TimeEntry $timeEntry)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -54,7 +54,7 @@ class TimeEntryController extends Controller
 
     public function update(Request $request, Task $task, TimeEntry $timeEntry)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -77,7 +77,7 @@ class TimeEntryController extends Controller
 
     public function destroy(Request $request, Task $task, TimeEntry $timeEntry)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -88,7 +88,7 @@ class TimeEntryController extends Controller
 
     public function start(Request $request, Task $task)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -111,7 +111,7 @@ class TimeEntryController extends Controller
 
     public function stop(Request $request, Task $task)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -120,7 +120,7 @@ class TimeEntryController extends Controller
             ->whereNull('stopped_at')
             ->first();
 
-        if (!$entry) {
+        if (! $entry) {
             return $this->error('No running time entry', 404);
         }
 

@@ -19,7 +19,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
@@ -59,7 +59,7 @@ class AuthController extends Controller
     {
         $deleted = $request->user()->tokens()->where('id', $tokenId)->delete();
 
-        if (!$deleted) {
+        if (! $deleted) {
             return $this->error('Token not found', 404);
         }
 

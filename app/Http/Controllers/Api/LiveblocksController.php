@@ -17,20 +17,20 @@ class LiveblocksController extends Controller
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         $room = $request->input('room');
 
         // Verify user has access to this room
-        if (!$this->userCanAccessRoom($user, $room)) {
+        if (! $this->userCanAccessRoom($user, $room)) {
             return response()->json(['error' => 'Access denied to this room'], 403);
         }
 
         // Call Liveblocks API to authorize user
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . config('services.liveblocks.secret_key'),
+            'Authorization' => 'Bearer '.config('services.liveblocks.secret_key'),
         ])->post('https://api.liveblocks.io/v2/identify-user', [
             'userId' => (string) $user->id,
             'groupIds' => $this->getUserGroups($user),
@@ -57,7 +57,7 @@ class LiveblocksController extends Controller
      */
     private function userCanAccessRoom($user, ?string $room): bool
     {
-        if (!$room) {
+        if (! $room) {
             return true; // Allow if no room specified (initial connection)
         }
 
@@ -66,7 +66,7 @@ class LiveblocksController extends Controller
             $taskId = $matches[1];
             $task = Task::with('project.workspace')->find($taskId);
 
-            if (!$task || !$task->project) {
+            if (! $task || ! $task->project) {
                 return false;
             }
 
@@ -78,7 +78,7 @@ class LiveblocksController extends Controller
             $projectId = $matches[1];
             $project = Project::with('workspace')->find($projectId);
 
-            if (!$project) {
+            if (! $project) {
                 return false;
             }
 
@@ -113,6 +113,7 @@ class LiveblocksController extends Controller
 
         // Generate Gravatar URL from email
         $hash = md5(strtolower(trim($user->email)));
+
         return "https://www.gravatar.com/avatar/{$hash}?d=mp&s=80";
     }
 

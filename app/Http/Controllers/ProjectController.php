@@ -18,7 +18,7 @@ class ProjectController extends Controller
     {
         $workspace = $request->user()->currentWorkspace;
 
-        if (!$workspace) {
+        if (! $workspace) {
             return redirect()->route('workspaces.create');
         }
 
@@ -55,7 +55,7 @@ class ProjectController extends Controller
     {
         $workspace = $request->user()->currentWorkspace;
 
-        if (!$workspace) {
+        if (! $workspace) {
             return redirect()->route('workspaces.create');
         }
 

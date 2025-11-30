@@ -15,7 +15,7 @@ class DashboardController extends Controller
         $user = $request->user();
         $workspace = $user->currentWorkspace;
 
-        if (!$workspace) {
+        if (! $workspace) {
             return redirect()->route('workspaces.create');
         }
 

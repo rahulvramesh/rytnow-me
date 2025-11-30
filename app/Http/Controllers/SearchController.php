@@ -15,7 +15,7 @@ class SearchController extends Controller
         $user = $request->user();
         $workspace = $user->currentWorkspace;
 
-        if (strlen($query) < 2 || !$workspace) {
+        if (strlen($query) < 2 || ! $workspace) {
             return response()->json([
                 'projects' => [],
                 'tasks' => [],

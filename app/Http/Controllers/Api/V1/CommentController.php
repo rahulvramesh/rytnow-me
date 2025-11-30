@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Models\Task;
 use App\Models\Comment;
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
     public function index(Request $request, Task $task)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -24,7 +24,7 @@ class CommentController extends Controller
 
     public function store(Request $request, Task $task)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -43,7 +43,7 @@ class CommentController extends Controller
 
     public function show(Request $request, Task $task, Comment $comment)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -52,7 +52,7 @@ class CommentController extends Controller
 
     public function update(Request $request, Task $task, Comment $comment)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -72,7 +72,7 @@ class CommentController extends Controller
 
     public function destroy(Request $request, Task $task, Comment $comment)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 

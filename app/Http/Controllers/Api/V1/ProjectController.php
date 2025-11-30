@@ -10,13 +10,13 @@ class ProjectController extends Controller
 {
     public function index(Request $request, Workspace $workspace)
     {
-        if (!$workspace->hasMember($request->user())) {
+        if (! $workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
         $projects = $workspace->projects()
-            ->when($request->status, fn($q, $s) => $q->where('status', $s))
-            ->when($request->search, fn($q, $s) => $q->where('name', 'like', "%{$s}%"))
+            ->when($request->status, fn ($q, $s) => $q->where('status', $s))
+            ->when($request->search, fn ($q, $s) => $q->where('name', 'like', "%{$s}%"))
             ->withCount('tasks')
             ->orderBy('created_at', 'desc')
             ->paginate($request->per_page ?? 15);
@@ -26,7 +26,7 @@ class ProjectController extends Controller
 
     public function store(Request $request, Workspace $workspace)
     {
-        if (!$workspace->hasMember($request->user())) {
+        if (! $workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -45,7 +45,7 @@ class ProjectController extends Controller
 
     public function show(Request $request, Workspace $workspace, Project $project)
     {
-        if (!$workspace->hasMember($request->user())) {
+        if (! $workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -54,7 +54,7 @@ class ProjectController extends Controller
 
     public function update(Request $request, Workspace $workspace, Project $project)
     {
-        if (!$workspace->hasMember($request->user())) {
+        if (! $workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -73,7 +73,7 @@ class ProjectController extends Controller
 
     public function destroy(Request $request, Workspace $workspace, Project $project)
     {
-        if (!$workspace->hasMember($request->user())) {
+        if (! $workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 

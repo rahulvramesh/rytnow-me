@@ -134,7 +134,7 @@ class LlmProviderController extends Controller
             ];
 
             if ($provider->hasApiKey()) {
-                $headers['Authorization'] = 'Bearer ' . $provider->getDecryptedApiKey();
+                $headers['Authorization'] = 'Bearer '.$provider->getDecryptedApiKey();
             }
 
             // Try to get models list (OpenAI-compatible endpoint)
@@ -174,13 +174,13 @@ class LlmProviderController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Connection failed: ' . ($response->json('error.message') ?? 'Unknown error'),
+                'message' => 'Connection failed: '.($response->json('error.message') ?? 'Unknown error'),
             ], 400);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Connection failed: ' . $e->getMessage(),
+                'message' => 'Connection failed: '.$e->getMessage(),
             ], 400);
         }
     }
@@ -197,7 +197,7 @@ class LlmProviderController extends Controller
             ];
 
             if ($provider->hasApiKey()) {
-                $headers['Authorization'] = 'Bearer ' . $provider->getDecryptedApiKey();
+                $headers['Authorization'] = 'Bearer '.$provider->getDecryptedApiKey();
             }
 
             $response = Http::withHeaders($headers)
@@ -245,13 +245,13 @@ class LlmProviderController extends Controller
                 'Content-Type' => 'application/json',
             ];
 
-            if (!empty($validated['api_key'])) {
-                $headers['Authorization'] = 'Bearer ' . $validated['api_key'];
+            if (! empty($validated['api_key'])) {
+                $headers['Authorization'] = 'Bearer '.$validated['api_key'];
             }
 
             $response = Http::withHeaders($headers)
                 ->timeout(10)
-                ->get($baseUrl . '/v1/models');
+                ->get($baseUrl.'/v1/models');
 
             if ($response->successful()) {
                 $models = $response->json('data', []);
@@ -265,14 +265,14 @@ class LlmProviderController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to fetch models: ' . ($response->json('error.message') ?? 'Unknown error'),
+                'message' => 'Failed to fetch models: '.($response->json('error.message') ?? 'Unknown error'),
                 'models' => [],
             ], 400);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Connection failed: ' . $e->getMessage(),
+                'message' => 'Connection failed: '.$e->getMessage(),
                 'models' => [],
             ], 400);
         }

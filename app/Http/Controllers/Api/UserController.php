@@ -69,6 +69,7 @@ class UserController extends Controller
     private function getUserAvatar($user): string
     {
         $hash = md5(strtolower(trim($user->email)));
+
         return "https://www.gravatar.com/avatar/{$hash}?d=mp&s=80";
     }
 

@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Models\LlmProvider;
 use App\Models\User;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Http;
 
 class LlmService
 {
@@ -18,11 +18,11 @@ class LlmService
     {
         $provider = $user->defaultLlmProvider();
 
-        if (!$provider) {
+        if (! $provider) {
             return null;
         }
 
-        $service = new self();
+        $service = new self;
         $service->provider = $provider;
 
         return $service;
@@ -33,7 +33,7 @@ class LlmService
      */
     public static function forProvider(LlmProvider $provider): self
     {
-        $service = new self();
+        $service = new self;
         $service->provider = $provider;
 
         return $service;
@@ -49,7 +49,7 @@ class LlmService
         ];
 
         if ($this->provider->hasApiKey()) {
-            $headers['Authorization'] = 'Bearer ' . $this->provider->getDecryptedApiKey();
+            $headers['Authorization'] = 'Bearer '.$this->provider->getDecryptedApiKey();
         }
 
         return $headers;
@@ -60,7 +60,7 @@ class LlmService
      */
     public function chat(array $messages, ?string $model = null, array $options = []): array
     {
-        if (!$this->provider) {
+        if (! $this->provider) {
             throw new \RuntimeException('No LLM provider configured');
         }
 
@@ -77,9 +77,9 @@ class LlmService
 
         $this->provider->markAsUsed();
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             throw new \RuntimeException(
-                'LLM API error: ' . ($response->json('error.message') ?? $response->body())
+                'LLM API error: '.($response->json('error.message') ?? $response->body())
             );
         }
 
@@ -109,7 +109,7 @@ class LlmService
      */
     public function chatStream(array $messages, ?string $model = null, array $options = []): \Generator
     {
-        if (!$this->provider) {
+        if (! $this->provider) {
             throw new \RuntimeException('No LLM provider configured');
         }
 
@@ -130,7 +130,7 @@ class LlmService
 
         $body = $response->getBody();
 
-        while (!$body->eof()) {
+        while (! $body->eof()) {
             $line = $body->read(1024);
 
             // Parse SSE format
@@ -156,7 +156,7 @@ class LlmService
      */
     public function getModels(): array
     {
-        if (!$this->provider) {
+        if (! $this->provider) {
             throw new \RuntimeException('No LLM provider configured');
         }
 
@@ -164,11 +164,12 @@ class LlmService
             ->timeout(10)
             ->get($this->provider->getEndpoint('/v1/models'));
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             return [];
         }
 
         $models = $response->json('data', []);
+
         return collect($models)->pluck('id')->sort()->values()->all();
     }
 
@@ -177,7 +178,7 @@ class LlmService
      */
     public function embeddings(string|array $input, ?string $model = null): array
     {
-        if (!$this->provider) {
+        if (! $this->provider) {
             throw new \RuntimeException('No LLM provider configured');
         }
 
@@ -190,9 +191,9 @@ class LlmService
                 'input' => $input,
             ]);
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             throw new \RuntimeException(
-                'Embeddings API error: ' . ($response->json('error.message') ?? $response->body())
+                'Embeddings API error: '.($response->json('error.message') ?? $response->body())
             );
         }
 

@@ -26,7 +26,7 @@ class AudioRecordingController extends Controller
         ]);
 
         $file = $request->file('audio');
-        $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+        $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
 
         Storage::disk('local')->putFileAs('recordings', $file, $filename);
 
@@ -47,7 +47,7 @@ class AudioRecordingController extends Controller
 
         $path = $audioRecording->getFilePath();
 
-        if (!Storage::disk('local')->exists($path)) {
+        if (! Storage::disk('local')->exists($path)) {
             abort(404, 'Recording not found');
         }
 

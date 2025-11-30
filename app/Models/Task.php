@@ -52,7 +52,7 @@ class Task extends Model
             ? $this->project?->key
             : Project::find($this->project_id)?->key ?? 'TASK';
 
-        return $projectKey . '-' . $this->task_number;
+        return $projectKey.'-'.$this->task_number;
     }
 
     protected function casts(): array

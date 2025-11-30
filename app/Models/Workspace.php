@@ -64,6 +64,14 @@ class Workspace extends Model
     }
 
     /**
+     * All labels across all projects in this workspace
+     */
+    public function labels(): HasManyThrough
+    {
+        return $this->hasManyThrough(Label::class, Project::class);
+    }
+
+    /**
      * Check if a user is a member of this workspace
      */
     public function hasMember(User $user): bool

@@ -57,7 +57,7 @@ class TaskController extends Controller
         if ($validated['assigned_to'] ?? null) {
             $isMember = $project->workspace->members()
                 ->where('users.id', $validated['assigned_to'])->exists();
-            if (!$isMember) {
+            if (! $isMember) {
                 return back()->withErrors(['assigned_to' => 'Assignee must be a workspace member.']);
             }
         }
@@ -70,7 +70,7 @@ class TaskController extends Controller
 
         $task = $project->tasks()->create($validated);
 
-        if (!empty($labelIds)) {
+        if (! empty($labelIds)) {
             $task->labels()->sync($labelIds);
         }
 
@@ -154,7 +154,7 @@ class TaskController extends Controller
         if ($validated['assigned_to'] ?? null) {
             $isMember = $project->workspace->members()
                 ->where('users.id', $validated['assigned_to'])->exists();
-            if (!$isMember) {
+            if (! $isMember) {
                 return back()->withErrors(['assigned_to' => 'Assignee must be a workspace member.']);
             }
         }

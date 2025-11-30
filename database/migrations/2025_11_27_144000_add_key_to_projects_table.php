@@ -60,7 +60,7 @@ return new class extends Migration
             ->where('workspace_id', $workspaceId)
             ->where('key', $key)
             ->exists()) {
-            $key = $baseKey . $counter;
+            $key = $baseKey.$counter;
             $counter++;
         }
 

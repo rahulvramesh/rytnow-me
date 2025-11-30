@@ -17,7 +17,7 @@ class SetCurrentWorkspace
     {
         $user = $request->user();
 
-        if ($user && !$user->current_workspace_id) {
+        if ($user && ! $user->current_workspace_id) {
             // If user has no current workspace, set their first owned workspace
             $defaultWorkspace = $user->ownedWorkspaces()->first()
                              ?? $user->workspaces()->first();

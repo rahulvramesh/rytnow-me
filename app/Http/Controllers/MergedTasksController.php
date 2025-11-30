@@ -16,7 +16,7 @@ class MergedTasksController extends Controller
         $user = $request->user();
         $workspace = $user->currentWorkspace;
 
-        if (!$workspace) {
+        if (! $workspace) {
             return redirect()->route('workspaces.create');
         }
 
@@ -33,9 +33,16 @@ class MergedTasksController extends Controller
             ->select('id', 'name', 'status')
             ->get();
 
+        $labels = $workspace->labels()
+            ->select('id', 'name', 'color', 'project_id')
+            ->with('project:id,name')
+            ->orderBy('name')
+            ->get();
+
         return Inertia::render('tasks/index', [
             'tasks' => $tasks,
             'projects' => $projects,
+            'labels' => $labels,
         ]);
     }
 }

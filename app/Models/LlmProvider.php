@@ -56,7 +56,7 @@ class LlmProvider extends Model
      */
     public function getApiKeyAttribute(?string $value): ?string
     {
-        if (!$value) {
+        if (! $value) {
             return null;
         }
 
@@ -80,7 +80,7 @@ class LlmProvider extends Model
      */
     public function hasApiKey(): bool
     {
-        return !empty($this->attributes['api_key']);
+        return ! empty($this->attributes['api_key']);
     }
 
     /**

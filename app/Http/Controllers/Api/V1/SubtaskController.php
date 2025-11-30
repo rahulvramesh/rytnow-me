@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Models\Task;
 use App\Models\Subtask;
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 class SubtaskController extends Controller
 {
     public function index(Request $request, Task $task)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -24,7 +24,7 @@ class SubtaskController extends Controller
 
     public function store(Request $request, Task $task)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -42,7 +42,7 @@ class SubtaskController extends Controller
 
     public function show(Request $request, Task $task, Subtask $subtask)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -51,7 +51,7 @@ class SubtaskController extends Controller
 
     public function update(Request $request, Task $task, Subtask $subtask)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -69,7 +69,7 @@ class SubtaskController extends Controller
 
     public function destroy(Request $request, Task $task, Subtask $subtask)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -80,11 +80,11 @@ class SubtaskController extends Controller
 
     public function toggle(Request $request, Task $task, Subtask $subtask)
     {
-        if (!$task->project->workspace->hasMember($request->user())) {
+        if (! $task->project->workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
-        $subtask->update(['is_completed' => !$subtask->is_completed]);
+        $subtask->update(['is_completed' => ! $subtask->is_completed]);
 
         return $this->success($subtask);
     }

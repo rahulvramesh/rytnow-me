@@ -42,7 +42,7 @@ class QuickThoughtController extends Controller
         ]);
 
         // Must have either content or audio
-        if (!$request->filled('content') && !$request->hasFile('audio')) {
+        if (! $request->filled('content') && ! $request->hasFile('audio')) {
             return redirect()->back()->withErrors(['content' => 'Please enter text or record audio.']);
         }
 
@@ -54,7 +54,7 @@ class QuickThoughtController extends Controller
         // Handle audio upload if present
         if ($request->hasFile('audio')) {
             $file = $request->file('audio');
-            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
 
             Storage::disk('local')->putFileAs('recordings/thoughts', $file, $filename);
 
@@ -122,7 +122,7 @@ class QuickThoughtController extends Controller
         $project = Project::findOrFail($request->input('project_id'));
         $workspaceIds = $request->user()->workspaces()->pluck('workspaces.id');
 
-        if (!$workspaceIds->contains($project->workspace_id)) {
+        if (! $workspaceIds->contains($project->workspace_id)) {
             abort(403);
         }
 
@@ -141,7 +141,7 @@ class QuickThoughtController extends Controller
             foreach ($quickThought->recordings as $recording) {
                 // Move file from thoughts to task recordings folder
                 $oldPath = $recording->getFilePath();
-                $newFilename = Str::uuid() . '.' . pathinfo($recording->filename, PATHINFO_EXTENSION);
+                $newFilename = Str::uuid().'.'.pathinfo($recording->filename, PATHINFO_EXTENSION);
                 $newPath = "recordings/{$newFilename}";
 
                 if (Storage::disk('local')->exists($oldPath)) {

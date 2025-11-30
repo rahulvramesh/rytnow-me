@@ -39,7 +39,7 @@ class WorkspaceController extends Controller
 
     public function show(Request $request, Workspace $workspace)
     {
-        if (!$workspace->hasMember($request->user())) {
+        if (! $workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 
@@ -76,7 +76,7 @@ class WorkspaceController extends Controller
 
     public function members(Request $request, Workspace $workspace)
     {
-        if (!$workspace->hasMember($request->user())) {
+        if (! $workspace->hasMember($request->user())) {
             return $this->error('Forbidden', 403);
         }
 

@@ -25,7 +25,7 @@ class QuickThoughtRecordingController extends Controller
         ]);
 
         $file = $request->file('audio');
-        $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+        $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
 
         Storage::disk('local')->putFileAs('recordings/thoughts', $file, $filename);
 
@@ -54,7 +54,7 @@ class QuickThoughtRecordingController extends Controller
 
         $path = $recording->getFilePath();
 
-        if (!Storage::disk('local')->exists($path)) {
+        if (! Storage::disk('local')->exists($path)) {
             abort(404, 'Recording not found');
         }
 

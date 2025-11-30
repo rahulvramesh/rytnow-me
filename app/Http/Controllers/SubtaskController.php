@@ -24,7 +24,7 @@ class SubtaskController extends Controller
         if ($validated['assigned_to'] ?? null) {
             $isMember = $project->workspace->members()
                 ->where('users.id', $validated['assigned_to'])->exists();
-            if (!$isMember) {
+            if (! $isMember) {
                 return back()->withErrors(['assigned_to' => 'Must be a workspace member.']);
             }
         }
@@ -59,7 +59,7 @@ class SubtaskController extends Controller
         if (isset($validated['assigned_to']) && $validated['assigned_to']) {
             $isMember = $project->workspace->members()
                 ->where('users.id', $validated['assigned_to'])->exists();
-            if (!$isMember) {
+            if (! $isMember) {
                 return back()->withErrors(['assigned_to' => 'Must be a workspace member.']);
             }
         }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('current_workspace_id')->nullable()->after('collaboration_enabled')
-                  ->constrained('workspaces')->nullOnDelete();
+                ->constrained('workspaces')->nullOnDelete();
         });
     }
 
