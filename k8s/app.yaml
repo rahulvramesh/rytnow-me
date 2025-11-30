@@ -1,0 +1,133 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: trakx-storage-pvc
+  namespace: trakx
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trakx-app
+  namespace: trakx
+  labels:
+    app: trakx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trakx
+  template:
+    metadata:
+      labels:
+        app: trakx
+    spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:16-alpine
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h postgres -U trakx; do
+                echo "Waiting for PostgreSQL..."
+                sleep 2
+              done
+              echo "PostgreSQL is ready!"
+        - name: wait-for-redis
+          image: redis:7-alpine
+          command:
+            - sh
+            - -c
+            - |
+              until redis-cli -h redis ping; do
+                echo "Waiting for Redis..."
+                sleep 2
+              done
+              echo "Redis is ready!"
+      containers:
+        - name: trakx
+          image: ghcr.io/rahulvramesh/rytnow-me:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+            - name: reverb
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: trakx-config
+            - secretRef:
+                name: trakx-secrets
+          env:
+            - name: VITE_REVERB_APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: trakx-secrets
+                  key: REVERB_APP_KEY
+            - name: VITE_REVERB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: trakx-config
+                  key: REVERB_HOST
+            - name: VITE_REVERB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: trakx-config
+                  key: REVERB_PORT
+            - name: VITE_REVERB_SCHEME
+              valueFrom:
+                configMapKeyRef:
+                  name: trakx-config
+                  key: REVERB_SCHEME
+          volumeMounts:
+            - name: storage
+              mountPath: /var/www/html/storage/app
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 3
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: trakx-storage-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trakx-app
+  namespace: trakx
+spec:
+  selector:
+    app: trakx
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: reverb
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP

@@ -3,21 +3,25 @@ set -e
 
 echo "Starting Trakx application..."
 
-# Wait for PostgreSQL
-echo "Waiting for PostgreSQL..."
-until pg_isready -h postgres -U "${DB_USERNAME:-trakx}" -d "${DB_DATABASE:-trakx}" > /dev/null 2>&1; do
-  echo "PostgreSQL is unavailable - sleeping"
-  sleep 2
-done
-echo "PostgreSQL is ready!"
+# Wait for PostgreSQL if configured
+if [ -n "$DB_HOST" ] && [ "$DB_CONNECTION" = "pgsql" ]; then
+    echo "Waiting for PostgreSQL at ${DB_HOST}..."
+    until pg_isready -h "$DB_HOST" -U "${DB_USERNAME:-trakx}" -d "${DB_DATABASE:-trakx}" > /dev/null 2>&1; do
+        echo "PostgreSQL is unavailable - sleeping"
+        sleep 2
+    done
+    echo "PostgreSQL is ready!"
+fi
 
-# Wait for Redis
-echo "Waiting for Redis..."
-until redis-cli -h redis ping > /dev/null 2>&1; do
-  echo "Redis is unavailable - sleeping"
-  sleep 2
-done
-echo "Redis is ready!"
+# Wait for Redis if configured
+if [ -n "$REDIS_HOST" ]; then
+    echo "Waiting for Redis at ${REDIS_HOST}..."
+    until redis-cli -h "$REDIS_HOST" -p "${REDIS_PORT:-6379}" ping > /dev/null 2>&1; do
+        echo "Redis is unavailable - sleeping"
+        sleep 2
+    done
+    echo "Redis is ready!"
+fi
 
 # Run migrations
 echo "Running migrations..."
