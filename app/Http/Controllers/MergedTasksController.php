@@ -34,9 +34,9 @@ class MergedTasksController extends Controller
             ->get();
 
         $labels = $workspace->labels()
-            ->select('id', 'name', 'color', 'project_id')
+            ->select('labels.id', 'labels.name', 'labels.color', 'labels.project_id')
             ->with('project:id,name')
-            ->orderBy('name')
+            ->orderBy('labels.name')
             ->get();
 
         return Inertia::render('tasks/index', [
