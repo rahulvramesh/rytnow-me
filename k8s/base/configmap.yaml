@@ -31,7 +31,7 @@ data:
   REDIS_CLIENT: "phpredis"
   REDIS_HOST: "redis"
   REDIS_PORT: "6379"
-  REVERB_APP_ID: "trakx-prod"
+  REVERB_APP_ID: "154857"
   REVERB_HOST: "rytnow.me"
   REVERB_PORT: "443"
   REVERB_SCHEME: "https"
