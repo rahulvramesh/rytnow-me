@@ -30,7 +30,7 @@ php artisan migrate --force
 # Cache configuration for production
 echo "Caching configuration..."
 php artisan config:cache
-php artisan route:cache
+php artisan route:cache || echo "Route caching skipped (duplicate route names)"
 php artisan view:cache
 
 # Create storage link if not exists

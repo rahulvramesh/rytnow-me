@@ -38,7 +38,8 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
         Route::delete('/auth/tokens/{token}', [AuthController::class, 'revokeTokenById']);
 
         // Workspaces
-        Route::apiResource('workspaces', WorkspaceController::class);
+        Route::apiResource('workspaces', WorkspaceController::class)
+            ->names('api.workspaces');
         Route::get('workspaces/{workspace}/members', [WorkspaceController::class, 'members']);
 
         // Projects (scoped to workspace)
