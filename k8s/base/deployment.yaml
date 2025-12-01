@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trakx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trakx
+  template:
+    metadata:
+      labels:
+        app: trakx
+      annotations:
+        container.apparmor.security.beta.kubernetes.io/trakx: unconfined
+        container.apparmor.security.beta.kubernetes.io/wait-for-postgres: unconfined
+        container.apparmor.security.beta.kubernetes.io/wait-for-redis: unconfined
+    spec:
+      imagePullSecrets:
+        - name: ghcr-login-secret
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:16-alpine
+          command:
+            - sh
+            - -c
+            - until pg_isready -h postgresql -U trakx; do echo "Waiting for PostgreSQL..."; sleep 2; done
+        - name: wait-for-redis
+          image: redis:7-alpine
+          command:
+            - sh
+            - -c
+            - until redis-cli -h redis ping; do echo "Waiting for Redis..."; sleep 2; done
+      containers:
+        - name: trakx
+          image: ghcr.io/rahulvramesh/rytnow-me:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: reverb
+              containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: trakx-config
+            - secretRef:
+                name: trakx-secrets
+          volumeMounts:
+            - name: storage
+              mountPath: /var/www/html/storage/app
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: trakx-storage

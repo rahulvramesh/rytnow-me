@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: trakx
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 8080
+      targetPort: reverb
+      protocol: TCP
+      name: reverb
+  selector:
+    app: trakx
