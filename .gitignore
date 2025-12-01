@@ -29,3 +29,4 @@ k8s-config.yaml
 kubeconfig.yaml
 helm/trakx/values-prod.yaml
 k8s/overlays/*/secrets.env
+trakx
