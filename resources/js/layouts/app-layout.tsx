@@ -1,6 +1,7 @@
 import { EchoProvider } from '@/components/echo-provider';
 import { KeyboardProvider } from '@/components/keyboard-provider';
 import { QuickThoughtCaptureButton } from '@/components/quick-thought-capture-button';
+import { Toaster } from '@/components/ui/sonner';
 import { useWorkspaceChannel } from '@/hooks/use-workspace-channel';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import {
@@ -146,6 +147,7 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
                     </AppLayoutTemplate>
                     <QuickThoughtCaptureButton />
                 </KeyboardProvider>
+                <Toaster position="bottom-right" />
             </EchoProvider>
         </LiveblocksProvider>
     );

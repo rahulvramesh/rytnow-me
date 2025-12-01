@@ -9,6 +9,7 @@ import type {
 } from '@/types/events';
 import { router } from '@inertiajs/react';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 /**
  * Subscribe to workspace-level real-time events (global timers, notifications)
@@ -47,11 +48,15 @@ export function useWorkspaceChannel(workspaceId: number | undefined) {
             // Member events
             .listen('.member.joined', (e: MemberJoinedEvent) => {
                 console.log('[Reverb] Member joined:', e.member.name);
+                toast.success(`${e.member.name} joined the workspace`, {
+                    description: `Role: ${e.member.pivot.role}`,
+                });
                 // Reload page data to update member count
                 router.reload({ only: ['currentWorkspace', 'workspaces'] });
             })
             .listen('.member.left', (e: MemberLeftEvent) => {
                 console.log('[Reverb] Member left:', e.memberName);
+                toast.info(`${e.memberName} left the workspace`);
                 // Reload page data to update member count
                 router.reload({ only: ['currentWorkspace', 'workspaces'] });
             })
@@ -62,6 +67,7 @@ export function useWorkspaceChannel(workspaceId: number | undefined) {
                     'to',
                     e.newRole,
                 );
+                toast.info(`${e.memberName}'s role changed to ${e.newRole}`);
                 // Reload page data if on members page
                 if (window.location.pathname.includes('/members')) {
                     router.reload({ only: ['members'] });
