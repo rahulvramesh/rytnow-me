@@ -197,7 +197,7 @@ fetchModelsFromEndpoint.form = fetchModelsFromEndpointForm
 * @see app/Http/Controllers/Settings/LlmProviderController.php:69
 * @route '/settings/llm-providers/{provider}'
 */
-export const update = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+export const update = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
@@ -212,7 +212,7 @@ update.definition = {
 * @see app/Http/Controllers/Settings/LlmProviderController.php:69
 * @route '/settings/llm-providers/{provider}'
 */
-update.url = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+update.url = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { provider: args }
     }
@@ -245,7 +245,7 @@ update.url = (args: { provider: number | { id: number } } | [provider: number | 
 * @see app/Http/Controllers/Settings/LlmProviderController.php:69
 * @route '/settings/llm-providers/{provider}'
 */
-update.patch = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
@@ -255,7 +255,7 @@ update.patch = (args: { provider: number | { id: number } } | [provider: number 
 * @see app/Http/Controllers/Settings/LlmProviderController.php:69
 * @route '/settings/llm-providers/{provider}'
 */
-const updateForm = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -270,7 +270,7 @@ const updateForm = (args: { provider: number | { id: number } } | [provider: num
 * @see app/Http/Controllers/Settings/LlmProviderController.php:69
 * @route '/settings/llm-providers/{provider}'
 */
-updateForm.patch = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.patch = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -287,7 +287,7 @@ update.form = updateForm
 * @see app/Http/Controllers/Settings/LlmProviderController.php:103
 * @route '/settings/llm-providers/{provider}'
 */
-export const destroy = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -302,7 +302,7 @@ destroy.definition = {
 * @see app/Http/Controllers/Settings/LlmProviderController.php:103
 * @route '/settings/llm-providers/{provider}'
 */
-destroy.url = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { provider: args }
     }
@@ -335,7 +335,7 @@ destroy.url = (args: { provider: number | { id: number } } | [provider: number |
 * @see app/Http/Controllers/Settings/LlmProviderController.php:103
 * @route '/settings/llm-providers/{provider}'
 */
-destroy.delete = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -345,7 +345,7 @@ destroy.delete = (args: { provider: number | { id: number } } | [provider: numbe
 * @see app/Http/Controllers/Settings/LlmProviderController.php:103
 * @route '/settings/llm-providers/{provider}'
 */
-const destroyForm = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -360,7 +360,7 @@ const destroyForm = (args: { provider: number | { id: number } } | [provider: nu
 * @see app/Http/Controllers/Settings/LlmProviderController.php:103
 * @route '/settings/llm-providers/{provider}'
 */
-destroyForm.delete = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -377,7 +377,7 @@ destroy.form = destroyForm
 * @see app/Http/Controllers/Settings/LlmProviderController.php:114
 * @route '/settings/llm-providers/{provider}/default'
 */
-export const setDefault = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const setDefault = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: setDefault.url(args, options),
     method: 'post',
 })
@@ -392,7 +392,7 @@ setDefault.definition = {
 * @see app/Http/Controllers/Settings/LlmProviderController.php:114
 * @route '/settings/llm-providers/{provider}/default'
 */
-setDefault.url = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+setDefault.url = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { provider: args }
     }
@@ -425,7 +425,7 @@ setDefault.url = (args: { provider: number | { id: number } } | [provider: numbe
 * @see app/Http/Controllers/Settings/LlmProviderController.php:114
 * @route '/settings/llm-providers/{provider}/default'
 */
-setDefault.post = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+setDefault.post = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: setDefault.url(args, options),
     method: 'post',
 })
@@ -435,7 +435,7 @@ setDefault.post = (args: { provider: number | { id: number } } | [provider: numb
 * @see app/Http/Controllers/Settings/LlmProviderController.php:114
 * @route '/settings/llm-providers/{provider}/default'
 */
-const setDefaultForm = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const setDefaultForm = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: setDefault.url(args, options),
     method: 'post',
 })
@@ -445,7 +445,7 @@ const setDefaultForm = (args: { provider: number | { id: number } } | [provider:
 * @see app/Http/Controllers/Settings/LlmProviderController.php:114
 * @route '/settings/llm-providers/{provider}/default'
 */
-setDefaultForm.post = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+setDefaultForm.post = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: setDefault.url(args, options),
     method: 'post',
 })
@@ -457,7 +457,7 @@ setDefault.form = setDefaultForm
 * @see app/Http/Controllers/Settings/LlmProviderController.php:125
 * @route '/settings/llm-providers/{provider}/test'
 */
-export const testConnection = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const testConnection = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: testConnection.url(args, options),
     method: 'post',
 })
@@ -472,7 +472,7 @@ testConnection.definition = {
 * @see app/Http/Controllers/Settings/LlmProviderController.php:125
 * @route '/settings/llm-providers/{provider}/test'
 */
-testConnection.url = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+testConnection.url = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { provider: args }
     }
@@ -505,7 +505,7 @@ testConnection.url = (args: { provider: number | { id: number } } | [provider: n
 * @see app/Http/Controllers/Settings/LlmProviderController.php:125
 * @route '/settings/llm-providers/{provider}/test'
 */
-testConnection.post = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+testConnection.post = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: testConnection.url(args, options),
     method: 'post',
 })
@@ -515,7 +515,7 @@ testConnection.post = (args: { provider: number | { id: number } } | [provider: 
 * @see app/Http/Controllers/Settings/LlmProviderController.php:125
 * @route '/settings/llm-providers/{provider}/test'
 */
-const testConnectionForm = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const testConnectionForm = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: testConnection.url(args, options),
     method: 'post',
 })
@@ -525,7 +525,7 @@ const testConnectionForm = (args: { provider: number | { id: number } } | [provi
 * @see app/Http/Controllers/Settings/LlmProviderController.php:125
 * @route '/settings/llm-providers/{provider}/test'
 */
-testConnectionForm.post = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+testConnectionForm.post = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: testConnection.url(args, options),
     method: 'post',
 })
@@ -537,7 +537,7 @@ testConnection.form = testConnectionForm
 * @see app/Http/Controllers/Settings/LlmProviderController.php:188
 * @route '/settings/llm-providers/{provider}/models'
 */
-export const fetchModels = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const fetchModels = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: fetchModels.url(args, options),
     method: 'get',
 })
@@ -552,7 +552,7 @@ fetchModels.definition = {
 * @see app/Http/Controllers/Settings/LlmProviderController.php:188
 * @route '/settings/llm-providers/{provider}/models'
 */
-fetchModels.url = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+fetchModels.url = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { provider: args }
     }
@@ -585,7 +585,7 @@ fetchModels.url = (args: { provider: number | { id: number } } | [provider: numb
 * @see app/Http/Controllers/Settings/LlmProviderController.php:188
 * @route '/settings/llm-providers/{provider}/models'
 */
-fetchModels.get = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+fetchModels.get = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: fetchModels.url(args, options),
     method: 'get',
 })
@@ -595,7 +595,7 @@ fetchModels.get = (args: { provider: number | { id: number } } | [provider: numb
 * @see app/Http/Controllers/Settings/LlmProviderController.php:188
 * @route '/settings/llm-providers/{provider}/models'
 */
-fetchModels.head = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+fetchModels.head = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: fetchModels.url(args, options),
     method: 'head',
 })
@@ -605,7 +605,7 @@ fetchModels.head = (args: { provider: number | { id: number } } | [provider: num
 * @see app/Http/Controllers/Settings/LlmProviderController.php:188
 * @route '/settings/llm-providers/{provider}/models'
 */
-const fetchModelsForm = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const fetchModelsForm = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: fetchModels.url(args, options),
     method: 'get',
 })
@@ -615,7 +615,7 @@ const fetchModelsForm = (args: { provider: number | { id: number } } | [provider
 * @see app/Http/Controllers/Settings/LlmProviderController.php:188
 * @route '/settings/llm-providers/{provider}/models'
 */
-fetchModelsForm.get = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+fetchModelsForm.get = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: fetchModels.url(args, options),
     method: 'get',
 })
@@ -625,7 +625,7 @@ fetchModelsForm.get = (args: { provider: number | { id: number } } | [provider: 
 * @see app/Http/Controllers/Settings/LlmProviderController.php:188
 * @route '/settings/llm-providers/{provider}/models'
 */
-fetchModelsForm.head = (args: { provider: number | { id: number } } | [provider: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+fetchModelsForm.head = (args: { provider: string | number | { id: string | number } } | [provider: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: fetchModels.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',

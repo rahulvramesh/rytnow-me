@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/AudioRecordingController.php:19
 * @route '/projects/{project}/tasks/{task}/recordings'
 */
-export const store = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const store = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -19,7 +19,7 @@ store.definition = {
 * @see app/Http/Controllers/AudioRecordingController.php:19
 * @route '/projects/{project}/tasks/{task}/recordings'
 */
-store.url = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions) => {
+store.url = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -49,7 +49,7 @@ store.url = (args: { project: number | { id: number }, task: number | { id: numb
 * @see app/Http/Controllers/AudioRecordingController.php:19
 * @route '/projects/{project}/tasks/{task}/recordings'
 */
-store.post = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+store.post = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -59,7 +59,7 @@ store.post = (args: { project: number | { id: number }, task: number | { id: num
 * @see app/Http/Controllers/AudioRecordingController.php:19
 * @route '/projects/{project}/tasks/{task}/recordings'
 */
-const storeForm = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const storeForm = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -69,7 +69,7 @@ const storeForm = (args: { project: number | { id: number }, task: number | { id
 * @see app/Http/Controllers/AudioRecordingController.php:19
 * @route '/projects/{project}/tasks/{task}/recordings'
 */
-storeForm.post = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+storeForm.post = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -81,7 +81,7 @@ store.form = storeForm
 * @see app/Http/Controllers/AudioRecordingController.php:44
 * @route '/projects/{project}/tasks/{task}/recordings/{audioRecording}'
 */
-export const stream = (args: { project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const stream = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: stream.url(args, options),
     method: 'get',
 })
@@ -96,7 +96,7 @@ stream.definition = {
 * @see app/Http/Controllers/AudioRecordingController.php:44
 * @route '/projects/{project}/tasks/{task}/recordings/{audioRecording}'
 */
-stream.url = (args: { project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } ], options?: RouteQueryOptions) => {
+stream.url = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -131,7 +131,7 @@ stream.url = (args: { project: number | { id: number }, task: number | { id: num
 * @see app/Http/Controllers/AudioRecordingController.php:44
 * @route '/projects/{project}/tasks/{task}/recordings/{audioRecording}'
 */
-stream.get = (args: { project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+stream.get = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: stream.url(args, options),
     method: 'get',
 })
@@ -141,7 +141,7 @@ stream.get = (args: { project: number | { id: number }, task: number | { id: num
 * @see app/Http/Controllers/AudioRecordingController.php:44
 * @route '/projects/{project}/tasks/{task}/recordings/{audioRecording}'
 */
-stream.head = (args: { project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+stream.head = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: stream.url(args, options),
     method: 'head',
 })
@@ -151,7 +151,7 @@ stream.head = (args: { project: number | { id: number }, task: number | { id: nu
 * @see app/Http/Controllers/AudioRecordingController.php:44
 * @route '/projects/{project}/tasks/{task}/recordings/{audioRecording}'
 */
-const streamForm = (args: { project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const streamForm = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: stream.url(args, options),
     method: 'get',
 })
@@ -161,7 +161,7 @@ const streamForm = (args: { project: number | { id: number }, task: number | { i
 * @see app/Http/Controllers/AudioRecordingController.php:44
 * @route '/projects/{project}/tasks/{task}/recordings/{audioRecording}'
 */
-streamForm.get = (args: { project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+streamForm.get = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: stream.url(args, options),
     method: 'get',
 })
@@ -171,7 +171,7 @@ streamForm.get = (args: { project: number | { id: number }, task: number | { id:
 * @see app/Http/Controllers/AudioRecordingController.php:44
 * @route '/projects/{project}/tasks/{task}/recordings/{audioRecording}'
 */
-streamForm.head = (args: { project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+streamForm.head = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: stream.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -188,7 +188,7 @@ stream.form = streamForm
 * @see app/Http/Controllers/AudioRecordingController.php:59
 * @route '/projects/{project}/tasks/{task}/recordings/{audioRecording}'
 */
-export const destroy = (args: { project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -203,7 +203,7 @@ destroy.definition = {
 * @see app/Http/Controllers/AudioRecordingController.php:59
 * @route '/projects/{project}/tasks/{task}/recordings/{audioRecording}'
 */
-destroy.url = (args: { project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } ], options?: RouteQueryOptions) => {
+destroy.url = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -238,7 +238,7 @@ destroy.url = (args: { project: number | { id: number }, task: number | { id: nu
 * @see app/Http/Controllers/AudioRecordingController.php:59
 * @route '/projects/{project}/tasks/{task}/recordings/{audioRecording}'
 */
-destroy.delete = (args: { project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -248,7 +248,7 @@ destroy.delete = (args: { project: number | { id: number }, task: number | { id:
 * @see app/Http/Controllers/AudioRecordingController.php:59
 * @route '/projects/{project}/tasks/{task}/recordings/{audioRecording}'
 */
-const destroyForm = (args: { project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -263,7 +263,7 @@ const destroyForm = (args: { project: number | { id: number }, task: number | { 
 * @see app/Http/Controllers/AudioRecordingController.php:59
 * @route '/projects/{project}/tasks/{task}/recordings/{audioRecording}'
 */
-destroyForm.delete = (args: { project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, audioRecording: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, audioRecording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

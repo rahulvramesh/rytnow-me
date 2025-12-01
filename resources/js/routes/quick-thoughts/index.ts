@@ -142,7 +142,7 @@ store.form = storeForm
 * @see app/Http/Controllers/QuickThoughtController.php:73
 * @route '/quick-thoughts/{quickThought}'
 */
-export const update = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -157,7 +157,7 @@ update.definition = {
 * @see app/Http/Controllers/QuickThoughtController.php:73
 * @route '/quick-thoughts/{quickThought}'
 */
-update.url = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+update.url = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { quickThought: args }
     }
@@ -190,7 +190,7 @@ update.url = (args: { quickThought: number | { id: number } } | [quickThought: n
 * @see app/Http/Controllers/QuickThoughtController.php:73
 * @route '/quick-thoughts/{quickThought}'
 */
-update.put = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -200,7 +200,7 @@ update.put = (args: { quickThought: number | { id: number } } | [quickThought: n
 * @see app/Http/Controllers/QuickThoughtController.php:73
 * @route '/quick-thoughts/{quickThought}'
 */
-const updateForm = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -215,7 +215,7 @@ const updateForm = (args: { quickThought: number | { id: number } } | [quickThou
 * @see app/Http/Controllers/QuickThoughtController.php:73
 * @route '/quick-thoughts/{quickThought}'
 */
-updateForm.put = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -232,7 +232,7 @@ update.form = updateForm
 * @see app/Http/Controllers/QuickThoughtController.php:91
 * @route '/quick-thoughts/{quickThought}'
 */
-export const destroy = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -247,7 +247,7 @@ destroy.definition = {
 * @see app/Http/Controllers/QuickThoughtController.php:91
 * @route '/quick-thoughts/{quickThought}'
 */
-destroy.url = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { quickThought: args }
     }
@@ -280,7 +280,7 @@ destroy.url = (args: { quickThought: number | { id: number } } | [quickThought: 
 * @see app/Http/Controllers/QuickThoughtController.php:91
 * @route '/quick-thoughts/{quickThought}'
 */
-destroy.delete = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -290,7 +290,7 @@ destroy.delete = (args: { quickThought: number | { id: number } } | [quickThough
 * @see app/Http/Controllers/QuickThoughtController.php:91
 * @route '/quick-thoughts/{quickThought}'
 */
-const destroyForm = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -305,7 +305,7 @@ const destroyForm = (args: { quickThought: number | { id: number } } | [quickTho
 * @see app/Http/Controllers/QuickThoughtController.php:91
 * @route '/quick-thoughts/{quickThought}'
 */
-destroyForm.delete = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -322,7 +322,7 @@ destroy.form = destroyForm
 * @see app/Http/Controllers/QuickThoughtController.php:108
 * @route '/quick-thoughts/{quickThought}/convert'
 */
-export const convert = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const convert = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: convert.url(args, options),
     method: 'post',
 })
@@ -337,7 +337,7 @@ convert.definition = {
 * @see app/Http/Controllers/QuickThoughtController.php:108
 * @route '/quick-thoughts/{quickThought}/convert'
 */
-convert.url = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+convert.url = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { quickThought: args }
     }
@@ -370,7 +370,7 @@ convert.url = (args: { quickThought: number | { id: number } } | [quickThought: 
 * @see app/Http/Controllers/QuickThoughtController.php:108
 * @route '/quick-thoughts/{quickThought}/convert'
 */
-convert.post = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+convert.post = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: convert.url(args, options),
     method: 'post',
 })
@@ -380,7 +380,7 @@ convert.post = (args: { quickThought: number | { id: number } } | [quickThought:
 * @see app/Http/Controllers/QuickThoughtController.php:108
 * @route '/quick-thoughts/{quickThought}/convert'
 */
-const convertForm = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const convertForm = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: convert.url(args, options),
     method: 'post',
 })
@@ -390,7 +390,7 @@ const convertForm = (args: { quickThought: number | { id: number } } | [quickTho
 * @see app/Http/Controllers/QuickThoughtController.php:108
 * @route '/quick-thoughts/{quickThought}/convert'
 */
-convertForm.post = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+convertForm.post = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: convert.url(args, options),
     method: 'post',
 })

@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/CommentController.php:19
 * @route '/projects/{project}/tasks/{task}/comments'
 */
-export const store = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const store = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -19,7 +19,7 @@ store.definition = {
 * @see app/Http/Controllers/CommentController.php:19
 * @route '/projects/{project}/tasks/{task}/comments'
 */
-store.url = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions) => {
+store.url = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -49,7 +49,7 @@ store.url = (args: { project: number | { id: number }, task: number | { id: numb
 * @see app/Http/Controllers/CommentController.php:19
 * @route '/projects/{project}/tasks/{task}/comments'
 */
-store.post = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+store.post = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -59,7 +59,7 @@ store.post = (args: { project: number | { id: number }, task: number | { id: num
 * @see app/Http/Controllers/CommentController.php:19
 * @route '/projects/{project}/tasks/{task}/comments'
 */
-const storeForm = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const storeForm = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -69,7 +69,7 @@ const storeForm = (args: { project: number | { id: number }, task: number | { id
 * @see app/Http/Controllers/CommentController.php:19
 * @route '/projects/{project}/tasks/{task}/comments'
 */
-storeForm.post = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+storeForm.post = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -81,7 +81,7 @@ store.form = storeForm
 * @see app/Http/Controllers/CommentController.php:38
 * @route '/projects/{project}/tasks/{task}/comments/{comment}'
 */
-export const update = (args: { project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -96,7 +96,7 @@ update.definition = {
 * @see app/Http/Controllers/CommentController.php:38
 * @route '/projects/{project}/tasks/{task}/comments/{comment}'
 */
-update.url = (args: { project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } ], options?: RouteQueryOptions) => {
+update.url = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -131,7 +131,7 @@ update.url = (args: { project: number | { id: number }, task: number | { id: num
 * @see app/Http/Controllers/CommentController.php:38
 * @route '/projects/{project}/tasks/{task}/comments/{comment}'
 */
-update.put = (args: { project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -141,7 +141,7 @@ update.put = (args: { project: number | { id: number }, task: number | { id: num
 * @see app/Http/Controllers/CommentController.php:38
 * @route '/projects/{project}/tasks/{task}/comments/{comment}'
 */
-const updateForm = (args: { project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -156,7 +156,7 @@ const updateForm = (args: { project: number | { id: number }, task: number | { i
 * @see app/Http/Controllers/CommentController.php:38
 * @route '/projects/{project}/tasks/{task}/comments/{comment}'
 */
-updateForm.put = (args: { project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -173,7 +173,7 @@ update.form = updateForm
 * @see app/Http/Controllers/CommentController.php:58
 * @route '/projects/{project}/tasks/{task}/comments/{comment}'
 */
-export const destroy = (args: { project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -188,7 +188,7 @@ destroy.definition = {
 * @see app/Http/Controllers/CommentController.php:58
 * @route '/projects/{project}/tasks/{task}/comments/{comment}'
 */
-destroy.url = (args: { project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } ], options?: RouteQueryOptions) => {
+destroy.url = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -223,7 +223,7 @@ destroy.url = (args: { project: number | { id: number }, task: number | { id: nu
 * @see app/Http/Controllers/CommentController.php:58
 * @route '/projects/{project}/tasks/{task}/comments/{comment}'
 */
-destroy.delete = (args: { project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -233,7 +233,7 @@ destroy.delete = (args: { project: number | { id: number }, task: number | { id:
 * @see app/Http/Controllers/CommentController.php:58
 * @route '/projects/{project}/tasks/{task}/comments/{comment}'
 */
-const destroyForm = (args: { project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -248,7 +248,7 @@ const destroyForm = (args: { project: number | { id: number }, task: number | { 
 * @see app/Http/Controllers/CommentController.php:58
 * @route '/projects/{project}/tasks/{task}/comments/{comment}'
 */
-destroyForm.delete = (args: { project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, comment: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, comment: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

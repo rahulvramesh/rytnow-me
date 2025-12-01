@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/DocFolderController.php:15
 * @route '/projects/{project}/docs/folders'
 */
-export const store = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const store = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -19,7 +19,7 @@ store.definition = {
 * @see app/Http/Controllers/DocFolderController.php:15
 * @route '/projects/{project}/docs/folders'
 */
-store.url = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+store.url = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { project: args }
     }
@@ -52,7 +52,7 @@ store.url = (args: { project: number | { id: number } } | [project: number | { i
 * @see app/Http/Controllers/DocFolderController.php:15
 * @route '/projects/{project}/docs/folders'
 */
-store.post = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+store.post = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -62,7 +62,7 @@ store.post = (args: { project: number | { id: number } } | [project: number | { 
 * @see app/Http/Controllers/DocFolderController.php:15
 * @route '/projects/{project}/docs/folders'
 */
-const storeForm = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const storeForm = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -72,7 +72,7 @@ const storeForm = (args: { project: number | { id: number } } | [project: number
 * @see app/Http/Controllers/DocFolderController.php:15
 * @route '/projects/{project}/docs/folders'
 */
-storeForm.post = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+storeForm.post = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -84,7 +84,7 @@ store.form = storeForm
 * @see app/Http/Controllers/DocFolderController.php:33
 * @route '/projects/{project}/docs/folders/{folder}'
 */
-export const update = (args: { project: number | { id: number }, folder: number | { id: number } } | [project: number | { id: number }, folder: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { project: string | number | { id: string | number }, folder: string | number | { id: string | number } } | [project: string | number | { id: string | number }, folder: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -99,7 +99,7 @@ update.definition = {
 * @see app/Http/Controllers/DocFolderController.php:33
 * @route '/projects/{project}/docs/folders/{folder}'
 */
-update.url = (args: { project: number | { id: number }, folder: number | { id: number } } | [project: number | { id: number }, folder: number | { id: number } ], options?: RouteQueryOptions) => {
+update.url = (args: { project: string | number | { id: string | number }, folder: string | number | { id: string | number } } | [project: string | number | { id: string | number }, folder: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -129,7 +129,7 @@ update.url = (args: { project: number | { id: number }, folder: number | { id: n
 * @see app/Http/Controllers/DocFolderController.php:33
 * @route '/projects/{project}/docs/folders/{folder}'
 */
-update.put = (args: { project: number | { id: number }, folder: number | { id: number } } | [project: number | { id: number }, folder: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { project: string | number | { id: string | number }, folder: string | number | { id: string | number } } | [project: string | number | { id: string | number }, folder: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -139,7 +139,7 @@ update.put = (args: { project: number | { id: number }, folder: number | { id: n
 * @see app/Http/Controllers/DocFolderController.php:33
 * @route '/projects/{project}/docs/folders/{folder}'
 */
-const updateForm = (args: { project: number | { id: number }, folder: number | { id: number } } | [project: number | { id: number }, folder: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { project: string | number | { id: string | number }, folder: string | number | { id: string | number } } | [project: string | number | { id: string | number }, folder: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -154,7 +154,7 @@ const updateForm = (args: { project: number | { id: number }, folder: number | {
 * @see app/Http/Controllers/DocFolderController.php:33
 * @route '/projects/{project}/docs/folders/{folder}'
 */
-updateForm.put = (args: { project: number | { id: number }, folder: number | { id: number } } | [project: number | { id: number }, folder: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { project: string | number | { id: string | number }, folder: string | number | { id: string | number } } | [project: string | number | { id: string | number }, folder: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -171,7 +171,7 @@ update.form = updateForm
 * @see app/Http/Controllers/DocFolderController.php:50
 * @route '/projects/{project}/docs/folders/{folder}'
 */
-export const destroy = (args: { project: number | { id: number }, folder: number | { id: number } } | [project: number | { id: number }, folder: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { project: string | number | { id: string | number }, folder: string | number | { id: string | number } } | [project: string | number | { id: string | number }, folder: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -186,7 +186,7 @@ destroy.definition = {
 * @see app/Http/Controllers/DocFolderController.php:50
 * @route '/projects/{project}/docs/folders/{folder}'
 */
-destroy.url = (args: { project: number | { id: number }, folder: number | { id: number } } | [project: number | { id: number }, folder: number | { id: number } ], options?: RouteQueryOptions) => {
+destroy.url = (args: { project: string | number | { id: string | number }, folder: string | number | { id: string | number } } | [project: string | number | { id: string | number }, folder: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -216,7 +216,7 @@ destroy.url = (args: { project: number | { id: number }, folder: number | { id: 
 * @see app/Http/Controllers/DocFolderController.php:50
 * @route '/projects/{project}/docs/folders/{folder}'
 */
-destroy.delete = (args: { project: number | { id: number }, folder: number | { id: number } } | [project: number | { id: number }, folder: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { project: string | number | { id: string | number }, folder: string | number | { id: string | number } } | [project: string | number | { id: string | number }, folder: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -226,7 +226,7 @@ destroy.delete = (args: { project: number | { id: number }, folder: number | { i
 * @see app/Http/Controllers/DocFolderController.php:50
 * @route '/projects/{project}/docs/folders/{folder}'
 */
-const destroyForm = (args: { project: number | { id: number }, folder: number | { id: number } } | [project: number | { id: number }, folder: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { project: string | number | { id: string | number }, folder: string | number | { id: string | number } } | [project: string | number | { id: string | number }, folder: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -241,7 +241,7 @@ const destroyForm = (args: { project: number | { id: number }, folder: number | 
 * @see app/Http/Controllers/DocFolderController.php:50
 * @route '/projects/{project}/docs/folders/{folder}'
 */
-destroyForm.delete = (args: { project: number | { id: number }, folder: number | { id: number } } | [project: number | { id: number }, folder: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { project: string | number | { id: string | number }, folder: string | number | { id: string | number } } | [project: string | number | { id: string | number }, folder: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -258,7 +258,7 @@ destroy.form = destroyForm
 * @see app/Http/Controllers/DocFolderController.php:66
 * @route '/projects/{project}/docs/folders/reorder'
 */
-export const reorder = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const reorder = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: reorder.url(args, options),
     method: 'post',
 })
@@ -273,7 +273,7 @@ reorder.definition = {
 * @see app/Http/Controllers/DocFolderController.php:66
 * @route '/projects/{project}/docs/folders/reorder'
 */
-reorder.url = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+reorder.url = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { project: args }
     }
@@ -306,7 +306,7 @@ reorder.url = (args: { project: number | { id: number } } | [project: number | {
 * @see app/Http/Controllers/DocFolderController.php:66
 * @route '/projects/{project}/docs/folders/reorder'
 */
-reorder.post = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+reorder.post = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: reorder.url(args, options),
     method: 'post',
 })
@@ -316,7 +316,7 @@ reorder.post = (args: { project: number | { id: number } } | [project: number | 
 * @see app/Http/Controllers/DocFolderController.php:66
 * @route '/projects/{project}/docs/folders/reorder'
 */
-const reorderForm = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const reorderForm = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: reorder.url(args, options),
     method: 'post',
 })
@@ -326,7 +326,7 @@ const reorderForm = (args: { project: number | { id: number } } | [project: numb
 * @see app/Http/Controllers/DocFolderController.php:66
 * @route '/projects/{project}/docs/folders/reorder'
 */
-reorderForm.post = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+reorderForm.post = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: reorder.url(args, options),
     method: 'post',
 })

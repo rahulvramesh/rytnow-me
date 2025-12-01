@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/Api/V1/ProjectController.php:11
 * @route '/api/v1/workspaces/{workspace}/projects'
 */
-export const index = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const index = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(args, options),
     method: 'get',
 })
@@ -19,7 +19,7 @@ index.definition = {
 * @see app/Http/Controllers/Api/V1/ProjectController.php:11
 * @route '/api/v1/workspaces/{workspace}/projects'
 */
-index.url = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+index.url = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { workspace: args }
     }
@@ -52,7 +52,7 @@ index.url = (args: { workspace: number | { id: number } } | [workspace: number |
 * @see app/Http/Controllers/Api/V1/ProjectController.php:11
 * @route '/api/v1/workspaces/{workspace}/projects'
 */
-index.get = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+index.get = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(args, options),
     method: 'get',
 })
@@ -62,7 +62,7 @@ index.get = (args: { workspace: number | { id: number } } | [workspace: number |
 * @see app/Http/Controllers/Api/V1/ProjectController.php:11
 * @route '/api/v1/workspaces/{workspace}/projects'
 */
-index.head = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+index.head = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(args, options),
     method: 'head',
 })
@@ -72,7 +72,7 @@ index.head = (args: { workspace: number | { id: number } } | [workspace: number 
 * @see app/Http/Controllers/Api/V1/ProjectController.php:11
 * @route '/api/v1/workspaces/{workspace}/projects'
 */
-const indexForm = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const indexForm = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(args, options),
     method: 'get',
 })
@@ -82,7 +82,7 @@ const indexForm = (args: { workspace: number | { id: number } } | [workspace: nu
 * @see app/Http/Controllers/Api/V1/ProjectController.php:11
 * @route '/api/v1/workspaces/{workspace}/projects'
 */
-indexForm.get = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+indexForm.get = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(args, options),
     method: 'get',
 })
@@ -92,7 +92,7 @@ indexForm.get = (args: { workspace: number | { id: number } } | [workspace: numb
 * @see app/Http/Controllers/Api/V1/ProjectController.php:11
 * @route '/api/v1/workspaces/{workspace}/projects'
 */
-indexForm.head = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+indexForm.head = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -109,7 +109,7 @@ index.form = indexForm
 * @see app/Http/Controllers/Api/V1/ProjectController.php:27
 * @route '/api/v1/workspaces/{workspace}/projects'
 */
-export const store = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const store = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -124,7 +124,7 @@ store.definition = {
 * @see app/Http/Controllers/Api/V1/ProjectController.php:27
 * @route '/api/v1/workspaces/{workspace}/projects'
 */
-store.url = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+store.url = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { workspace: args }
     }
@@ -157,7 +157,7 @@ store.url = (args: { workspace: number | { id: number } } | [workspace: number |
 * @see app/Http/Controllers/Api/V1/ProjectController.php:27
 * @route '/api/v1/workspaces/{workspace}/projects'
 */
-store.post = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+store.post = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -167,7 +167,7 @@ store.post = (args: { workspace: number | { id: number } } | [workspace: number 
 * @see app/Http/Controllers/Api/V1/ProjectController.php:27
 * @route '/api/v1/workspaces/{workspace}/projects'
 */
-const storeForm = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const storeForm = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -177,7 +177,7 @@ const storeForm = (args: { workspace: number | { id: number } } | [workspace: nu
 * @see app/Http/Controllers/Api/V1/ProjectController.php:27
 * @route '/api/v1/workspaces/{workspace}/projects'
 */
-storeForm.post = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+storeForm.post = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -189,7 +189,7 @@ store.form = storeForm
 * @see app/Http/Controllers/Api/V1/ProjectController.php:46
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-export const show = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -204,7 +204,7 @@ show.definition = {
 * @see app/Http/Controllers/Api/V1/ProjectController.php:46
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-show.url = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions) => {
+show.url = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             workspace: args[0],
@@ -234,7 +234,7 @@ show.url = (args: { workspace: number | { id: number }, project: number | { id: 
 * @see app/Http/Controllers/Api/V1/ProjectController.php:46
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-show.get = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -244,7 +244,7 @@ show.get = (args: { workspace: number | { id: number }, project: number | { id: 
 * @see app/Http/Controllers/Api/V1/ProjectController.php:46
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-show.head = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
@@ -254,7 +254,7 @@ show.head = (args: { workspace: number | { id: number }, project: number | { id:
 * @see app/Http/Controllers/Api/V1/ProjectController.php:46
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-const showForm = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -264,7 +264,7 @@ const showForm = (args: { workspace: number | { id: number }, project: number | 
 * @see app/Http/Controllers/Api/V1/ProjectController.php:46
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-showForm.get = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -274,7 +274,7 @@ showForm.get = (args: { workspace: number | { id: number }, project: number | { 
 * @see app/Http/Controllers/Api/V1/ProjectController.php:46
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-showForm.head = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -291,7 +291,7 @@ show.form = showForm
 * @see app/Http/Controllers/Api/V1/ProjectController.php:55
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-export const update = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -306,7 +306,7 @@ update.definition = {
 * @see app/Http/Controllers/Api/V1/ProjectController.php:55
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-update.url = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions) => {
+update.url = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             workspace: args[0],
@@ -336,7 +336,7 @@ update.url = (args: { workspace: number | { id: number }, project: number | { id
 * @see app/Http/Controllers/Api/V1/ProjectController.php:55
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-update.put = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -346,7 +346,7 @@ update.put = (args: { workspace: number | { id: number }, project: number | { id
 * @see app/Http/Controllers/Api/V1/ProjectController.php:55
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-update.patch = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
@@ -356,7 +356,7 @@ update.patch = (args: { workspace: number | { id: number }, project: number | { 
 * @see app/Http/Controllers/Api/V1/ProjectController.php:55
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-const updateForm = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -371,7 +371,7 @@ const updateForm = (args: { workspace: number | { id: number }, project: number 
 * @see app/Http/Controllers/Api/V1/ProjectController.php:55
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-updateForm.put = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -386,7 +386,7 @@ updateForm.put = (args: { workspace: number | { id: number }, project: number | 
 * @see app/Http/Controllers/Api/V1/ProjectController.php:55
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-updateForm.patch = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.patch = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -403,7 +403,7 @@ update.form = updateForm
 * @see app/Http/Controllers/Api/V1/ProjectController.php:74
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-export const destroy = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -418,7 +418,7 @@ destroy.definition = {
 * @see app/Http/Controllers/Api/V1/ProjectController.php:74
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-destroy.url = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions) => {
+destroy.url = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             workspace: args[0],
@@ -448,7 +448,7 @@ destroy.url = (args: { workspace: number | { id: number }, project: number | { i
 * @see app/Http/Controllers/Api/V1/ProjectController.php:74
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-destroy.delete = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -458,7 +458,7 @@ destroy.delete = (args: { workspace: number | { id: number }, project: number | 
 * @see app/Http/Controllers/Api/V1/ProjectController.php:74
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-const destroyForm = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -473,7 +473,7 @@ const destroyForm = (args: { workspace: number | { id: number }, project: number
 * @see app/Http/Controllers/Api/V1/ProjectController.php:74
 * @route '/api/v1/workspaces/{workspace}/projects/{project}'
 */
-destroyForm.delete = (args: { workspace: number | { id: number }, project: number | { id: number } } | [workspace: number | { id: number }, project: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { workspace: string | number | { id: string | number }, project: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, project: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

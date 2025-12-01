@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:15
 * @route '/quick-thoughts/{quickThought}/recordings'
 */
-export const store = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const store = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -19,7 +19,7 @@ store.definition = {
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:15
 * @route '/quick-thoughts/{quickThought}/recordings'
 */
-store.url = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+store.url = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { quickThought: args }
     }
@@ -52,7 +52,7 @@ store.url = (args: { quickThought: number | { id: number } } | [quickThought: nu
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:15
 * @route '/quick-thoughts/{quickThought}/recordings'
 */
-store.post = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+store.post = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -62,7 +62,7 @@ store.post = (args: { quickThought: number | { id: number } } | [quickThought: n
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:15
 * @route '/quick-thoughts/{quickThought}/recordings'
 */
-const storeForm = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const storeForm = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -72,7 +72,7 @@ const storeForm = (args: { quickThought: number | { id: number } } | [quickThoug
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:15
 * @route '/quick-thoughts/{quickThought}/recordings'
 */
-storeForm.post = (args: { quickThought: number | { id: number } } | [quickThought: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+storeForm.post = (args: { quickThought: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -84,7 +84,7 @@ store.form = storeForm
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:43
 * @route '/quick-thoughts/{quickThought}/recordings/{recording}'
 */
-export const stream = (args: { quickThought: number | { id: number }, recording: number | { id: number } } | [quickThought: number | { id: number }, recording: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const stream = (args: { quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: stream.url(args, options),
     method: 'get',
 })
@@ -99,7 +99,7 @@ stream.definition = {
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:43
 * @route '/quick-thoughts/{quickThought}/recordings/{recording}'
 */
-stream.url = (args: { quickThought: number | { id: number }, recording: number | { id: number } } | [quickThought: number | { id: number }, recording: number | { id: number } ], options?: RouteQueryOptions) => {
+stream.url = (args: { quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             quickThought: args[0],
@@ -129,7 +129,7 @@ stream.url = (args: { quickThought: number | { id: number }, recording: number |
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:43
 * @route '/quick-thoughts/{quickThought}/recordings/{recording}'
 */
-stream.get = (args: { quickThought: number | { id: number }, recording: number | { id: number } } | [quickThought: number | { id: number }, recording: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+stream.get = (args: { quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: stream.url(args, options),
     method: 'get',
 })
@@ -139,7 +139,7 @@ stream.get = (args: { quickThought: number | { id: number }, recording: number |
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:43
 * @route '/quick-thoughts/{quickThought}/recordings/{recording}'
 */
-stream.head = (args: { quickThought: number | { id: number }, recording: number | { id: number } } | [quickThought: number | { id: number }, recording: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+stream.head = (args: { quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: stream.url(args, options),
     method: 'head',
 })
@@ -149,7 +149,7 @@ stream.head = (args: { quickThought: number | { id: number }, recording: number 
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:43
 * @route '/quick-thoughts/{quickThought}/recordings/{recording}'
 */
-const streamForm = (args: { quickThought: number | { id: number }, recording: number | { id: number } } | [quickThought: number | { id: number }, recording: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const streamForm = (args: { quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: stream.url(args, options),
     method: 'get',
 })
@@ -159,7 +159,7 @@ const streamForm = (args: { quickThought: number | { id: number }, recording: nu
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:43
 * @route '/quick-thoughts/{quickThought}/recordings/{recording}'
 */
-streamForm.get = (args: { quickThought: number | { id: number }, recording: number | { id: number } } | [quickThought: number | { id: number }, recording: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+streamForm.get = (args: { quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: stream.url(args, options),
     method: 'get',
 })
@@ -169,7 +169,7 @@ streamForm.get = (args: { quickThought: number | { id: number }, recording: numb
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:43
 * @route '/quick-thoughts/{quickThought}/recordings/{recording}'
 */
-streamForm.head = (args: { quickThought: number | { id: number }, recording: number | { id: number } } | [quickThought: number | { id: number }, recording: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+streamForm.head = (args: { quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: stream.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -186,7 +186,7 @@ stream.form = streamForm
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:66
 * @route '/quick-thoughts/{quickThought}/recordings/{recording}'
 */
-export const destroy = (args: { quickThought: number | { id: number }, recording: number | { id: number } } | [quickThought: number | { id: number }, recording: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -201,7 +201,7 @@ destroy.definition = {
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:66
 * @route '/quick-thoughts/{quickThought}/recordings/{recording}'
 */
-destroy.url = (args: { quickThought: number | { id: number }, recording: number | { id: number } } | [quickThought: number | { id: number }, recording: number | { id: number } ], options?: RouteQueryOptions) => {
+destroy.url = (args: { quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             quickThought: args[0],
@@ -231,7 +231,7 @@ destroy.url = (args: { quickThought: number | { id: number }, recording: number 
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:66
 * @route '/quick-thoughts/{quickThought}/recordings/{recording}'
 */
-destroy.delete = (args: { quickThought: number | { id: number }, recording: number | { id: number } } | [quickThought: number | { id: number }, recording: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -241,7 +241,7 @@ destroy.delete = (args: { quickThought: number | { id: number }, recording: numb
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:66
 * @route '/quick-thoughts/{quickThought}/recordings/{recording}'
 */
-const destroyForm = (args: { quickThought: number | { id: number }, recording: number | { id: number } } | [quickThought: number | { id: number }, recording: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -256,7 +256,7 @@ const destroyForm = (args: { quickThought: number | { id: number }, recording: n
 * @see app/Http/Controllers/QuickThoughtRecordingController.php:66
 * @route '/quick-thoughts/{quickThought}/recordings/{recording}'
 */
-destroyForm.delete = (args: { quickThought: number | { id: number }, recording: number | { id: number } } | [quickThought: number | { id: number }, recording: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } } | [quickThought: string | number | { id: string | number }, recording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

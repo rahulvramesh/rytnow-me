@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/DocumentController.php:19
 * @route '/projects/{project}/docs'
 */
-export const index = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const index = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(args, options),
     method: 'get',
 })
@@ -19,7 +19,7 @@ index.definition = {
 * @see app/Http/Controllers/DocumentController.php:19
 * @route '/projects/{project}/docs'
 */
-index.url = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+index.url = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { project: args }
     }
@@ -52,7 +52,7 @@ index.url = (args: { project: number | { id: number } } | [project: number | { i
 * @see app/Http/Controllers/DocumentController.php:19
 * @route '/projects/{project}/docs'
 */
-index.get = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+index.get = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(args, options),
     method: 'get',
 })
@@ -62,7 +62,7 @@ index.get = (args: { project: number | { id: number } } | [project: number | { i
 * @see app/Http/Controllers/DocumentController.php:19
 * @route '/projects/{project}/docs'
 */
-index.head = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+index.head = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(args, options),
     method: 'head',
 })
@@ -72,7 +72,7 @@ index.head = (args: { project: number | { id: number } } | [project: number | { 
 * @see app/Http/Controllers/DocumentController.php:19
 * @route '/projects/{project}/docs'
 */
-const indexForm = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const indexForm = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(args, options),
     method: 'get',
 })
@@ -82,7 +82,7 @@ const indexForm = (args: { project: number | { id: number } } | [project: number
 * @see app/Http/Controllers/DocumentController.php:19
 * @route '/projects/{project}/docs'
 */
-indexForm.get = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+indexForm.get = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(args, options),
     method: 'get',
 })
@@ -92,7 +92,7 @@ indexForm.get = (args: { project: number | { id: number } } | [project: number |
 * @see app/Http/Controllers/DocumentController.php:19
 * @route '/projects/{project}/docs'
 */
-indexForm.head = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+indexForm.head = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -109,7 +109,7 @@ index.form = indexForm
 * @see app/Http/Controllers/DocumentController.php:82
 * @route '/projects/{project}/docs'
 */
-export const store = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const store = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -124,7 +124,7 @@ store.definition = {
 * @see app/Http/Controllers/DocumentController.php:82
 * @route '/projects/{project}/docs'
 */
-store.url = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+store.url = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { project: args }
     }
@@ -157,7 +157,7 @@ store.url = (args: { project: number | { id: number } } | [project: number | { i
 * @see app/Http/Controllers/DocumentController.php:82
 * @route '/projects/{project}/docs'
 */
-store.post = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+store.post = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -167,7 +167,7 @@ store.post = (args: { project: number | { id: number } } | [project: number | { 
 * @see app/Http/Controllers/DocumentController.php:82
 * @route '/projects/{project}/docs'
 */
-const storeForm = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const storeForm = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -177,7 +177,7 @@ const storeForm = (args: { project: number | { id: number } } | [project: number
 * @see app/Http/Controllers/DocumentController.php:82
 * @route '/projects/{project}/docs'
 */
-storeForm.post = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+storeForm.post = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -189,7 +189,7 @@ store.form = storeForm
 * @see app/Http/Controllers/DocumentController.php:47
 * @route '/projects/{project}/docs/{document}'
 */
-export const show = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -204,7 +204,7 @@ show.definition = {
 * @see app/Http/Controllers/DocumentController.php:47
 * @route '/projects/{project}/docs/{document}'
 */
-show.url = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions) => {
+show.url = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -234,7 +234,7 @@ show.url = (args: { project: number | { id: number }, document: number | { id: n
 * @see app/Http/Controllers/DocumentController.php:47
 * @route '/projects/{project}/docs/{document}'
 */
-show.get = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -244,7 +244,7 @@ show.get = (args: { project: number | { id: number }, document: number | { id: n
 * @see app/Http/Controllers/DocumentController.php:47
 * @route '/projects/{project}/docs/{document}'
 */
-show.head = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
@@ -254,7 +254,7 @@ show.head = (args: { project: number | { id: number }, document: number | { id: 
 * @see app/Http/Controllers/DocumentController.php:47
 * @route '/projects/{project}/docs/{document}'
 */
-const showForm = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -264,7 +264,7 @@ const showForm = (args: { project: number | { id: number }, document: number | {
 * @see app/Http/Controllers/DocumentController.php:47
 * @route '/projects/{project}/docs/{document}'
 */
-showForm.get = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -274,7 +274,7 @@ showForm.get = (args: { project: number | { id: number }, document: number | { i
 * @see app/Http/Controllers/DocumentController.php:47
 * @route '/projects/{project}/docs/{document}'
 */
-showForm.head = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -291,7 +291,7 @@ show.form = showForm
 * @see app/Http/Controllers/DocumentController.php:118
 * @route '/projects/{project}/docs/{document}'
 */
-export const update = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -306,7 +306,7 @@ update.definition = {
 * @see app/Http/Controllers/DocumentController.php:118
 * @route '/projects/{project}/docs/{document}'
 */
-update.url = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions) => {
+update.url = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -336,7 +336,7 @@ update.url = (args: { project: number | { id: number }, document: number | { id:
 * @see app/Http/Controllers/DocumentController.php:118
 * @route '/projects/{project}/docs/{document}'
 */
-update.put = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -346,7 +346,7 @@ update.put = (args: { project: number | { id: number }, document: number | { id:
 * @see app/Http/Controllers/DocumentController.php:118
 * @route '/projects/{project}/docs/{document}'
 */
-const updateForm = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -361,7 +361,7 @@ const updateForm = (args: { project: number | { id: number }, document: number |
 * @see app/Http/Controllers/DocumentController.php:118
 * @route '/projects/{project}/docs/{document}'
 */
-updateForm.put = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -378,7 +378,7 @@ update.form = updateForm
 * @see app/Http/Controllers/DocumentController.php:147
 * @route '/projects/{project}/docs/{document}'
 */
-export const destroy = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -393,7 +393,7 @@ destroy.definition = {
 * @see app/Http/Controllers/DocumentController.php:147
 * @route '/projects/{project}/docs/{document}'
 */
-destroy.url = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions) => {
+destroy.url = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -423,7 +423,7 @@ destroy.url = (args: { project: number | { id: number }, document: number | { id
 * @see app/Http/Controllers/DocumentController.php:147
 * @route '/projects/{project}/docs/{document}'
 */
-destroy.delete = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -433,7 +433,7 @@ destroy.delete = (args: { project: number | { id: number }, document: number | {
 * @see app/Http/Controllers/DocumentController.php:147
 * @route '/projects/{project}/docs/{document}'
 */
-const destroyForm = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -448,7 +448,7 @@ const destroyForm = (args: { project: number | { id: number }, document: number 
 * @see app/Http/Controllers/DocumentController.php:147
 * @route '/projects/{project}/docs/{document}'
 */
-destroyForm.delete = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -465,7 +465,7 @@ destroy.form = destroyForm
 * @see app/Http/Controllers/DocumentController.php:167
 * @route '/projects/{project}/docs/{document}/move'
 */
-export const move = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+export const move = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: move.url(args, options),
     method: 'patch',
 })
@@ -480,7 +480,7 @@ move.definition = {
 * @see app/Http/Controllers/DocumentController.php:167
 * @route '/projects/{project}/docs/{document}/move'
 */
-move.url = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions) => {
+move.url = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -510,7 +510,7 @@ move.url = (args: { project: number | { id: number }, document: number | { id: n
 * @see app/Http/Controllers/DocumentController.php:167
 * @route '/projects/{project}/docs/{document}/move'
 */
-move.patch = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+move.patch = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: move.url(args, options),
     method: 'patch',
 })
@@ -520,7 +520,7 @@ move.patch = (args: { project: number | { id: number }, document: number | { id:
 * @see app/Http/Controllers/DocumentController.php:167
 * @route '/projects/{project}/docs/{document}/move'
 */
-const moveForm = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const moveForm = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: move.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -535,7 +535,7 @@ const moveForm = (args: { project: number | { id: number }, document: number | {
 * @see app/Http/Controllers/DocumentController.php:167
 * @route '/projects/{project}/docs/{document}/move'
 */
-moveForm.patch = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+moveForm.patch = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: move.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -552,7 +552,7 @@ move.form = moveForm
 * @see app/Http/Controllers/DocumentController.php:198
 * @route '/projects/{project}/docs/reorder'
 */
-export const reorder = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const reorder = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: reorder.url(args, options),
     method: 'post',
 })
@@ -567,7 +567,7 @@ reorder.definition = {
 * @see app/Http/Controllers/DocumentController.php:198
 * @route '/projects/{project}/docs/reorder'
 */
-reorder.url = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+reorder.url = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { project: args }
     }
@@ -600,7 +600,7 @@ reorder.url = (args: { project: number | { id: number } } | [project: number | {
 * @see app/Http/Controllers/DocumentController.php:198
 * @route '/projects/{project}/docs/reorder'
 */
-reorder.post = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+reorder.post = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: reorder.url(args, options),
     method: 'post',
 })
@@ -610,7 +610,7 @@ reorder.post = (args: { project: number | { id: number } } | [project: number | 
 * @see app/Http/Controllers/DocumentController.php:198
 * @route '/projects/{project}/docs/reorder'
 */
-const reorderForm = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const reorderForm = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: reorder.url(args, options),
     method: 'post',
 })
@@ -620,7 +620,7 @@ const reorderForm = (args: { project: number | { id: number } } | [project: numb
 * @see app/Http/Controllers/DocumentController.php:198
 * @route '/projects/{project}/docs/reorder'
 */
-reorderForm.post = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+reorderForm.post = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: reorder.url(args, options),
     method: 'post',
 })
@@ -632,7 +632,7 @@ reorder.form = reorderForm
 * @see app/Http/Controllers/DocumentController.php:221
 * @route '/projects/{project}/docs/{document}/upload-image'
 */
-export const uploadImage = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const uploadImage = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: uploadImage.url(args, options),
     method: 'post',
 })
@@ -647,7 +647,7 @@ uploadImage.definition = {
 * @see app/Http/Controllers/DocumentController.php:221
 * @route '/projects/{project}/docs/{document}/upload-image'
 */
-uploadImage.url = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions) => {
+uploadImage.url = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -677,7 +677,7 @@ uploadImage.url = (args: { project: number | { id: number }, document: number | 
 * @see app/Http/Controllers/DocumentController.php:221
 * @route '/projects/{project}/docs/{document}/upload-image'
 */
-uploadImage.post = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+uploadImage.post = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: uploadImage.url(args, options),
     method: 'post',
 })
@@ -687,7 +687,7 @@ uploadImage.post = (args: { project: number | { id: number }, document: number |
 * @see app/Http/Controllers/DocumentController.php:221
 * @route '/projects/{project}/docs/{document}/upload-image'
 */
-const uploadImageForm = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const uploadImageForm = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: uploadImage.url(args, options),
     method: 'post',
 })
@@ -697,7 +697,7 @@ const uploadImageForm = (args: { project: number | { id: number }, document: num
 * @see app/Http/Controllers/DocumentController.php:221
 * @route '/projects/{project}/docs/{document}/upload-image'
 */
-uploadImageForm.post = (args: { project: number | { id: number }, document: number | { id: number } } | [project: number | { id: number }, document: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+uploadImageForm.post = (args: { project: string | number | { id: string | number }, document: string | number | { id: string | number } } | [project: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: uploadImage.url(args, options),
     method: 'post',
 })
