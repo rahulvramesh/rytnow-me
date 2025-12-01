@@ -38,5 +38,5 @@ data:
   REVERB_SERVER_HOST: "0.0.0.0"
   REVERB_SERVER_PORT: "8080"
   MAIL_MAILER: "resend"
-  MAIL_FROM_ADDRESS: "noreply@rytnow.me"
+  MAIL_FROM_ADDRESS: "noreply@fly.rytnow.me"
   MAIL_FROM_NAME: "Trakx"
