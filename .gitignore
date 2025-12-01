@@ -4,7 +4,7 @@
 /public/build
 /public/hot
 /public/storage
-/resources/js/wayfinder
+# wayfinder files are committed for CI builds
 /storage/*.key
 /storage/pail
 /vendor
