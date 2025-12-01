@@ -12,6 +12,14 @@ COPY public ./public
 
 # Set DOCKER_BUILD to skip wayfinder plugin (requires full Laravel setup)
 ENV DOCKER_BUILD=true
+
+# Reverb/WebSocket config (baked into JS at build time)
+ARG VITE_REVERB_APP_KEY=trakx-app-key
+ENV VITE_REVERB_APP_KEY=${VITE_REVERB_APP_KEY}
+ENV VITE_REVERB_HOST=rytnow.me
+ENV VITE_REVERB_PORT=443
+ENV VITE_REVERB_SCHEME=https
+
 RUN npm run build
 
 
