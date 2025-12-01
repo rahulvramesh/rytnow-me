@@ -72,6 +72,14 @@ class Workspace extends Model
     }
 
     /**
+     * Workspace invitations
+     */
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(WorkspaceInvitation::class);
+    }
+
+    /**
      * Check if a user is a member of this workspace
      */
     public function hasMember(User $user): bool

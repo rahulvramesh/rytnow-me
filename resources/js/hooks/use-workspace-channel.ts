@@ -1,9 +1,13 @@
 import { useEcho } from '@/components/echo-provider';
 import { useTimersStore } from '@/stores/timers-store';
 import type {
+    MemberJoinedEvent,
+    MemberLeftEvent,
+    MemberRoleChangedEvent,
     TimeEntryStartedEvent,
     TimeEntryStoppedEvent,
 } from '@/types/events';
+import { router } from '@inertiajs/react';
 import { useEffect } from 'react';
 
 /**
@@ -39,6 +43,29 @@ export function useWorkspaceChannel(workspaceId: number | undefined) {
                     e.timeEntry.id,
                 );
                 removeActiveTimer(e.timeEntry.id);
+            })
+            // Member events
+            .listen('.member.joined', (e: MemberJoinedEvent) => {
+                console.log('[Reverb] Member joined:', e.member.name);
+                // Reload page data to update member count
+                router.reload({ only: ['currentWorkspace', 'workspaces'] });
+            })
+            .listen('.member.left', (e: MemberLeftEvent) => {
+                console.log('[Reverb] Member left:', e.memberName);
+                // Reload page data to update member count
+                router.reload({ only: ['currentWorkspace', 'workspaces'] });
+            })
+            .listen('.member.role-changed', (e: MemberRoleChangedEvent) => {
+                console.log(
+                    '[Reverb] Member role changed:',
+                    e.memberName,
+                    'to',
+                    e.newRole,
+                );
+                // Reload page data if on members page
+                if (window.location.pathname.includes('/members')) {
+                    router.reload({ only: ['members'] });
+                }
             });
 
         console.log('[Reverb] Subscribed to workspace channel:', channelName);

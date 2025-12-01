@@ -156,4 +156,104 @@ class WorkspaceController extends Controller
 
         return redirect()->route('dashboard');
     }
+
+    /**
+     * Show workspace members management page
+     */
+    public function members(Request $request, Workspace $workspace): Response
+    {
+        $this->authorize('view', $workspace);
+
+        $members = $workspace->members()
+            ->withPivot('role', 'joined_at')
+            ->orderBy('workspace_user.joined_at', 'desc')
+            ->get();
+
+        $pendingInvitations = $workspace->invitations()
+            ->pending()
+            ->with('invitedBy:id,name,email')
+            ->latest()
+            ->get();
+
+        $canManage = $request->user()->can('manageMembers', $workspace);
+
+        return Inertia::render('workspaces/members', [
+            'workspace' => $workspace,
+            'members' => $members,
+            'pendingInvitations' => $pendingInvitations,
+            'canManage' => $canManage,
+        ]);
+    }
+
+    /**
+     * Remove a member from the workspace
+     */
+    public function removeMember(Request $request, Workspace $workspace, int $userId): RedirectResponse
+    {
+        $this->authorize('manageMembers', $workspace);
+
+        $user = $workspace->members()->findOrFail($userId);
+
+        // Cannot remove owner
+        if ($workspace->owner_id === $userId) {
+            return redirect()->back()->withErrors([
+                'member' => 'Cannot remove the workspace owner.',
+            ]);
+        }
+
+        // Cannot remove yourself
+        if ($request->user()->id === $userId) {
+            return redirect()->back()->withErrors([
+                'member' => 'Cannot remove yourself from the workspace.',
+            ]);
+        }
+
+        $workspace->members()->detach($userId);
+
+        // Broadcast member left event
+        broadcast(new \App\Events\MemberLeft(
+            $workspace->id,
+            $user->id,
+            $user->name,
+            $request->user()
+        ))->toOthers();
+
+        return redirect()->back()->with('success', 'Member removed successfully.');
+    }
+
+    /**
+     * Update a member's role
+     */
+    public function updateMemberRole(Request $request, Workspace $workspace, int $userId): RedirectResponse
+    {
+        $this->authorize('manageMembers', $workspace);
+
+        $validated = $request->validate([
+            'role' => 'required|in:admin,member,viewer',
+        ]);
+
+        // Cannot change owner's role
+        if ($workspace->owner_id === $userId) {
+            return redirect()->back()->withErrors([
+                'member' => 'Cannot change the workspace owner\'s role.',
+            ]);
+        }
+
+        $member = $workspace->members()->findOrFail($userId);
+
+        $workspace->members()->updateExistingPivot($userId, [
+            'role' => $validated['role'],
+        ]);
+
+        // Broadcast member role changed event
+        broadcast(new \App\Events\MemberRoleChanged(
+            $workspace->id,
+            $member->id,
+            $member->name,
+            $validated['role'],
+            $request->user()
+        ))->toOthers();
+
+        return redirect()->back()->with('success', 'Member role updated successfully.');
+    }
 }

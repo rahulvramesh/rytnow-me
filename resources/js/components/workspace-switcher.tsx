@@ -10,7 +10,7 @@ import { SidebarMenuButton } from '@/components/ui/sidebar';
 import { type SharedData } from '@/types';
 import { type Workspace } from '@/types/workspace';
 import { Link, router, usePage } from '@inertiajs/react';
-import { Check, ChevronsUpDown, Plus, Settings } from 'lucide-react';
+import { Check, ChevronsUpDown, Plus, Settings, Users } from 'lucide-react';
 
 export function WorkspaceSwitcher() {
     const { currentWorkspace, workspaces } = usePage<SharedData>().props;
@@ -49,6 +49,10 @@ export function WorkspaceSwitcher() {
                         <span className="truncate text-xs text-muted-foreground">
                             {currentWorkspace.projects_count ?? 0} project
                             {(currentWorkspace.projects_count ?? 0) !== 1
+                                ? 's'
+                                : ''}{' '}
+                            · {currentWorkspace.members_count ?? 0} member
+                            {(currentWorkspace.members_count ?? 0) !== 1
                                 ? 's'
                                 : ''}
                         </span>
@@ -90,6 +94,12 @@ export function WorkspaceSwitcher() {
                     <Link href={`/workspaces/${currentWorkspace.id}/edit`}>
                         <Settings className="size-4" />
                         <span>Workspace settings</span>
+                    </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="gap-2 p-2">
+                    <Link href={`/workspaces/${currentWorkspace.id}/members`}>
+                        <Users className="size-4" />
+                        <span>Members</span>
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="gap-2 p-2">

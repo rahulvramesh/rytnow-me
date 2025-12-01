@@ -13,8 +13,8 @@ import {
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
-import { type Task, type TaskProject } from '@/types/task';
 import { type Label } from '@/types/label';
+import { type Task, type TaskProject } from '@/types/task';
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
     CheckCircle2,
@@ -99,7 +99,14 @@ export default function TasksIndex({ tasks, projects, labels }: Props) {
                 matchesLabel
             );
         });
-    }, [tasks, search, priorityFilter, statusFilter, projectFilter, labelFilter]);
+    }, [
+        tasks,
+        search,
+        priorityFilter,
+        statusFilter,
+        projectFilter,
+        labelFilter,
+    ]);
 
     const tasksByStatus = useMemo(
         () => ({
@@ -282,7 +289,8 @@ export default function TasksIndex({ tasks, projects, labels }: Props) {
                                             <span
                                                 className="size-2 rounded-full"
                                                 style={{
-                                                    backgroundColor: label.color,
+                                                    backgroundColor:
+                                                        label.color,
                                                 }}
                                             />
                                             {label.name}

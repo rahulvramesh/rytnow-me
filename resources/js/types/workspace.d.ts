@@ -1,3 +1,5 @@
+import { type WorkspaceInvitation } from './workspace-invitation';
+
 export interface Workspace {
     id: number;
     name: string;
@@ -7,6 +9,7 @@ export interface Workspace {
     created_at: string;
     updated_at: string;
     projects_count?: number;
+    members_count?: number;
 }
 
 export interface WorkspaceMember {
@@ -15,11 +18,12 @@ export interface WorkspaceMember {
     email: string;
     avatar?: string;
     pivot: {
-        role: 'owner' | 'admin' | 'member';
+        role: 'owner' | 'admin' | 'member' | 'viewer';
         joined_at: string;
     };
 }
 
 export interface WorkspaceWithMembers extends Workspace {
     members: WorkspaceMember[];
+    pending_invitations?: WorkspaceInvitation[];
 }

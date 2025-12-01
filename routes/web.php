@@ -5,6 +5,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocFolderController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\MergedDocsController;
 use App\Http\Controllers\MergedTasksController;
@@ -34,6 +35,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('workspaces', WorkspaceController::class);
     Route::post('workspaces/{workspace}/switch', [WorkspaceController::class, 'switch'])
         ->name('workspaces.switch');
+    Route::get('workspaces/{workspace}/members', [WorkspaceController::class, 'members'])
+        ->name('workspaces.members');
+    Route::delete('workspaces/{workspace}/members/{user}', [WorkspaceController::class, 'removeMember'])
+        ->name('workspaces.members.remove');
+    Route::patch('workspaces/{workspace}/members/{user}/role', [WorkspaceController::class, 'updateMemberRole'])
+        ->name('workspaces.members.update-role');
+
+    // Workspace invitations
+    Route::post('workspaces/{workspace}/invitations', [InvitationController::class, 'store'])
+        ->name('invitations.store');
+    Route::post('workspaces/{workspace}/invitations/bulk', [InvitationController::class, 'bulkStore'])
+        ->name('invitations.bulk');
+    Route::post('workspaces/{workspace}/invitations/{invitation}/resend', [InvitationController::class, 'resend'])
+        ->name('invitations.resend');
+    Route::delete('workspaces/{workspace}/invitations/{invitation}', [InvitationController::class, 'destroy'])
+        ->name('invitations.destroy');
 
     // Merged tasks view (all tasks across projects in current workspace)
     Route::get('tasks', [MergedTasksController::class, 'index'])->name('tasks.index');
@@ -120,5 +137,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('{quickThought}/recordings/{recording}', [QuickThoughtRecordingController::class, 'destroy'])->name('recordings.destroy');
     });
 });
+
+// Public invitation routes (no auth required)
+Route::get('invitations/{token}', [InvitationController::class, 'show'])
+    ->name('invitations.show');
+Route::post('invitations/{token}/accept', [InvitationController::class, 'accept'])
+    ->name('invitations.accept');
+Route::post('invitations/{token}/decline', [InvitationController::class, 'decline'])
+    ->name('invitations.decline');
 
 require __DIR__.'/settings.php';

@@ -47,10 +47,10 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $user,
             ],
-            'currentWorkspace' => $user?->currentWorkspace?->loadCount('projects'),
+            'currentWorkspace' => $user?->currentWorkspace?->loadCount(['projects', 'members']),
             'workspaces' => $user?->workspaces()
                 ->select('workspaces.id', 'workspaces.name', 'workspaces.color', 'workspaces.description')
-                ->withCount('projects')
+                ->withCount(['projects', 'members'])
                 ->get() ?? [],
             'sidebarProjects' => $user?->currentWorkspace?->projects()
                 ->select('id', 'name', 'key', 'status')

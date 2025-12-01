@@ -64,3 +64,37 @@ export interface TimeEntryStoppedEvent {
     userId: number;
     triggeredBy: EventUser | null;
 }
+
+// Workspace member events
+export interface MemberJoinedEvent {
+    workspaceId: number;
+    member: {
+        id: number;
+        name: string;
+        email: string;
+        avatar?: string;
+        pivot: {
+            role: 'owner' | 'admin' | 'member' | 'viewer';
+            joined_at: string;
+        };
+    };
+    triggeredBy: EventUser | null;
+    timestamp: string;
+}
+
+export interface MemberLeftEvent {
+    workspaceId: number;
+    memberId: number;
+    memberName: string;
+    triggeredBy: EventUser | null;
+    timestamp: string;
+}
+
+export interface MemberRoleChangedEvent {
+    workspaceId: number;
+    memberId: number;
+    memberName: string;
+    newRole: 'admin' | 'member' | 'viewer';
+    triggeredBy: EventUser | null;
+    timestamp: string;
+}
