@@ -101,6 +101,7 @@ jobs:
             --from-literal=REVERB_APP_KEY="${{ secrets.REVERB_APP_KEY }}" \
             --from-literal=REVERB_APP_SECRET="${{ secrets.REVERB_APP_SECRET }}" \
             --from-literal=LIVEBLOCKS_SECRET_KEY="${{ secrets.LIVEBLOCKS_SECRET_KEY }}" \
+            --from-literal=RESEND_API_KEY="${{ secrets.RESEND_API_KEY }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy with Kustomize
