@@ -57,6 +57,7 @@ jobs:
           platforms: linux/amd64
           build-args: |
             VITE_REVERB_APP_KEY=${{ secrets.REVERB_APP_KEY }}
+            VITE_LIVEBLOCKS_PUBLIC_KEY=${{ secrets.VITE_LIVEBLOCKS_PUBLIC_KEY }}
 
   deploy:
     needs: build
@@ -99,10 +100,7 @@ jobs:
             --from-literal=DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
             --from-literal=REVERB_APP_KEY="${{ secrets.REVERB_APP_KEY }}" \
             --from-literal=REVERB_APP_SECRET="${{ secrets.REVERB_APP_SECRET }}" \
-            --from-literal=VITE_REVERB_APP_KEY="${{ secrets.REVERB_APP_KEY }}" \
-            --from-literal=VITE_REVERB_HOST="rytnow.me" \
-            --from-literal=VITE_REVERB_PORT="443" \
-            --from-literal=VITE_REVERB_SCHEME="https" \
+            --from-literal=LIVEBLOCKS_SECRET_KEY="${{ secrets.LIVEBLOCKS_SECRET_KEY }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy with Kustomize
