@@ -78,7 +78,7 @@ start.form = startForm
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::stop
-* @see app/Http/Controllers/TimeEntryController.php:49
+* @see app/Http/Controllers/TimeEntryController.php:50
 * @route '/projects/{project}/tasks/{task}/time/stop'
 */
 export const stop = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -93,7 +93,7 @@ stop.definition = {
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::stop
-* @see app/Http/Controllers/TimeEntryController.php:49
+* @see app/Http/Controllers/TimeEntryController.php:50
 * @route '/projects/{project}/tasks/{task}/time/stop'
 */
 stop.url = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -123,7 +123,7 @@ stop.url = (args: { project: number | { id: number }, task: number | { id: numbe
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::stop
-* @see app/Http/Controllers/TimeEntryController.php:49
+* @see app/Http/Controllers/TimeEntryController.php:50
 * @route '/projects/{project}/tasks/{task}/time/stop'
 */
 stop.post = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -133,7 +133,7 @@ stop.post = (args: { project: number | { id: number }, task: number | { id: numb
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::stop
-* @see app/Http/Controllers/TimeEntryController.php:49
+* @see app/Http/Controllers/TimeEntryController.php:50
 * @route '/projects/{project}/tasks/{task}/time/stop'
 */
 const stopForm = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -143,7 +143,7 @@ const stopForm = (args: { project: number | { id: number }, task: number | { id:
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::stop
-* @see app/Http/Controllers/TimeEntryController.php:49
+* @see app/Http/Controllers/TimeEntryController.php:50
 * @route '/projects/{project}/tasks/{task}/time/stop'
 */
 stopForm.post = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -155,7 +155,7 @@ stop.form = stopForm
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::store
-* @see app/Http/Controllers/TimeEntryController.php:85
+* @see app/Http/Controllers/TimeEntryController.php:86
 * @route '/projects/{project}/tasks/{task}/time'
 */
 export const store = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -170,7 +170,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::store
-* @see app/Http/Controllers/TimeEntryController.php:85
+* @see app/Http/Controllers/TimeEntryController.php:86
 * @route '/projects/{project}/tasks/{task}/time'
 */
 store.url = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -200,7 +200,7 @@ store.url = (args: { project: number | { id: number }, task: number | { id: numb
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::store
-* @see app/Http/Controllers/TimeEntryController.php:85
+* @see app/Http/Controllers/TimeEntryController.php:86
 * @route '/projects/{project}/tasks/{task}/time'
 */
 store.post = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -210,7 +210,7 @@ store.post = (args: { project: number | { id: number }, task: number | { id: num
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::store
-* @see app/Http/Controllers/TimeEntryController.php:85
+* @see app/Http/Controllers/TimeEntryController.php:86
 * @route '/projects/{project}/tasks/{task}/time'
 */
 const storeForm = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -220,7 +220,7 @@ const storeForm = (args: { project: number | { id: number }, task: number | { id
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::store
-* @see app/Http/Controllers/TimeEntryController.php:85
+* @see app/Http/Controllers/TimeEntryController.php:86
 * @route '/projects/{project}/tasks/{task}/time'
 */
 storeForm.post = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -232,7 +232,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::update
-* @see app/Http/Controllers/TimeEntryController.php:109
+* @see app/Http/Controllers/TimeEntryController.php:111
 * @route '/projects/{project}/tasks/{task}/time/{timeEntry}'
 */
 export const update = (args: { project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -247,7 +247,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::update
-* @see app/Http/Controllers/TimeEntryController.php:109
+* @see app/Http/Controllers/TimeEntryController.php:111
 * @route '/projects/{project}/tasks/{task}/time/{timeEntry}'
 */
 update.url = (args: { project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -282,7 +282,7 @@ update.url = (args: { project: number | { id: number }, task: number | { id: num
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::update
-* @see app/Http/Controllers/TimeEntryController.php:109
+* @see app/Http/Controllers/TimeEntryController.php:111
 * @route '/projects/{project}/tasks/{task}/time/{timeEntry}'
 */
 update.put = (args: { project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -292,7 +292,7 @@ update.put = (args: { project: number | { id: number }, task: number | { id: num
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::update
-* @see app/Http/Controllers/TimeEntryController.php:109
+* @see app/Http/Controllers/TimeEntryController.php:111
 * @route '/projects/{project}/tasks/{task}/time/{timeEntry}'
 */
 const updateForm = (args: { project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -307,7 +307,7 @@ const updateForm = (args: { project: number | { id: number }, task: number | { i
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::update
-* @see app/Http/Controllers/TimeEntryController.php:109
+* @see app/Http/Controllers/TimeEntryController.php:111
 * @route '/projects/{project}/tasks/{task}/time/{timeEntry}'
 */
 updateForm.put = (args: { project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -324,7 +324,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::destroy
-* @see app/Http/Controllers/TimeEntryController.php:144
+* @see app/Http/Controllers/TimeEntryController.php:146
 * @route '/projects/{project}/tasks/{task}/time/{timeEntry}'
 */
 export const destroy = (args: { project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -339,7 +339,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::destroy
-* @see app/Http/Controllers/TimeEntryController.php:144
+* @see app/Http/Controllers/TimeEntryController.php:146
 * @route '/projects/{project}/tasks/{task}/time/{timeEntry}'
 */
 destroy.url = (args: { project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -374,7 +374,7 @@ destroy.url = (args: { project: number | { id: number }, task: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::destroy
-* @see app/Http/Controllers/TimeEntryController.php:144
+* @see app/Http/Controllers/TimeEntryController.php:146
 * @route '/projects/{project}/tasks/{task}/time/{timeEntry}'
 */
 destroy.delete = (args: { project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -384,7 +384,7 @@ destroy.delete = (args: { project: number | { id: number }, task: number | { id:
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::destroy
-* @see app/Http/Controllers/TimeEntryController.php:144
+* @see app/Http/Controllers/TimeEntryController.php:146
 * @route '/projects/{project}/tasks/{task}/time/{timeEntry}'
 */
 const destroyForm = (args: { project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -399,7 +399,7 @@ const destroyForm = (args: { project: number | { id: number }, task: number | { 
 
 /**
 * @see \App\Http\Controllers\TimeEntryController::destroy
-* @see app/Http/Controllers/TimeEntryController.php:144
+* @see app/Http/Controllers/TimeEntryController.php:146
 * @route '/projects/{project}/tasks/{task}/time/{timeEntry}'
 */
 destroyForm.delete = (args: { project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, timeEntry: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

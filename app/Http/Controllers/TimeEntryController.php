@@ -21,10 +21,10 @@ class TimeEntryController extends Controller
 
         $user = $request->user();
 
-        // Stop any running timer for this user's tasks
-        $runningEntries = TimeEntry::whereHas('task.project', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->whereNull('stopped_at')->get();
+        // Stop any running timer for this user
+        $runningEntries = TimeEntry::where('user_id', $user->id)
+            ->whereNull('stopped_at')
+            ->get();
 
         foreach ($runningEntries as $entry) {
             $entry->update([
@@ -37,6 +37,7 @@ class TimeEntryController extends Controller
 
         // Start new timer
         $timeEntry = $task->timeEntries()->create([
+            'user_id' => $user->id,
             'started_at' => now(),
         ]);
 
@@ -96,6 +97,7 @@ class TimeEntryController extends Controller
 
         if ($durationSeconds > 0) {
             $task->timeEntries()->create([
+                'user_id' => $request->user()->id,
                 'started_at' => now()->subSeconds($durationSeconds),
                 'stopped_at' => now(),
                 'duration' => $durationSeconds,
