@@ -1,29 +1,17 @@
 # Stage 1: Build frontend assets
 FROM node:22-alpine AS frontend
 
-# Install PHP for Laravel Wayfinder plugin
-RUN apk add --no-cache php83 php83-tokenizer php83-mbstring php83-ctype php83-openssl \
-    && ln -sf /usr/bin/php83 /usr/bin/php
-
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci --include=dev
 
-# Copy files needed for wayfinder (it needs to read Laravel routes)
-COPY composer.json composer.lock artisan ./
-COPY bootstrap ./bootstrap
-COPY config ./config
-COPY routes ./routes
-COPY app ./app
 COPY resources ./resources
 COPY vite.config.ts tsconfig.json ./
 COPY public ./public
 
-# Install composer dependencies for wayfinder route scanning
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN composer install --no-dev --no-interaction --no-scripts --ignore-platform-reqs
-
+# Set DOCKER_BUILD to skip wayfinder plugin (requires full Laravel setup)
+ENV DOCKER_BUILD=true
 RUN npm run build
 
 
@@ -36,7 +24,7 @@ RUN apk add --no-cache \
     libpng-dev libjpeg-turbo-dev freetype-dev \
     libzip-dev icu-dev postgresql-dev \
     supervisor postgresql-client redis \
-    nginx
+    nginx linux-headers
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \

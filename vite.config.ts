@@ -5,6 +5,9 @@ import laravel from 'laravel-vite-plugin';
 // import mkcert from 'vite-plugin-mkcert';
 import { defineConfig } from 'vite';
 
+// Skip wayfinder in CI/Docker builds (it requires full Laravel setup)
+const isCI = process.env.CI === 'true' || process.env.DOCKER_BUILD === 'true';
+
 export default defineConfig({
     plugins: [
         // mkcert(), // Requires: sudo ~/.vite-plugin-mkcert/mkcert -install
@@ -19,9 +22,8 @@ export default defineConfig({
             },
         }),
         tailwindcss(),
-        wayfinder({
-            formVariants: true,
-        }),
+        // Only include wayfinder in local development
+        ...(!isCI ? [wayfinder({ formVariants: true })] : []),
     ],
     server: {
         // https: true, // Enable after running: sudo ~/.vite-plugin-mkcert/mkcert -install
