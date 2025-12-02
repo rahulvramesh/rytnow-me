@@ -29,7 +29,7 @@ class TimeEntryController extends Controller
         foreach ($runningEntries as $entry) {
             $entry->update([
                 'stopped_at' => now(),
-                'duration' => now()->diffInSeconds($entry->started_at),
+                'duration' => max(0, (int) now()->diffInSeconds($entry->started_at)),
             ]);
             // Broadcast stop event for each stopped timer
             broadcast(new TimeEntryStopped($entry->fresh(), $user))->toOthers();
@@ -62,7 +62,7 @@ class TimeEntryController extends Controller
         if ($runningEntry) {
             $runningEntry->update([
                 'stopped_at' => now(),
-                'duration' => now()->diffInSeconds($runningEntry->started_at),
+                'duration' => max(0, (int) now()->diffInSeconds($runningEntry->started_at)),
                 'description' => $description,
             ]);
 
