@@ -28,6 +28,7 @@ class EditorController extends Controller
         $validated = $request->validate([
             'editor_preference' => ['required', 'string', 'in:tiptap,lexical'],
             'collaboration_enabled' => ['required', 'boolean'],
+            'document_width' => ['sometimes', 'string', 'in:narrow,normal,full'],
         ]);
 
         $request->user()->update($validated);

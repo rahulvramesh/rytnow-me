@@ -1,13 +1,15 @@
 import { DocsSidebar } from '@/components/docs-sidebar';
 import { DocumentEditor } from '@/components/document-editor';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import { fetchHeaders } from '@/lib/csrf';
+import { cn } from '@/lib/utils';
 import type { BreadcrumbItem } from '@/types';
 import type { DocFolder, Document, DocumentSummary } from '@/types/document';
 import type { Project } from '@/types/project';
-import { Head } from '@inertiajs/react';
-import { Check, Loader2 } from 'lucide-react';
+import { Head, usePage } from '@inertiajs/react';
+import { AlignCenter, AlignJustify, Check, Loader2, Maximize2 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface Props {
@@ -17,20 +19,46 @@ interface Props {
     rootDocuments: DocumentSummary[];
 }
 
+type DocumentWidth = 'narrow' | 'normal' | 'full';
+
+const widthConfig: Record<DocumentWidth, { class: string; icon: typeof AlignCenter; label: string }> = {
+    narrow: { class: 'max-w-3xl mx-auto', icon: AlignCenter, label: 'Narrow' },
+    normal: { class: 'max-w-5xl mx-auto', icon: AlignJustify, label: 'Normal' },
+    full: { class: 'max-w-none', icon: Maximize2, label: 'Full' },
+};
+
 export default function DocShow({
     project,
     document: doc,
     folders,
     rootDocuments,
 }: Props) {
+    const { auth } = usePage<{ auth: { user: { document_width?: DocumentWidth } } }>().props;
     const [title, setTitle] = useState(doc.title);
     const [content, setContent] = useState(doc.content || '');
     const [isSaving, setIsSaving] = useState(false);
     const [lastSaved, setLastSaved] = useState<Date | null>(null);
+    const [documentWidth, setDocumentWidth] = useState<DocumentWidth>(
+        (auth.user.document_width as DocumentWidth) || 'normal'
+    );
     const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const pendingSaveRef = useRef<{ title: string; content: string } | null>(
         null,
     );
+
+    // Update document width preference
+    const updateWidth = useCallback(async (width: DocumentWidth) => {
+        setDocumentWidth(width);
+        try {
+            await fetch('/settings/editor', {
+                method: 'PATCH',
+                headers: fetchHeaders(),
+                body: JSON.stringify({ document_width: width }),
+            });
+        } catch (error) {
+            console.error('Failed to save width preference:', error);
+        }
+    }, []);
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: '/dashboard' },
@@ -176,30 +204,54 @@ export default function DocShow({
                             placeholder="Document title..."
                             className="h-auto border-none px-0 text-xl font-semibold shadow-none focus-visible:ring-0"
                         />
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            {isSaving ? (
-                                <>
-                                    <Loader2 className="size-4 animate-spin" />
-                                    <span>Saving...</span>
-                                </>
-                            ) : lastSaved ? (
-                                <>
-                                    <Check className="size-4 text-green-500" />
-                                    <span>Saved</span>
-                                </>
-                            ) : null}
+                        <div className="flex items-center gap-3">
+                            {/* Width Toggle */}
+                            <div className="flex items-center rounded-lg border p-0.5">
+                                {(Object.keys(widthConfig) as DocumentWidth[]).map((width) => {
+                                    const config = widthConfig[width];
+                                    const Icon = config.icon;
+                                    return (
+                                        <Button
+                                            key={width}
+                                            variant={documentWidth === width ? 'secondary' : 'ghost'}
+                                            size="sm"
+                                            className="h-7 px-2"
+                                            onClick={() => updateWidth(width)}
+                                            title={config.label}
+                                        >
+                                            <Icon className="size-4" />
+                                        </Button>
+                                    );
+                                })}
+                            </div>
+                            {/* Save Status */}
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                {isSaving ? (
+                                    <>
+                                        <Loader2 className="size-4 animate-spin" />
+                                        <span>Saving...</span>
+                                    </>
+                                ) : lastSaved ? (
+                                    <>
+                                        <Check className="size-4 text-green-500" />
+                                        <span>Saved</span>
+                                    </>
+                                ) : null}
+                            </div>
                         </div>
                     </div>
 
                     {/* Editor */}
                     <div className="flex-1 overflow-y-auto">
-                        <DocumentEditor
-                            content={content}
-                            onChange={handleContentChange}
-                            onImageUpload={handleImageUpload}
-                            placeholder="Type '/' for commands, or start writing..."
-                            className="rounded-none border-0"
-                        />
+                        <div className={cn('transition-all duration-200', widthConfig[documentWidth].class)}>
+                            <DocumentEditor
+                                content={content}
+                                onChange={handleContentChange}
+                                onImageUpload={handleImageUpload}
+                                placeholder="Type '/' for commands, or start writing..."
+                                className="rounded-none border-0"
+                            />
+                        </div>
                     </div>
 
                     {/* Document Info Footer */}

@@ -28,6 +28,7 @@ class User extends Authenticatable
         'password',
         'editor_preference',
         'collaboration_enabled',
+        'document_width',
         'current_workspace_id',
     ];
 
