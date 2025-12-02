@@ -1,4 +1,5 @@
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
+import { Extension } from '@tiptap/core';
 import { Image } from '@tiptap/extension-image';
 import { Link } from '@tiptap/extension-link';
 import { Placeholder } from '@tiptap/extension-placeholder';
@@ -10,6 +11,7 @@ import { TaskItem } from '@tiptap/extension-task-item';
 import { TaskList } from '@tiptap/extension-task-list';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { common, createLowlight } from 'lowlight';
 import { marked } from 'marked';
 import {
@@ -80,6 +82,56 @@ function looksLikeMarkdown(text: string): boolean {
 
     return false;
 }
+
+// Custom extension for markdown paste handling
+const MarkdownPaste = Extension.create({
+    name: 'markdownPaste',
+
+    addProseMirrorPlugins() {
+        return [
+            new Plugin({
+                key: new PluginKey('markdownPaste'),
+                props: {
+                    handlePaste: (view, event) => {
+                        const text = event.clipboardData?.getData('text/plain');
+                        const html = event.clipboardData?.getData('text/html');
+
+                        // If there's HTML content, let the default handler deal with it
+                        if (html && html.trim().length > 0) {
+                            return false;
+                        }
+
+                        // Check if plain text looks like markdown
+                        if (text && looksLikeMarkdown(text)) {
+                            event.preventDefault();
+
+                            // Parse markdown to HTML
+                            const convertedHtml = marked.parse(text) as string;
+
+                            // Insert the converted HTML
+                            const { state } = view;
+                            const { from, to } = state.selection;
+
+                            // Create a temporary element to parse HTML
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = convertedHtml;
+
+                            // Use the editor's insertContent command
+                            const editor = (this as any).editor;
+                            if (editor) {
+                                editor.chain().focus().deleteRange({ from, to }).insertContent(convertedHtml).run();
+                            }
+
+                            return true;
+                        }
+
+                        return false;
+                    },
+                },
+            }),
+        ];
+    },
+});
 
 interface ToolbarButtonProps {
     onClick: () => void;
@@ -413,6 +465,7 @@ export function DocumentEditor({
                     class: 'text-primary underline',
                 },
             }),
+            MarkdownPaste,
         ],
         content,
         editorProps: {
@@ -476,7 +529,7 @@ export function DocumentEditor({
         [editor, onImageUpload],
     );
 
-    // Handle paste for images and markdown
+    // Handle paste for images (markdown is handled by MarkdownPaste extension)
     useEffect(() => {
         if (!editor) return;
 
@@ -484,7 +537,7 @@ export function DocumentEditor({
             const items = event.clipboardData?.items;
             if (!items) return;
 
-            // Check for images first
+            // Check for images
             for (const item of items) {
                 if (item.type.startsWith('image/')) {
                     event.preventDefault();
@@ -498,23 +551,6 @@ export function DocumentEditor({
                         }
                     }
                     return;
-                }
-            }
-
-            // Check for markdown text
-            const text = event.clipboardData?.getData('text/plain');
-            const html = event.clipboardData?.getData('text/html');
-
-            // Only convert if there's plain text, it looks like markdown, and no HTML is present
-            if (text && looksLikeMarkdown(text) && !html) {
-                event.preventDefault();
-                try {
-                    const convertedHtml = await marked.parse(text);
-                    editor.chain().focus().insertContent(convertedHtml).run();
-                } catch (error) {
-                    console.error('Markdown conversion failed:', error);
-                    // Fallback to plain text
-                    editor.chain().focus().insertContent(text).run();
                 }
             }
         };
