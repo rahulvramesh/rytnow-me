@@ -12,6 +12,8 @@ import AudioRecordingController from './AudioRecordingController'
 import CommentController from './CommentController'
 import LabelController from './LabelController'
 import SubtaskController from './SubtaskController'
+import TaskDependencyController from './TaskDependencyController'
+import SprintController from './SprintController'
 import DocumentController from './DocumentController'
 import DocFolderController from './DocFolderController'
 import QuickThoughtController from './QuickThoughtController'
@@ -33,6 +35,8 @@ const Controllers = {
     CommentController: Object.assign(CommentController, CommentController),
     LabelController: Object.assign(LabelController, LabelController),
     SubtaskController: Object.assign(SubtaskController, SubtaskController),
+    TaskDependencyController: Object.assign(TaskDependencyController, TaskDependencyController),
+    SprintController: Object.assign(SprintController, SprintController),
     DocumentController: Object.assign(DocumentController, DocumentController),
     DocFolderController: Object.assign(DocFolderController, DocFolderController),
     QuickThoughtController: Object.assign(QuickThoughtController, QuickThoughtController),

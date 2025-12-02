@@ -32,9 +32,15 @@ class TaskController extends Controller
                 ->get()
         );
 
+        $sprints = $project->sprints()
+            ->whereIn('status', ['planning', 'active'])
+            ->orderBy('position')
+            ->get(['id', 'name', 'status']);
+
         return Inertia::render('tasks/create', [
             'project' => $project,
             'workspaceMembers' => $workspaceMembers,
+            'sprints' => $sprints,
         ]);
     }
 
@@ -45,10 +51,13 @@ class TaskController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|in:todo,in_progress,done',
+            'status' => 'required|in:todo,in_progress,blocked,on_hold,done',
             'priority' => 'required|in:low,medium,high',
+            'story_points' => 'nullable|integer|in:1,2,3,5,8,13',
+            'estimated_hours' => 'nullable|numeric|min:0.25|max:999',
             'due_date' => 'nullable|date',
             'assigned_to' => 'nullable|exists:users,id',
+            'sprint_id' => 'nullable|exists:sprints,id',
             'label_ids' => 'nullable|array',
             'label_ids.*' => 'exists:labels,id',
         ]);
@@ -59,6 +68,14 @@ class TaskController extends Controller
                 ->where('users.id', $validated['assigned_to'])->exists();
             if (! $isMember) {
                 return back()->withErrors(['assigned_to' => 'Assignee must be a workspace member.']);
+            }
+        }
+
+        // Validate sprint belongs to project
+        if ($validated['sprint_id'] ?? null) {
+            $sprintBelongsToProject = $project->sprints()->where('id', $validated['sprint_id'])->exists();
+            if (! $sprintBelongsToProject) {
+                return back()->withErrors(['sprint_id' => 'Sprint must belong to this project.']);
             }
         }
 
@@ -93,11 +110,31 @@ class TaskController extends Controller
             $query->with(['user:id,name,email', 'timeEntry:id,duration,started_at'])->orderBy('created_at', 'desc');
         }, 'subtasks' => function ($query) {
             $query->with('assignee:id,name,email')->orderBy('position');
-        }]);
+        }, 'blockedBy:id,task_number,title,status', 'blocks:id,task_number,title,status']);
 
         // Get running time entry
         $task->running_time_entry = $task->timeEntries->whereNull('stopped_at')->first();
         $task->total_time = $task->timeEntries->whereNotNull('stopped_at')->sum('duration');
+
+        // Transform dependencies to include short_code
+        $task->blocked_by = $task->blockedBy->map(function ($t) use ($project) {
+            return [
+                'id' => $t->id,
+                'short_code' => $project->key.'-'.$t->task_number,
+                'title' => $t->title,
+                'status' => $t->status,
+                'type' => $t->pivot->type,
+            ];
+        });
+        $task->blocks = $task->blocks->map(function ($t) use ($project) {
+            return [
+                'id' => $t->id,
+                'short_code' => $project->key.'-'.$t->task_number,
+                'title' => $t->title,
+                'status' => $t->status,
+                'type' => $t->pivot->type,
+            ];
+        });
 
         // Get workspace members for subtask assignment (cached)
         $workspaceMembers = CacheService::getWorkspaceMembers(
@@ -128,10 +165,16 @@ class TaskController extends Controller
                 ->get()
         );
 
+        $sprints = $project->sprints()
+            ->whereIn('status', ['planning', 'active'])
+            ->orderBy('position')
+            ->get(['id', 'name', 'status']);
+
         return Inertia::render('tasks/edit', [
             'project' => $project,
             'task' => $task,
             'workspaceMembers' => $workspaceMembers,
+            'sprints' => $sprints,
         ]);
     }
 
@@ -142,10 +185,13 @@ class TaskController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|in:todo,in_progress,done',
+            'status' => 'required|in:todo,in_progress,blocked,on_hold,done',
             'priority' => 'required|in:low,medium,high',
+            'story_points' => 'nullable|integer|in:1,2,3,5,8,13',
+            'estimated_hours' => 'nullable|numeric|min:0.25|max:999',
             'due_date' => 'nullable|date',
             'assigned_to' => 'nullable|exists:users,id',
+            'sprint_id' => 'nullable|exists:sprints,id',
             'label_ids' => 'nullable|array',
             'label_ids.*' => 'exists:labels,id',
         ]);
@@ -156,6 +202,14 @@ class TaskController extends Controller
                 ->where('users.id', $validated['assigned_to'])->exists();
             if (! $isMember) {
                 return back()->withErrors(['assigned_to' => 'Assignee must be a workspace member.']);
+            }
+        }
+
+        // Validate sprint belongs to project
+        if ($validated['sprint_id'] ?? null) {
+            $sprintBelongsToProject = $project->sprints()->where('id', $validated['sprint_id'])->exists();
+            if (! $sprintBelongsToProject) {
+                return back()->withErrors(['sprint_id' => 'Sprint must belong to this project.']);
             }
         }
 
@@ -194,7 +248,7 @@ class TaskController extends Controller
         $this->authorize('update', $project);
 
         $validated = $request->validate([
-            'status' => 'required|in:todo,in_progress,done',
+            'status' => 'required|in:todo,in_progress,blocked,on_hold,done',
         ]);
 
         $previousStatus = $task->status;
@@ -212,7 +266,7 @@ class TaskController extends Controller
 
         $validated = $request->validate([
             'task_id' => 'required|exists:tasks,id',
-            'status' => 'required|in:todo,in_progress,done',
+            'status' => 'required|in:todo,in_progress,blocked,on_hold,done',
             'position' => 'required|integer|min:0',
         ]);
 

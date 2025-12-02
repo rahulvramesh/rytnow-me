@@ -13,8 +13,10 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\QuickThoughtController;
 use App\Http\Controllers\QuickThoughtRecordingController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SprintController;
 use App\Http\Controllers\SubtaskController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TaskDependencyController;
 use App\Http\Controllers\TimeEntryController;
 use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
@@ -95,6 +97,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('{task}/subtasks/{subtask}', [SubtaskController::class, 'update'])->name('subtasks.update');
         Route::delete('{task}/subtasks/{subtask}', [SubtaskController::class, 'destroy'])->name('subtasks.destroy');
         Route::post('{task}/subtasks/reorder', [SubtaskController::class, 'reorder'])->name('subtasks.reorder');
+
+        // Task dependencies
+        Route::get('{task}/dependencies', [TaskDependencyController::class, 'index'])->name('dependencies.index');
+        Route::get('{task}/dependencies/search', [TaskDependencyController::class, 'search'])->name('dependencies.search');
+        Route::post('{task}/dependencies', [TaskDependencyController::class, 'store'])->name('dependencies.store');
+        Route::delete('{task}/dependencies/{dependency}', [TaskDependencyController::class, 'destroy'])->name('dependencies.destroy');
     });
 
     // Project labels
@@ -103,6 +111,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/', [LabelController::class, 'store'])->name('store');
         Route::put('{label}', [LabelController::class, 'update'])->name('update');
         Route::delete('{label}', [LabelController::class, 'destroy'])->name('destroy');
+    });
+
+    // Project sprints
+    Route::prefix('projects/{project}/sprints')->name('sprints.')->group(function () {
+        Route::get('/', [SprintController::class, 'index'])->name('index');
+        Route::get('create', [SprintController::class, 'create'])->name('create');
+        Route::post('/', [SprintController::class, 'store'])->name('store');
+        Route::get('backlog', [SprintController::class, 'backlog'])->name('backlog');
+        Route::get('{sprint}', [SprintController::class, 'show'])->name('show');
+        Route::get('{sprint}/edit', [SprintController::class, 'edit'])->name('edit');
+        Route::put('{sprint}', [SprintController::class, 'update'])->name('update');
+        Route::delete('{sprint}', [SprintController::class, 'destroy'])->name('destroy');
+        Route::post('{sprint}/tasks', [SprintController::class, 'addTasks'])->name('tasks.add');
+        Route::delete('{sprint}/tasks', [SprintController::class, 'removeTasks'])->name('tasks.remove');
     });
 
     // Project documents

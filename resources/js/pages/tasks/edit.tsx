@@ -1,5 +1,7 @@
 import { EditorWrapper } from '@/components/editor-wrapper';
+import { EstimatedHoursInput } from '@/components/estimate-progress-bar';
 import { ExplainTaskDialog } from '@/components/explain-task-dialog';
+import { StoryPointsSelect, type StoryPoints } from '@/components/story-points-select';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,10 +19,12 @@ import { type Task } from '@/types/task';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
     ArrowLeft,
+    Ban,
     CheckCircle2,
     Circle,
     Loader2,
     Mic,
+    PauseCircle,
     Trash2,
     User,
     X,
@@ -57,8 +61,10 @@ export default function TaskEdit({ project, task, workspaceMembers }: Props) {
     const [data, setData] = useState({
         title: task.title,
         description: task.description ?? '',
-        status: task.status as 'todo' | 'in_progress' | 'done',
+        status: task.status as 'todo' | 'in_progress' | 'blocked' | 'on_hold' | 'done',
         priority: task.priority as 'low' | 'medium' | 'high',
+        story_points: task.story_points as StoryPoints,
+        estimated_hours: task.estimated_hours ? Number(task.estimated_hours) : null as number | null,
         due_date: task.due_date ?? '',
         assigned_to: task.assigned_to?.toString() ?? '',
         label_ids: task.labels?.map((l) => l.id) ?? [],
@@ -87,6 +93,8 @@ export default function TaskEdit({ project, task, workspaceMembers }: Props) {
         formData.append('description', data.description);
         formData.append('status', data.status);
         formData.append('priority', data.priority);
+        if (data.story_points) formData.append('story_points', String(data.story_points));
+        if (data.estimated_hours) formData.append('estimated_hours', String(data.estimated_hours));
         if (data.due_date) formData.append('due_date', data.due_date);
         if (data.assigned_to) formData.append('assigned_to', data.assigned_to);
         data.label_ids.forEach((id) =>
@@ -284,6 +292,8 @@ export default function TaskEdit({ project, task, workspaceMembers }: Props) {
                                             value:
                                                 | 'todo'
                                                 | 'in_progress'
+                                                | 'blocked'
+                                                | 'on_hold'
                                                 | 'done',
                                         ) => updateData('status', value)}
                                     >
@@ -301,6 +311,18 @@ export default function TaskEdit({ project, task, workspaceMembers }: Props) {
                                                 <div className="flex items-center gap-2">
                                                     <Loader2 className="size-4 text-blue-500" />
                                                     In Progress
+                                                </div>
+                                            </SelectItem>
+                                            <SelectItem value="blocked">
+                                                <div className="flex items-center gap-2">
+                                                    <Ban className="size-4 text-red-500" />
+                                                    Blocked
+                                                </div>
+                                            </SelectItem>
+                                            <SelectItem value="on_hold">
+                                                <div className="flex items-center gap-2">
+                                                    <PauseCircle className="size-4 text-yellow-500" />
+                                                    On Hold
                                                 </div>
                                             </SelectItem>
                                             <SelectItem value="done">
@@ -358,6 +380,46 @@ export default function TaskEdit({ project, task, workspaceMembers }: Props) {
                                     {errors.priority && (
                                         <p className="text-sm text-destructive">
                                             {errors.priority}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Story Points & Estimated Hours */}
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                <div className="space-y-2">
+                                    <Label className="text-sm font-medium">
+                                        Story Points
+                                    </Label>
+                                    <StoryPointsSelect
+                                        value={data.story_points}
+                                        onChange={(value) =>
+                                            updateData('story_points', value)
+                                        }
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                        Fibonacci scale for effort estimation
+                                    </p>
+                                    {errors.story_points && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.story_points}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label className="text-sm font-medium">
+                                        Estimated Hours
+                                    </Label>
+                                    <EstimatedHoursInput
+                                        value={data.estimated_hours}
+                                        onChange={(value) =>
+                                            updateData('estimated_hours', value)
+                                        }
+                                    />
+                                    {errors.estimated_hours && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.estimated_hours}
                                         </p>
                                     )}
                                 </div>

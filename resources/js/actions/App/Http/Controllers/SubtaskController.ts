@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/SubtaskController.php:13
 * @route '/projects/{project}/tasks/{task}/subtasks'
 */
-export const store = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const store = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -19,7 +19,7 @@ store.definition = {
 * @see app/Http/Controllers/SubtaskController.php:13
 * @route '/projects/{project}/tasks/{task}/subtasks'
 */
-store.url = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+store.url = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -49,7 +49,7 @@ store.url = (args: { project: string | number | { id: string | number }, task: s
 * @see app/Http/Controllers/SubtaskController.php:13
 * @route '/projects/{project}/tasks/{task}/subtasks'
 */
-store.post = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+store.post = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -59,7 +59,7 @@ store.post = (args: { project: string | number | { id: string | number }, task: 
 * @see app/Http/Controllers/SubtaskController.php:13
 * @route '/projects/{project}/tasks/{task}/subtasks'
 */
-const storeForm = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const storeForm = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -69,7 +69,7 @@ const storeForm = (args: { project: string | number | { id: string | number }, t
 * @see app/Http/Controllers/SubtaskController.php:13
 * @route '/projects/{project}/tasks/{task}/subtasks'
 */
-storeForm.post = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+storeForm.post = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -81,7 +81,7 @@ store.form = storeForm
 * @see app/Http/Controllers/SubtaskController.php:43
 * @route '/projects/{project}/tasks/{task}/subtasks/{subtask}'
 */
-export const update = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -96,7 +96,7 @@ update.definition = {
 * @see app/Http/Controllers/SubtaskController.php:43
 * @route '/projects/{project}/tasks/{task}/subtasks/{subtask}'
 */
-update.url = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+update.url = (args: { project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -131,7 +131,7 @@ update.url = (args: { project: string | number | { id: string | number }, task: 
 * @see app/Http/Controllers/SubtaskController.php:43
 * @route '/projects/{project}/tasks/{task}/subtasks/{subtask}'
 */
-update.put = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -141,7 +141,7 @@ update.put = (args: { project: string | number | { id: string | number }, task: 
 * @see app/Http/Controllers/SubtaskController.php:43
 * @route '/projects/{project}/tasks/{task}/subtasks/{subtask}'
 */
-const updateForm = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -156,7 +156,7 @@ const updateForm = (args: { project: string | number | { id: string | number }, 
 * @see app/Http/Controllers/SubtaskController.php:43
 * @route '/projects/{project}/tasks/{task}/subtasks/{subtask}'
 */
-updateForm.put = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -173,7 +173,7 @@ update.form = updateForm
 * @see app/Http/Controllers/SubtaskController.php:76
 * @route '/projects/{project}/tasks/{task}/subtasks/{subtask}'
 */
-export const destroy = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -188,7 +188,7 @@ destroy.definition = {
 * @see app/Http/Controllers/SubtaskController.php:76
 * @route '/projects/{project}/tasks/{task}/subtasks/{subtask}'
 */
-destroy.url = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+destroy.url = (args: { project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -223,7 +223,7 @@ destroy.url = (args: { project: string | number | { id: string | number }, task:
 * @see app/Http/Controllers/SubtaskController.php:76
 * @route '/projects/{project}/tasks/{task}/subtasks/{subtask}'
 */
-destroy.delete = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -233,7 +233,7 @@ destroy.delete = (args: { project: string | number | { id: string | number }, ta
 * @see app/Http/Controllers/SubtaskController.php:76
 * @route '/projects/{project}/tasks/{task}/subtasks/{subtask}'
 */
-const destroyForm = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -248,7 +248,7 @@ const destroyForm = (args: { project: string | number | { id: string | number },
 * @see app/Http/Controllers/SubtaskController.php:76
 * @route '/projects/{project}/tasks/{task}/subtasks/{subtask}'
 */
-destroyForm.delete = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number }, subtask: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } } | [project: number | { id: number }, task: number | { id: number }, subtask: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -265,7 +265,7 @@ destroy.form = destroyForm
 * @see app/Http/Controllers/SubtaskController.php:89
 * @route '/projects/{project}/tasks/{task}/subtasks/reorder'
 */
-export const reorder = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const reorder = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: reorder.url(args, options),
     method: 'post',
 })
@@ -280,7 +280,7 @@ reorder.definition = {
 * @see app/Http/Controllers/SubtaskController.php:89
 * @route '/projects/{project}/tasks/{task}/subtasks/reorder'
 */
-reorder.url = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+reorder.url = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -310,7 +310,7 @@ reorder.url = (args: { project: string | number | { id: string | number }, task:
 * @see app/Http/Controllers/SubtaskController.php:89
 * @route '/projects/{project}/tasks/{task}/subtasks/reorder'
 */
-reorder.post = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+reorder.post = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: reorder.url(args, options),
     method: 'post',
 })
@@ -320,7 +320,7 @@ reorder.post = (args: { project: string | number | { id: string | number }, task
 * @see app/Http/Controllers/SubtaskController.php:89
 * @route '/projects/{project}/tasks/{task}/subtasks/reorder'
 */
-const reorderForm = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const reorderForm = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: reorder.url(args, options),
     method: 'post',
 })
@@ -330,7 +330,7 @@ const reorderForm = (args: { project: string | number | { id: string | number },
 * @see app/Http/Controllers/SubtaskController.php:89
 * @route '/projects/{project}/tasks/{task}/subtasks/reorder'
 */
-reorderForm.post = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+reorderForm.post = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: reorder.url(args, options),
     method: 'post',
 })

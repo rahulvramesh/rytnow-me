@@ -36,6 +36,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { Head, Link, router } from '@inertiajs/react';
 import {
+    Ban,
     Calendar,
     CheckCircle2,
     Circle,
@@ -44,6 +45,7 @@ import {
     Kanban,
     List,
     Loader2,
+    PauseCircle,
     Plus,
     Search,
     Settings,
@@ -94,6 +96,18 @@ const columnConfig = {
         icon: Loader2,
         color: 'text-blue-500',
         border: 'border-t-blue-500',
+    },
+    blocked: {
+        label: 'Blocked',
+        icon: Ban,
+        color: 'text-red-500',
+        border: 'border-t-red-500',
+    },
+    on_hold: {
+        label: 'On Hold',
+        icon: PauseCircle,
+        color: 'text-yellow-500',
+        border: 'border-t-yellow-500',
     },
     done: {
         label: 'Done',
@@ -275,6 +289,8 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
             in_progress: filteredTasks.filter(
                 (t) => t.status === 'in_progress',
             ),
+            blocked: filteredTasks.filter((t) => t.status === 'blocked'),
+            on_hold: filteredTasks.filter((t) => t.status === 'on_hold'),
             done: filteredTasks.filter((t) => t.status === 'done'),
         }),
         [filteredTasks],
@@ -331,7 +347,7 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
         // Check if dropped on a column
         if (
             typeof overId === 'string' &&
-            ['todo', 'in_progress', 'done'].includes(overId)
+            ['todo', 'in_progress', 'blocked', 'on_hold', 'done'].includes(overId)
         ) {
             targetStatus = overId as Task['status'];
             targetPosition = tasksByStatus[targetStatus].length;
@@ -598,8 +614,8 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                             onDragStart={handleDragStart}
                             onDragEnd={handleDragEnd}
                         >
-                            <div className="grid h-full min-w-[700px] grid-cols-3 gap-3">
-                                {(['todo', 'in_progress', 'done'] as const).map(
+                            <div className="grid h-full min-w-[1100px] grid-cols-5 gap-2">
+                                {(['todo', 'in_progress', 'blocked', 'on_hold', 'done'] as const).map(
                                     (status) => {
                                         const statusTasks =
                                             tasksByStatus[status];

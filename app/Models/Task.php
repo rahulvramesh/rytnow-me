@@ -14,7 +14,7 @@ class Task extends Model
 {
     use HasFactory;
 
-    protected $appends = ['short_code'];
+    protected $appends = ['short_code', 'estimate_progress'];
 
     protected static function booted(): void
     {
@@ -31,12 +31,15 @@ class Task extends Model
 
     protected $fillable = [
         'project_id',
+        'sprint_id',
         'task_number',
         'assigned_to',
         'title',
         'description',
         'status',
         'priority',
+        'story_points',
+        'estimated_hours',
         'due_date',
         'position',
         'subtask_count',
@@ -59,12 +62,18 @@ class Task extends Model
     {
         return [
             'due_date' => 'date',
+            'estimated_hours' => 'decimal:2',
         ];
     }
 
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function sprint(): BelongsTo
+    {
+        return $this->belongsTo(Sprint::class);
     }
 
     public function assignee(): BelongsTo
@@ -85,6 +94,23 @@ class Task extends Model
     public function totalTimeInSeconds(): int
     {
         return $this->timeEntries()->whereNotNull('stopped_at')->sum('duration');
+    }
+
+    public function getEstimateProgressAttribute(): ?array
+    {
+        if (! $this->estimated_hours) {
+            return null;
+        }
+
+        $actualHours = $this->totalTimeInSeconds() / 3600;
+        $percentage = min(100, ($actualHours / $this->estimated_hours) * 100);
+
+        return [
+            'estimated' => (float) $this->estimated_hours,
+            'actual' => round($actualHours, 2),
+            'percentage' => round($percentage, 1),
+            'over_estimate' => $actualHours > $this->estimated_hours,
+        ];
     }
 
     public function audioRecordings(): HasMany
@@ -113,5 +139,41 @@ class Task extends Model
             'subtask_count' => $this->subtasks()->count(),
             'completed_subtask_count' => $this->subtasks()->where('is_completed', true)->count(),
         ]);
+    }
+
+    /**
+     * Tasks that this task depends on (blockers)
+     */
+    public function blockedBy(): BelongsToMany
+    {
+        return $this->belongsToMany(Task::class, 'task_dependencies', 'task_id', 'depends_on_id')
+            ->withPivot('type')
+            ->withTimestamps();
+    }
+
+    /**
+     * Tasks that depend on this task
+     */
+    public function blocks(): BelongsToMany
+    {
+        return $this->belongsToMany(Task::class, 'task_dependencies', 'depends_on_id', 'task_id')
+            ->withPivot('type')
+            ->withTimestamps();
+    }
+
+    /**
+     * Check if this task has any incomplete blockers
+     */
+    public function isBlocked(): bool
+    {
+        return $this->blockedBy()->where('status', '!=', 'done')->exists();
+    }
+
+    /**
+     * Get the dependency records for this task
+     */
+    public function dependencies(): HasMany
+    {
+        return $this->hasMany(TaskDependency::class);
     }
 }

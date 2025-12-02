@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/WorkspaceController.php:191
 * @route '/workspaces/{workspace}/members/{user}'
 */
-export const remove = (args: { workspace: string | number | { id: string | number }, user: string | number } | [workspace: string | number | { id: string | number }, user: string | number ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const remove = (args: { workspace: number | { id: number }, user: string | number } | [workspace: number | { id: number }, user: string | number ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: remove.url(args, options),
     method: 'delete',
 })
@@ -19,7 +19,7 @@ remove.definition = {
 * @see app/Http/Controllers/WorkspaceController.php:191
 * @route '/workspaces/{workspace}/members/{user}'
 */
-remove.url = (args: { workspace: string | number | { id: string | number }, user: string | number } | [workspace: string | number | { id: string | number }, user: string | number ], options?: RouteQueryOptions) => {
+remove.url = (args: { workspace: number | { id: number }, user: string | number } | [workspace: number | { id: number }, user: string | number ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             workspace: args[0],
@@ -47,7 +47,7 @@ remove.url = (args: { workspace: string | number | { id: string | number }, user
 * @see app/Http/Controllers/WorkspaceController.php:191
 * @route '/workspaces/{workspace}/members/{user}'
 */
-remove.delete = (args: { workspace: string | number | { id: string | number }, user: string | number } | [workspace: string | number | { id: string | number }, user: string | number ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+remove.delete = (args: { workspace: number | { id: number }, user: string | number } | [workspace: number | { id: number }, user: string | number ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: remove.url(args, options),
     method: 'delete',
 })
@@ -57,7 +57,7 @@ remove.delete = (args: { workspace: string | number | { id: string | number }, u
 * @see app/Http/Controllers/WorkspaceController.php:191
 * @route '/workspaces/{workspace}/members/{user}'
 */
-const removeForm = (args: { workspace: string | number | { id: string | number }, user: string | number } | [workspace: string | number | { id: string | number }, user: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const removeForm = (args: { workspace: number | { id: number }, user: string | number } | [workspace: number | { id: number }, user: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: remove.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -72,7 +72,7 @@ const removeForm = (args: { workspace: string | number | { id: string | number }
 * @see app/Http/Controllers/WorkspaceController.php:191
 * @route '/workspaces/{workspace}/members/{user}'
 */
-removeForm.delete = (args: { workspace: string | number | { id: string | number }, user: string | number } | [workspace: string | number | { id: string | number }, user: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+removeForm.delete = (args: { workspace: number | { id: number }, user: string | number } | [workspace: number | { id: number }, user: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: remove.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -89,7 +89,7 @@ remove.form = removeForm
 * @see app/Http/Controllers/WorkspaceController.php:227
 * @route '/workspaces/{workspace}/members/{user}/role'
 */
-export const updateRole = (args: { workspace: string | number | { id: string | number }, user: string | number } | [workspace: string | number | { id: string | number }, user: string | number ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+export const updateRole = (args: { workspace: number | { id: number }, user: string | number } | [workspace: number | { id: number }, user: string | number ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: updateRole.url(args, options),
     method: 'patch',
 })
@@ -104,7 +104,7 @@ updateRole.definition = {
 * @see app/Http/Controllers/WorkspaceController.php:227
 * @route '/workspaces/{workspace}/members/{user}/role'
 */
-updateRole.url = (args: { workspace: string | number | { id: string | number }, user: string | number } | [workspace: string | number | { id: string | number }, user: string | number ], options?: RouteQueryOptions) => {
+updateRole.url = (args: { workspace: number | { id: number }, user: string | number } | [workspace: number | { id: number }, user: string | number ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             workspace: args[0],
@@ -132,7 +132,7 @@ updateRole.url = (args: { workspace: string | number | { id: string | number }, 
 * @see app/Http/Controllers/WorkspaceController.php:227
 * @route '/workspaces/{workspace}/members/{user}/role'
 */
-updateRole.patch = (args: { workspace: string | number | { id: string | number }, user: string | number } | [workspace: string | number | { id: string | number }, user: string | number ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+updateRole.patch = (args: { workspace: number | { id: number }, user: string | number } | [workspace: number | { id: number }, user: string | number ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: updateRole.url(args, options),
     method: 'patch',
 })
@@ -142,7 +142,7 @@ updateRole.patch = (args: { workspace: string | number | { id: string | number }
 * @see app/Http/Controllers/WorkspaceController.php:227
 * @route '/workspaces/{workspace}/members/{user}/role'
 */
-const updateRoleForm = (args: { workspace: string | number | { id: string | number }, user: string | number } | [workspace: string | number | { id: string | number }, user: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateRoleForm = (args: { workspace: number | { id: number }, user: string | number } | [workspace: number | { id: number }, user: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: updateRole.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -157,7 +157,7 @@ const updateRoleForm = (args: { workspace: string | number | { id: string | numb
 * @see app/Http/Controllers/WorkspaceController.php:227
 * @route '/workspaces/{workspace}/members/{user}/role'
 */
-updateRoleForm.patch = (args: { workspace: string | number | { id: string | number }, user: string | number } | [workspace: string | number | { id: string | number }, user: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateRoleForm.patch = (args: { workspace: number | { id: number }, user: string | number } | [workspace: number | { id: number }, user: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: updateRole.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',

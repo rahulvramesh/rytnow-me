@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:12
 * @route '/api/v1/tasks/{task}/time-entries'
 */
-export const index = (args: { task: string | number | { id: string | number } } | [task: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const index = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(args, options),
     method: 'get',
 })
@@ -19,7 +19,7 @@ index.definition = {
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:12
 * @route '/api/v1/tasks/{task}/time-entries'
 */
-index.url = (args: { task: string | number | { id: string | number } } | [task: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+index.url = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { task: args }
     }
@@ -52,7 +52,7 @@ index.url = (args: { task: string | number | { id: string | number } } | [task: 
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:12
 * @route '/api/v1/tasks/{task}/time-entries'
 */
-index.get = (args: { task: string | number | { id: string | number } } | [task: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+index.get = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(args, options),
     method: 'get',
 })
@@ -62,7 +62,7 @@ index.get = (args: { task: string | number | { id: string | number } } | [task: 
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:12
 * @route '/api/v1/tasks/{task}/time-entries'
 */
-index.head = (args: { task: string | number | { id: string | number } } | [task: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+index.head = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(args, options),
     method: 'head',
 })
@@ -72,7 +72,7 @@ index.head = (args: { task: string | number | { id: string | number } } | [task:
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:12
 * @route '/api/v1/tasks/{task}/time-entries'
 */
-const indexForm = (args: { task: string | number | { id: string | number } } | [task: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const indexForm = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(args, options),
     method: 'get',
 })
@@ -82,7 +82,7 @@ const indexForm = (args: { task: string | number | { id: string | number } } | [
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:12
 * @route '/api/v1/tasks/{task}/time-entries'
 */
-indexForm.get = (args: { task: string | number | { id: string | number } } | [task: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+indexForm.get = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(args, options),
     method: 'get',
 })
@@ -92,7 +92,7 @@ indexForm.get = (args: { task: string | number | { id: string | number } } | [ta
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:12
 * @route '/api/v1/tasks/{task}/time-entries'
 */
-indexForm.head = (args: { task: string | number | { id: string | number } } | [task: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+indexForm.head = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -109,7 +109,7 @@ index.form = indexForm
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:26
 * @route '/api/v1/tasks/{task}/time-entries'
 */
-export const store = (args: { task: string | number | { id: string | number } } | [task: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const store = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -124,7 +124,7 @@ store.definition = {
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:26
 * @route '/api/v1/tasks/{task}/time-entries'
 */
-store.url = (args: { task: string | number | { id: string | number } } | [task: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+store.url = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { task: args }
     }
@@ -157,7 +157,7 @@ store.url = (args: { task: string | number | { id: string | number } } | [task: 
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:26
 * @route '/api/v1/tasks/{task}/time-entries'
 */
-store.post = (args: { task: string | number | { id: string | number } } | [task: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+store.post = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -167,7 +167,7 @@ store.post = (args: { task: string | number | { id: string | number } } | [task:
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:26
 * @route '/api/v1/tasks/{task}/time-entries'
 */
-const storeForm = (args: { task: string | number | { id: string | number } } | [task: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const storeForm = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -177,7 +177,7 @@ const storeForm = (args: { task: string | number | { id: string | number } } | [
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:26
 * @route '/api/v1/tasks/{task}/time-entries'
 */
-storeForm.post = (args: { task: string | number | { id: string | number } } | [task: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+storeForm.post = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -189,7 +189,7 @@ store.form = storeForm
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:46
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-export const show = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -204,7 +204,7 @@ show.definition = {
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:46
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-show.url = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions) => {
+show.url = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             task: args[0],
@@ -232,7 +232,7 @@ show.url = (args: { task: string | number | { id: string | number }, time_entry:
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:46
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-show.get = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -242,7 +242,7 @@ show.get = (args: { task: string | number | { id: string | number }, time_entry:
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:46
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-show.head = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
@@ -252,7 +252,7 @@ show.head = (args: { task: string | number | { id: string | number }, time_entry
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:46
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-const showForm = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -262,7 +262,7 @@ const showForm = (args: { task: string | number | { id: string | number }, time_
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:46
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-showForm.get = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -272,7 +272,7 @@ showForm.get = (args: { task: string | number | { id: string | number }, time_en
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:46
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-showForm.head = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -289,7 +289,7 @@ show.form = showForm
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:55
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-export const update = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -304,7 +304,7 @@ update.definition = {
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:55
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-update.url = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions) => {
+update.url = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             task: args[0],
@@ -332,7 +332,7 @@ update.url = (args: { task: string | number | { id: string | number }, time_entr
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:55
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-update.put = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -342,7 +342,7 @@ update.put = (args: { task: string | number | { id: string | number }, time_entr
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:55
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-update.patch = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
@@ -352,7 +352,7 @@ update.patch = (args: { task: string | number | { id: string | number }, time_en
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:55
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-const updateForm = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -367,7 +367,7 @@ const updateForm = (args: { task: string | number | { id: string | number }, tim
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:55
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-updateForm.put = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -382,7 +382,7 @@ updateForm.put = (args: { task: string | number | { id: string | number }, time_
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:55
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-updateForm.patch = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.patch = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -399,7 +399,7 @@ update.form = updateForm
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:78
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-export const destroy = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -414,7 +414,7 @@ destroy.definition = {
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:78
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-destroy.url = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions) => {
+destroy.url = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             task: args[0],
@@ -442,7 +442,7 @@ destroy.url = (args: { task: string | number | { id: string | number }, time_ent
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:78
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-destroy.delete = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -452,7 +452,7 @@ destroy.delete = (args: { task: string | number | { id: string | number }, time_
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:78
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-const destroyForm = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -467,7 +467,7 @@ const destroyForm = (args: { task: string | number | { id: string | number }, ti
 * @see app/Http/Controllers/Api/V1/TimeEntryController.php:78
 * @route '/api/v1/tasks/{task}/time-entries/{time_entry}'
 */
-destroyForm.delete = (args: { task: string | number | { id: string | number }, time_entry: string | number } | [task: string | number | { id: string | number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { task: number | { id: number }, time_entry: string | number } | [task: number | { id: number }, time_entry: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

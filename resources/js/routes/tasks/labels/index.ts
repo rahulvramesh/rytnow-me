@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/LabelController.php:73
 * @route '/projects/{project}/tasks/{task}/labels'
 */
-export const attach = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const attach = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: attach.url(args, options),
     method: 'post',
 })
@@ -19,7 +19,7 @@ attach.definition = {
 * @see app/Http/Controllers/LabelController.php:73
 * @route '/projects/{project}/tasks/{task}/labels'
 */
-attach.url = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+attach.url = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -49,7 +49,7 @@ attach.url = (args: { project: string | number | { id: string | number }, task: 
 * @see app/Http/Controllers/LabelController.php:73
 * @route '/projects/{project}/tasks/{task}/labels'
 */
-attach.post = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+attach.post = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: attach.url(args, options),
     method: 'post',
 })
@@ -59,7 +59,7 @@ attach.post = (args: { project: string | number | { id: string | number }, task:
 * @see app/Http/Controllers/LabelController.php:73
 * @route '/projects/{project}/tasks/{task}/labels'
 */
-const attachForm = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const attachForm = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: attach.url(args, options),
     method: 'post',
 })
@@ -69,7 +69,7 @@ const attachForm = (args: { project: string | number | { id: string | number }, 
 * @see app/Http/Controllers/LabelController.php:73
 * @route '/projects/{project}/tasks/{task}/labels'
 */
-attachForm.post = (args: { project: string | number | { id: string | number }, task: string | number | { id: string | number } } | [project: string | number | { id: string | number }, task: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+attachForm.post = (args: { project: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: attach.url(args, options),
     method: 'post',
 })

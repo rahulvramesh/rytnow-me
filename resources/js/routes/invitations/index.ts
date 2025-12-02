@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/InvitationController.php:24
 * @route '/workspaces/{workspace}/invitations'
 */
-export const store = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const store = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -19,7 +19,7 @@ store.definition = {
 * @see app/Http/Controllers/InvitationController.php:24
 * @route '/workspaces/{workspace}/invitations'
 */
-store.url = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+store.url = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { workspace: args }
     }
@@ -52,7 +52,7 @@ store.url = (args: { workspace: string | number | { id: string | number } } | [w
 * @see app/Http/Controllers/InvitationController.php:24
 * @route '/workspaces/{workspace}/invitations'
 */
-store.post = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+store.post = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -62,7 +62,7 @@ store.post = (args: { workspace: string | number | { id: string | number } } | [
 * @see app/Http/Controllers/InvitationController.php:24
 * @route '/workspaces/{workspace}/invitations'
 */
-const storeForm = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const storeForm = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -72,7 +72,7 @@ const storeForm = (args: { workspace: string | number | { id: string | number } 
 * @see app/Http/Controllers/InvitationController.php:24
 * @route '/workspaces/{workspace}/invitations'
 */
-storeForm.post = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+storeForm.post = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -84,7 +84,7 @@ store.form = storeForm
 * @see app/Http/Controllers/InvitationController.php:195
 * @route '/workspaces/{workspace}/invitations/bulk'
 */
-export const bulk = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const bulk = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: bulk.url(args, options),
     method: 'post',
 })
@@ -99,7 +99,7 @@ bulk.definition = {
 * @see app/Http/Controllers/InvitationController.php:195
 * @route '/workspaces/{workspace}/invitations/bulk'
 */
-bulk.url = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+bulk.url = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { workspace: args }
     }
@@ -132,7 +132,7 @@ bulk.url = (args: { workspace: string | number | { id: string | number } } | [wo
 * @see app/Http/Controllers/InvitationController.php:195
 * @route '/workspaces/{workspace}/invitations/bulk'
 */
-bulk.post = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+bulk.post = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: bulk.url(args, options),
     method: 'post',
 })
@@ -142,7 +142,7 @@ bulk.post = (args: { workspace: string | number | { id: string | number } } | [w
 * @see app/Http/Controllers/InvitationController.php:195
 * @route '/workspaces/{workspace}/invitations/bulk'
 */
-const bulkForm = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const bulkForm = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: bulk.url(args, options),
     method: 'post',
 })
@@ -152,7 +152,7 @@ const bulkForm = (args: { workspace: string | number | { id: string | number } }
 * @see app/Http/Controllers/InvitationController.php:195
 * @route '/workspaces/{workspace}/invitations/bulk'
 */
-bulkForm.post = (args: { workspace: string | number | { id: string | number } } | [workspace: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+bulkForm.post = (args: { workspace: number | { id: number } } | [workspace: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: bulk.url(args, options),
     method: 'post',
 })
@@ -164,7 +164,7 @@ bulk.form = bulkForm
 * @see app/Http/Controllers/InvitationController.php:163
 * @route '/workspaces/{workspace}/invitations/{invitation}/resend'
 */
-export const resend = (args: { workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const resend = (args: { workspace: number | { id: number }, invitation: number | { id: number } } | [workspace: number | { id: number }, invitation: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: resend.url(args, options),
     method: 'post',
 })
@@ -179,7 +179,7 @@ resend.definition = {
 * @see app/Http/Controllers/InvitationController.php:163
 * @route '/workspaces/{workspace}/invitations/{invitation}/resend'
 */
-resend.url = (args: { workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+resend.url = (args: { workspace: number | { id: number }, invitation: number | { id: number } } | [workspace: number | { id: number }, invitation: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             workspace: args[0],
@@ -209,7 +209,7 @@ resend.url = (args: { workspace: string | number | { id: string | number }, invi
 * @see app/Http/Controllers/InvitationController.php:163
 * @route '/workspaces/{workspace}/invitations/{invitation}/resend'
 */
-resend.post = (args: { workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+resend.post = (args: { workspace: number | { id: number }, invitation: number | { id: number } } | [workspace: number | { id: number }, invitation: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: resend.url(args, options),
     method: 'post',
 })
@@ -219,7 +219,7 @@ resend.post = (args: { workspace: string | number | { id: string | number }, inv
 * @see app/Http/Controllers/InvitationController.php:163
 * @route '/workspaces/{workspace}/invitations/{invitation}/resend'
 */
-const resendForm = (args: { workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const resendForm = (args: { workspace: number | { id: number }, invitation: number | { id: number } } | [workspace: number | { id: number }, invitation: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: resend.url(args, options),
     method: 'post',
 })
@@ -229,7 +229,7 @@ const resendForm = (args: { workspace: string | number | { id: string | number }
 * @see app/Http/Controllers/InvitationController.php:163
 * @route '/workspaces/{workspace}/invitations/{invitation}/resend'
 */
-resendForm.post = (args: { workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+resendForm.post = (args: { workspace: number | { id: number }, invitation: number | { id: number } } | [workspace: number | { id: number }, invitation: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: resend.url(args, options),
     method: 'post',
 })
@@ -241,7 +241,7 @@ resend.form = resendForm
 * @see app/Http/Controllers/InvitationController.php:183
 * @route '/workspaces/{workspace}/invitations/{invitation}'
 */
-export const destroy = (args: { workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { workspace: number | { id: number }, invitation: number | { id: number } } | [workspace: number | { id: number }, invitation: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -256,7 +256,7 @@ destroy.definition = {
 * @see app/Http/Controllers/InvitationController.php:183
 * @route '/workspaces/{workspace}/invitations/{invitation}'
 */
-destroy.url = (args: { workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+destroy.url = (args: { workspace: number | { id: number }, invitation: number | { id: number } } | [workspace: number | { id: number }, invitation: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             workspace: args[0],
@@ -286,7 +286,7 @@ destroy.url = (args: { workspace: string | number | { id: string | number }, inv
 * @see app/Http/Controllers/InvitationController.php:183
 * @route '/workspaces/{workspace}/invitations/{invitation}'
 */
-destroy.delete = (args: { workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { workspace: number | { id: number }, invitation: number | { id: number } } | [workspace: number | { id: number }, invitation: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -296,7 +296,7 @@ destroy.delete = (args: { workspace: string | number | { id: string | number }, 
 * @see app/Http/Controllers/InvitationController.php:183
 * @route '/workspaces/{workspace}/invitations/{invitation}'
 */
-const destroyForm = (args: { workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { workspace: number | { id: number }, invitation: number | { id: number } } | [workspace: number | { id: number }, invitation: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -311,7 +311,7 @@ const destroyForm = (args: { workspace: string | number | { id: string | number 
 * @see app/Http/Controllers/InvitationController.php:183
 * @route '/workspaces/{workspace}/invitations/{invitation}'
 */
-destroyForm.delete = (args: { workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } } | [workspace: string | number | { id: string | number }, invitation: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { workspace: number | { id: number }, invitation: number | { id: number } } | [workspace: number | { id: number }, invitation: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

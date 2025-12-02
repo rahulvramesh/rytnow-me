@@ -1,4 +1,6 @@
 import { DueDateBadge } from '@/components/due-date-badge';
+import { EstimateProgressBar } from '@/components/estimate-progress-bar';
+import { StoryPointsBadge } from '@/components/story-points-select';
 import { type Task } from '@/types/task';
 import { Link, router } from '@inertiajs/react';
 import {
@@ -207,10 +209,18 @@ export function TaskCard({
 
             {/* Meta row - compact */}
             <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-muted-foreground">
+                {task.story_points && (
+                    <StoryPointsBadge points={task.story_points} variant="compact" />
+                )}
                 {task.due_date && (
                     <DueDateBadge dueDate={task.due_date} variant="compact" />
                 )}
-                {(totalTime > 0 || isRunning) && (
+                {task.estimate_progress ? (
+                    <EstimateProgressBar
+                        progress={task.estimate_progress}
+                        variant="compact"
+                    />
+                ) : (totalTime > 0 || isRunning) ? (
                     <span className="flex items-center gap-0.5">
                         <Clock className="size-2.5" />
                         {isRunning ? (
@@ -221,7 +231,7 @@ export function TaskCard({
                             formatDuration(totalTime)
                         )}
                     </span>
-                )}
+                ) : null}
                 {commentsCount > 0 && (
                     <span className="flex items-center gap-0.5">
                         <MessageSquare className="size-2.5" />

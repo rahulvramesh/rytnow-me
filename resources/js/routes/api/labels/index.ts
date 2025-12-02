@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/Api/V1/LabelController.php:11
 * @route '/api/v1/projects/{project}/labels'
 */
-export const index = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const index = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(args, options),
     method: 'get',
 })
@@ -19,7 +19,7 @@ index.definition = {
 * @see app/Http/Controllers/Api/V1/LabelController.php:11
 * @route '/api/v1/projects/{project}/labels'
 */
-index.url = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+index.url = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { project: args }
     }
@@ -52,7 +52,7 @@ index.url = (args: { project: string | number | { id: string | number } } | [pro
 * @see app/Http/Controllers/Api/V1/LabelController.php:11
 * @route '/api/v1/projects/{project}/labels'
 */
-index.get = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+index.get = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(args, options),
     method: 'get',
 })
@@ -62,7 +62,7 @@ index.get = (args: { project: string | number | { id: string | number } } | [pro
 * @see app/Http/Controllers/Api/V1/LabelController.php:11
 * @route '/api/v1/projects/{project}/labels'
 */
-index.head = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+index.head = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(args, options),
     method: 'head',
 })
@@ -72,7 +72,7 @@ index.head = (args: { project: string | number | { id: string | number } } | [pr
 * @see app/Http/Controllers/Api/V1/LabelController.php:11
 * @route '/api/v1/projects/{project}/labels'
 */
-const indexForm = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const indexForm = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(args, options),
     method: 'get',
 })
@@ -82,7 +82,7 @@ const indexForm = (args: { project: string | number | { id: string | number } } 
 * @see app/Http/Controllers/Api/V1/LabelController.php:11
 * @route '/api/v1/projects/{project}/labels'
 */
-indexForm.get = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+indexForm.get = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(args, options),
     method: 'get',
 })
@@ -92,7 +92,7 @@ indexForm.get = (args: { project: string | number | { id: string | number } } | 
 * @see app/Http/Controllers/Api/V1/LabelController.php:11
 * @route '/api/v1/projects/{project}/labels'
 */
-indexForm.head = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+indexForm.head = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -109,7 +109,7 @@ index.form = indexForm
 * @see app/Http/Controllers/Api/V1/LabelController.php:25
 * @route '/api/v1/projects/{project}/labels'
 */
-export const store = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const store = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -124,7 +124,7 @@ store.definition = {
 * @see app/Http/Controllers/Api/V1/LabelController.php:25
 * @route '/api/v1/projects/{project}/labels'
 */
-store.url = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+store.url = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { project: args }
     }
@@ -157,7 +157,7 @@ store.url = (args: { project: string | number | { id: string | number } } | [pro
 * @see app/Http/Controllers/Api/V1/LabelController.php:25
 * @route '/api/v1/projects/{project}/labels'
 */
-store.post = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+store.post = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
     method: 'post',
 })
@@ -167,7 +167,7 @@ store.post = (args: { project: string | number | { id: string | number } } | [pr
 * @see app/Http/Controllers/Api/V1/LabelController.php:25
 * @route '/api/v1/projects/{project}/labels'
 */
-const storeForm = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const storeForm = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -177,7 +177,7 @@ const storeForm = (args: { project: string | number | { id: string | number } } 
 * @see app/Http/Controllers/Api/V1/LabelController.php:25
 * @route '/api/v1/projects/{project}/labels'
 */
-storeForm.post = (args: { project: string | number | { id: string | number } } | [project: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+storeForm.post = (args: { project: number | { id: number } } | [project: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: store.url(args, options),
     method: 'post',
 })
@@ -189,7 +189,7 @@ store.form = storeForm
 * @see app/Http/Controllers/Api/V1/LabelController.php:41
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-export const show = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -204,7 +204,7 @@ show.definition = {
 * @see app/Http/Controllers/Api/V1/LabelController.php:41
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-show.url = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+show.url = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -234,7 +234,7 @@ show.url = (args: { project: string | number | { id: string | number }, label: s
 * @see app/Http/Controllers/Api/V1/LabelController.php:41
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-show.get = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -244,7 +244,7 @@ show.get = (args: { project: string | number | { id: string | number }, label: s
 * @see app/Http/Controllers/Api/V1/LabelController.php:41
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-show.head = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
@@ -254,7 +254,7 @@ show.head = (args: { project: string | number | { id: string | number }, label: 
 * @see app/Http/Controllers/Api/V1/LabelController.php:41
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-const showForm = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -264,7 +264,7 @@ const showForm = (args: { project: string | number | { id: string | number }, la
 * @see app/Http/Controllers/Api/V1/LabelController.php:41
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-showForm.get = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -274,7 +274,7 @@ showForm.get = (args: { project: string | number | { id: string | number }, labe
 * @see app/Http/Controllers/Api/V1/LabelController.php:41
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-showForm.head = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -291,7 +291,7 @@ show.form = showForm
 * @see app/Http/Controllers/Api/V1/LabelController.php:50
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-export const update = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -306,7 +306,7 @@ update.definition = {
 * @see app/Http/Controllers/Api/V1/LabelController.php:50
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-update.url = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+update.url = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -336,7 +336,7 @@ update.url = (args: { project: string | number | { id: string | number }, label:
 * @see app/Http/Controllers/Api/V1/LabelController.php:50
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-update.put = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -346,7 +346,7 @@ update.put = (args: { project: string | number | { id: string | number }, label:
 * @see app/Http/Controllers/Api/V1/LabelController.php:50
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-update.patch = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
@@ -356,7 +356,7 @@ update.patch = (args: { project: string | number | { id: string | number }, labe
 * @see app/Http/Controllers/Api/V1/LabelController.php:50
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-const updateForm = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -371,7 +371,7 @@ const updateForm = (args: { project: string | number | { id: string | number }, 
 * @see app/Http/Controllers/Api/V1/LabelController.php:50
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-updateForm.put = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -386,7 +386,7 @@ updateForm.put = (args: { project: string | number | { id: string | number }, la
 * @see app/Http/Controllers/Api/V1/LabelController.php:50
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-updateForm.patch = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.patch = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -403,7 +403,7 @@ update.form = updateForm
 * @see app/Http/Controllers/Api/V1/LabelController.php:66
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-export const destroy = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -418,7 +418,7 @@ destroy.definition = {
 * @see app/Http/Controllers/Api/V1/LabelController.php:66
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-destroy.url = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+destroy.url = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -448,7 +448,7 @@ destroy.url = (args: { project: string | number | { id: string | number }, label
 * @see app/Http/Controllers/Api/V1/LabelController.php:66
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-destroy.delete = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -458,7 +458,7 @@ destroy.delete = (args: { project: string | number | { id: string | number }, la
 * @see app/Http/Controllers/Api/V1/LabelController.php:66
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-const destroyForm = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -473,7 +473,7 @@ const destroyForm = (args: { project: string | number | { id: string | number },
 * @see app/Http/Controllers/Api/V1/LabelController.php:66
 * @route '/api/v1/projects/{project}/labels/{label}'
 */
-destroyForm.delete = (args: { project: string | number | { id: string | number }, label: string | number | { id: string | number } } | [project: string | number | { id: string | number }, label: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { project: number | { id: number }, label: number | { id: number } } | [project: number | { id: number }, label: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

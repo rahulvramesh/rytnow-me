@@ -102,6 +102,11 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
+    public function sprints(): HasMany
+    {
+        return $this->hasMany(Sprint::class)->orderBy('position');
+    }
+
     public function labels(): HasMany
     {
         return $this->hasMany(Label::class);

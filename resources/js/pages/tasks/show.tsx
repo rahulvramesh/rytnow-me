@@ -3,6 +3,7 @@ import { AudioRecordingsList } from '@/components/audio-recordings-list';
 import { CommentsSection } from '@/components/comments-section';
 import { DueDateBadge } from '@/components/due-date-badge';
 import { SubtasksSection } from '@/components/subtasks-section';
+import { TaskDependenciesSection } from '@/components/task-dependencies-section';
 import { TimeEntriesSheet } from '@/components/time-entries-sheet';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -24,16 +25,19 @@ import { type TimeEntry } from '@/types/time-entry';
 import { Head, Link, router } from '@inertiajs/react';
 import {
     ArrowLeft,
+    Ban,
     Calendar,
     CheckCircle2,
     CheckSquare,
     Circle,
     Clock,
     Edit,
+    Link2,
     Loader2,
     MessageSquare,
     Mic,
     Pause,
+    PauseCircle,
     Pencil,
     Play,
     Trash2,
@@ -72,6 +76,8 @@ const statusConfig: Record<
         color: 'text-blue-500',
         bgColor: 'bg-blue-500',
     },
+    blocked: { label: 'Blocked', color: 'text-red-500', bgColor: 'bg-red-500' },
+    on_hold: { label: 'On Hold', color: 'text-yellow-500', bgColor: 'bg-yellow-500' },
     done: { label: 'Done', color: 'text-green-500', bgColor: 'bg-green-500' },
 };
 
@@ -123,6 +129,10 @@ function StatusIcon({ status }: { status: Task['status'] }) {
             return <CheckCircle2 className="size-4 text-green-500" />;
         case 'in_progress':
             return <Loader2 className="size-4 text-blue-500" />;
+        case 'blocked':
+            return <Ban className="size-4 text-red-500" />;
+        case 'on_hold':
+            return <PauseCircle className="size-4 text-yellow-500" />;
         default:
             return <Circle className="size-4 text-gray-400" />;
     }
@@ -153,7 +163,7 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
     const subtasks = task.subtasks || [];
 
     const cycleStatus = () => {
-        const statusOrder: Task['status'][] = ['todo', 'in_progress', 'done'];
+        const statusOrder: Task['status'][] = ['todo', 'in_progress', 'blocked', 'on_hold', 'done'];
         const currentIndex = statusOrder.indexOf(task.status);
         const nextStatus = statusOrder[(currentIndex + 1) % statusOrder.length];
         router.patch(
@@ -346,6 +356,20 @@ export default function TaskShow({ project, task, workspaceMembers }: Props) {
                                     taskId={task.id}
                                     subtasks={subtasks}
                                     workspaceMembers={workspaceMembers}
+                                />
+                            </section>
+
+                            {/* Dependencies */}
+                            <section className="mb-8">
+                                <h3 className="mb-3 flex items-center gap-2 text-sm font-medium">
+                                    <Link2 className="size-4 text-muted-foreground" />
+                                    Dependencies
+                                </h3>
+                                <TaskDependenciesSection
+                                    projectId={project.id}
+                                    taskId={task.id}
+                                    initialBlockedBy={task.blocked_by}
+                                    initialBlocks={task.blocks}
                                 />
                             </section>
 
