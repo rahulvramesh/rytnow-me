@@ -10,6 +10,7 @@ import { TableRow } from '@tiptap/extension-table-row';
 import { TaskItem } from '@tiptap/extension-task-item';
 import { TaskList } from '@tiptap/extension-task-list';
 import { EditorContent, useEditor } from '@tiptap/react';
+import { FloatingMenu } from '@tiptap/react/menus';
 import StarterKit from '@tiptap/starter-kit';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { common, createLowlight } from 'lowlight';
@@ -900,6 +901,92 @@ export function DocumentEditor({
             {/* Editor Content */}
             <div className="relative" ref={editorContainerRef}>
                 <EditorContent editor={editor} />
+
+                {/* Floating Menu - appears on empty lines */}
+                <FloatingMenu
+                    editor={editor}
+                    tippyOptions={{ duration: 100, placement: 'left' }}
+                    className="flex items-center gap-1 rounded-lg border bg-background p-1 shadow-lg"
+                >
+                    <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                        className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                            editor.isActive('heading', { level: 1 }) ? 'bg-muted text-primary' : 'text-muted-foreground'
+                        }`}
+                        title="Heading 1"
+                    >
+                        <Heading1 className="size-4" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                        className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                            editor.isActive('heading', { level: 2 }) ? 'bg-muted text-primary' : 'text-muted-foreground'
+                        }`}
+                        title="Heading 2"
+                    >
+                        <Heading2 className="size-4" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleBulletList().run()}
+                        className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                            editor.isActive('bulletList') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                        }`}
+                        title="Bullet List"
+                    >
+                        <List className="size-4" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                        className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                            editor.isActive('orderedList') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                        }`}
+                        title="Numbered List"
+                    >
+                        <ListOrdered className="size-4" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleTaskList().run()}
+                        className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                            editor.isActive('taskList') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                        }`}
+                        title="Task List"
+                    >
+                        <ListChecks className="size-4" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                        className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                            editor.isActive('blockquote') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                        }`}
+                        title="Quote"
+                    >
+                        <Quote className="size-4" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                        className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                            editor.isActive('codeBlock') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                        }`}
+                        title="Code Block"
+                    >
+                        <Code className="size-4" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleImageSelect}
+                        className="rounded p-1.5 text-muted-foreground transition-colors hover:bg-muted"
+                        title="Insert Image"
+                    >
+                        <ImageIcon className="size-4" />
+                    </button>
+                </FloatingMenu>
 
                 {/* Table Context Menu */}
                 {contextMenu && (
