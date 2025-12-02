@@ -11,6 +11,7 @@ import { TaskList } from '@tiptap/extension-task-list';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { common, createLowlight } from 'lowlight';
+import { marked } from 'marked';
 import {
     Bold,
     Code,
@@ -37,6 +38,48 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const lowlight = createLowlight(common);
+
+// Configure marked for GFM (GitHub Flavored Markdown)
+marked.setOptions({
+    gfm: true,
+    breaks: true,
+});
+
+// Detect if text looks like markdown
+function looksLikeMarkdown(text: string): boolean {
+    const markdownPatterns = [
+        /^#{1,6}\s+.+/m,           // Headers: # Header
+        /^\*{3,}$|^-{3,}$|^_{3,}$/m, // Horizontal rules
+        /^\s*[-*+]\s+.+/m,          // Unordered lists
+        /^\s*\d+\.\s+.+/m,          // Ordered lists
+        /^\s*>\s+.+/m,              // Blockquotes
+        /```[\s\S]*?```/,           // Fenced code blocks
+        /`[^`]+`/,                  // Inline code
+        /\[.+?\]\(.+?\)/,           // Links
+        /!\[.*?\]\(.+?\)/,          // Images
+        /\*\*.+?\*\*|__.+?__/,      // Bold
+        /\*.+?\*|_.+?_/,            // Italic
+        /~~.+?~~/,                  // Strikethrough
+        /^\s*\|.+\|.*$/m,           // Tables
+        /^\s*- \[[ x]\]/m,          // Task lists
+    ];
+
+    // Check if multiple patterns match (more confident it's markdown)
+    let matchCount = 0;
+    for (const pattern of markdownPatterns) {
+        if (pattern.test(text)) {
+            matchCount++;
+            if (matchCount >= 2) return true;
+        }
+    }
+
+    // Single match with strong indicators (headers, code blocks, lists)
+    if (/^#{1,6}\s+.+/m.test(text) || /```[\s\S]*?```/.test(text) || /^\s*[-*+]\s+.+/m.test(text)) {
+        return true;
+    }
+
+    return false;
+}
 
 interface ToolbarButtonProps {
     onClick: () => void;
@@ -433,7 +476,7 @@ export function DocumentEditor({
         [editor, onImageUpload],
     );
 
-    // Handle paste for images
+    // Handle paste for images and markdown
     useEffect(() => {
         if (!editor) return;
 
@@ -441,6 +484,7 @@ export function DocumentEditor({
             const items = event.clipboardData?.items;
             if (!items) return;
 
+            // Check for images first
             for (const item of items) {
                 if (item.type.startsWith('image/')) {
                     event.preventDefault();
@@ -453,7 +497,24 @@ export function DocumentEditor({
                             console.error('Image paste failed:', error);
                         }
                     }
-                    break;
+                    return;
+                }
+            }
+
+            // Check for markdown text
+            const text = event.clipboardData?.getData('text/plain');
+            const html = event.clipboardData?.getData('text/html');
+
+            // Only convert if there's plain text, it looks like markdown, and no HTML is present
+            if (text && looksLikeMarkdown(text) && !html) {
+                event.preventDefault();
+                try {
+                    const convertedHtml = await marked.parse(text);
+                    editor.chain().focus().insertContent(convertedHtml).run();
+                } catch (error) {
+                    console.error('Markdown conversion failed:', error);
+                    // Fallback to plain text
+                    editor.chain().focus().insertContent(text).run();
                 }
             }
         };

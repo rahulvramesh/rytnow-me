@@ -295,12 +295,13 @@
 
 /* Code Block Styles with Syntax Highlighting */
 .tiptap pre {
-    background: var(--muted);
+    background: #282c34;
     border-radius: var(--radius);
     font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Menlo', monospace;
     padding: 0.75rem 1rem;
     margin: 0.5rem 0;
     overflow-x: auto;
+    color: #abb2bf;
 }
 
 .tiptap pre code {
@@ -309,6 +310,17 @@
     font-size: 0.875rem;
     padding: 0;
     line-height: 1.5;
+}
+
+/* Code block language label */
+.tiptap pre code::before {
+    content: attr(data-language);
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: #5c6370;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
 }
 
 .tiptap code {
@@ -391,10 +403,6 @@
 }
 
 /* Dark mode syntax highlighting adjustments */
-.dark .tiptap pre {
-    background: oklch(0.2 0 0);
-}
-
 .dark .hljs-comment,
 .dark .hljs-quote {
     color: #7f848e;
