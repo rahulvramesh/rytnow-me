@@ -25,6 +25,7 @@ import {
     Loader2,
     Mic,
     PauseCircle,
+    Target,
     Trash2,
     User,
     X,
@@ -37,13 +38,20 @@ interface WorkspaceMember {
     email: string;
 }
 
+interface Sprint {
+    id: number;
+    name: string;
+    status: 'planning' | 'active' | 'completed' | 'cancelled';
+}
+
 interface Props {
     project: Project;
     task: Task;
     workspaceMembers: WorkspaceMember[];
+    sprints: Sprint[];
 }
 
-export default function TaskEdit({ project, task, workspaceMembers }: Props) {
+export default function TaskEdit({ project, task, workspaceMembers, sprints }: Props) {
     const { auth } = usePage<{ auth: { user: { id: number; name: string } } }>()
         .props;
 
@@ -67,6 +75,7 @@ export default function TaskEdit({ project, task, workspaceMembers }: Props) {
         estimated_hours: task.estimated_hours ? Number(task.estimated_hours) : null as number | null,
         due_date: task.due_date ?? '',
         assigned_to: task.assigned_to?.toString() ?? '',
+        sprint_id: task.sprint_id?.toString() ?? '',
         label_ids: task.labels?.map((l) => l.id) ?? [],
     });
     const [audioRecording, setAudioRecording] = useState<{
@@ -97,6 +106,7 @@ export default function TaskEdit({ project, task, workspaceMembers }: Props) {
         if (data.estimated_hours) formData.append('estimated_hours', String(data.estimated_hours));
         if (data.due_date) formData.append('due_date', data.due_date);
         if (data.assigned_to) formData.append('assigned_to', data.assigned_to);
+        if (data.sprint_id) formData.append('sprint_id', data.sprint_id);
         data.label_ids.forEach((id) =>
             formData.append('label_ids[]', String(id)),
         );
@@ -548,6 +558,74 @@ export default function TaskEdit({ project, task, workspaceMembers }: Props) {
                                     )}
                                 </div>
                             </div>
+
+                            {/* Sprint */}
+                            {sprints && sprints.length > 0 && (
+                                <div className="space-y-2">
+                                    <Label
+                                        htmlFor="sprint"
+                                        className="text-sm font-medium"
+                                    >
+                                        Sprint
+                                    </Label>
+                                    <Select
+                                        value={data.sprint_id || 'no_sprint'}
+                                        onValueChange={(value) =>
+                                            updateData(
+                                                'sprint_id',
+                                                value === 'no_sprint' ? '' : value,
+                                            )
+                                        }
+                                    >
+                                        <SelectTrigger className="h-11">
+                                            <SelectValue placeholder="No sprint">
+                                                {data.sprint_id ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <Target className="size-4 text-primary" />
+                                                        {sprints.find(
+                                                            (s) =>
+                                                                s.id.toString() ===
+                                                                data.sprint_id,
+                                                        )?.name || 'Select sprint'}
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex items-center gap-2 text-muted-foreground">
+                                                        <Target className="size-4" />
+                                                        No sprint
+                                                    </div>
+                                                )}
+                                            </SelectValue>
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="no_sprint">
+                                                <div className="flex items-center gap-2 text-muted-foreground">
+                                                    <Target className="size-4" />
+                                                    No sprint
+                                                </div>
+                                            </SelectItem>
+                                            {sprints.map((sprint) => (
+                                                <SelectItem
+                                                    key={sprint.id}
+                                                    value={sprint.id.toString()}
+                                                >
+                                                    <div className="flex items-center gap-2">
+                                                        <Target className="size-4 text-primary" />
+                                                        {sprint.name}
+                                                        <span className="text-xs text-muted-foreground">
+                                                            ({sprint.status})
+                                                        </span>
+                                                    </div>
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    {errors.sprint_id && (
+                                        <p className="text-sm text-destructive">
+                                            {errors.sprint_id}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
 
                             {/* Labels */}
                             {project.labels && project.labels.length > 0 && (

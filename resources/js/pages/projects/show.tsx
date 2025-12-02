@@ -49,6 +49,7 @@ import {
     Plus,
     Search,
     Settings,
+    Target,
     Trash2,
     X,
 } from 'lucide-react';
@@ -454,6 +455,12 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                             </span>
                         </div>
                     )}
+                    <Button variant="outline" size="sm" asChild>
+                        <Link href={`/projects/${project.id}/sprints`}>
+                            <Target className="mr-1.5 size-4" />
+                            Sprints
+                        </Link>
+                    </Button>
                     <Button variant="outline" size="sm" asChild>
                         <Link href={`/projects/${project.id}/docs`}>
                             <FileText className="mr-1.5 size-4" />
