@@ -243,6 +243,105 @@
     background-color: oklch(0.5 0.15 250 / 0.25);
 }
 
+/* Enhanced Table Styles */
+.tiptap table,
+.ProseMirror table {
+    position: relative;
+    overflow: visible;
+}
+
+.tiptap td:hover,
+.tiptap th:hover,
+.ProseMirror td:hover,
+.ProseMirror th:hover {
+    background-color: var(--muted);
+}
+
+.tiptap th:hover,
+.ProseMirror th:hover {
+    background-color: oklch(from var(--muted) calc(l - 0.05) c h);
+}
+
+/* Column resize handle */
+.tiptap .column-resize-handle,
+.ProseMirror .column-resize-handle {
+    position: absolute;
+    right: -2px;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: var(--primary);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.tiptap td:hover .column-resize-handle,
+.tiptap th:hover .column-resize-handle,
+.ProseMirror td:hover .column-resize-handle,
+.ProseMirror th:hover .column-resize-handle {
+    opacity: 1;
+}
+
+/* Table resize cursor */
+.tiptap .resize-cursor,
+.ProseMirror .resize-cursor {
+    cursor: col-resize;
+}
+
+/* Row highlight on hover */
+.tiptap tr:hover td,
+.ProseMirror tr:hover td {
+    background-color: oklch(from var(--background) calc(l - 0.02) c h);
+}
+
+.dark .tiptap tr:hover td,
+.dark .ProseMirror tr:hover td {
+    background-color: oklch(from var(--background) calc(l + 0.03) c h);
+}
+
+/* Cell focus state */
+.tiptap td:focus-within,
+.tiptap th:focus-within,
+.ProseMirror td:focus-within,
+.ProseMirror th:focus-within {
+    outline: 2px solid var(--primary);
+    outline-offset: -2px;
+}
+
+/* Table wrapper for controls */
+.table-wrapper {
+    position: relative;
+    margin: 1rem 0;
+}
+
+/* Add row/column indicators */
+.table-wrapper::after {
+    content: '';
+    position: absolute;
+    right: -24px;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.table-wrapper:hover::after {
+    opacity: 1;
+}
+
+/* Selected row/column highlight */
+.tiptap .selectedCell::after,
+.ProseMirror .selectedCell::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--primary);
+    opacity: 0.1;
+    pointer-events: none;
+}
+
 .tiptap ul,
 .ProseMirror ul {
     list-style-type: disc;
@@ -623,4 +722,158 @@
     padding: 1px 4px;
     border-radius: 4px;
     font-weight: 500;
+}
+
+/* ===== Zen Mode Animations ===== */
+
+/* Slow floating animations for aurora orbs */
+@keyframes zen-float-1 {
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+    25% {
+        transform: translate(5%, 3%) scale(1.02);
+    }
+    50% {
+        transform: translate(2%, 5%) scale(0.98);
+    }
+    75% {
+        transform: translate(-3%, 2%) scale(1.01);
+    }
+}
+
+@keyframes zen-float-2 {
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+    33% {
+        transform: translate(-4%, 4%) scale(1.03);
+    }
+    66% {
+        transform: translate(3%, -3%) scale(0.97);
+    }
+}
+
+@keyframes zen-float-3 {
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+    20% {
+        transform: translate(3%, -2%) scale(0.99);
+    }
+    40% {
+        transform: translate(-2%, 3%) scale(1.02);
+    }
+    60% {
+        transform: translate(4%, 4%) scale(0.98);
+    }
+    80% {
+        transform: translate(-3%, -2%) scale(1.01);
+    }
+}
+
+/* Gentle breathing animation - syncs with relaxed breathing */
+@keyframes zen-breathe {
+    0%,
+    100% {
+        opacity: 0.25;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 0.35;
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+}
+
+/* Deep breathing animation - 4 seconds in, 4 seconds out */
+@keyframes zen-breathe-deep {
+    0%,
+    100% {
+        opacity: 0.15;
+        transform: scale(0.9);
+    }
+    50% {
+        opacity: 0.25;
+        transform: scale(1.1);
+    }
+}
+
+/* Outer ring breathing - slightly offset timing */
+@keyframes zen-breathe-outer {
+    0%,
+    100% {
+        opacity: 0.08;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 0.15;
+        transform: translate(-50%, -50%) scale(1.08);
+    }
+}
+
+/* Wave animations */
+@keyframes zen-wave-1 {
+    0%,
+    100% {
+        d: path(
+            'M0,400 C360,300 720,500 1080,400 C1260,350 1440,450 1440,450 L1440,800 L0,800 Z'
+        );
+    }
+    50% {
+        d: path(
+            'M0,400 C360,450 720,350 1080,400 C1260,450 1440,350 1440,350 L1440,800 L0,800 Z'
+        );
+    }
+}
+
+@keyframes zen-wave-2 {
+    0%,
+    100% {
+        d: path(
+            'M0,500 C360,400 720,600 1080,500 C1260,450 1440,550 1440,550 L1440,800 L0,800 Z'
+        );
+    }
+    50% {
+        d: path(
+            'M0,500 C360,550 720,450 1080,500 C1260,550 1440,450 1440,450 L1440,800 L0,800 Z'
+        );
+    }
+}
+
+/* Utility classes for Zen animations */
+.animate-zen-float-1 {
+    animation: zen-float-1 30s ease-in-out infinite;
+}
+
+.animate-zen-float-2 {
+    animation: zen-float-2 25s ease-in-out infinite;
+}
+
+.animate-zen-float-3 {
+    animation: zen-float-3 35s ease-in-out infinite;
+}
+
+.animate-zen-breathe {
+    animation: zen-breathe 8s ease-in-out infinite;
+}
+
+.animate-zen-breathe-deep {
+    animation: zen-breathe-deep 8s ease-in-out infinite;
+}
+
+.animate-zen-breathe-outer {
+    animation: zen-breathe-outer 8s ease-in-out infinite;
+    animation-delay: 0.5s;
+}
+
+.animate-zen-wave-1 {
+    animation: zen-wave-1 20s ease-in-out infinite;
+}
+
+.animate-zen-wave-2 {
+    animation: zen-wave-2 25s ease-in-out infinite;
+    animation-delay: 2s;
 }

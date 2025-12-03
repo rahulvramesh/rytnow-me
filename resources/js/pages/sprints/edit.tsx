@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { DatePicker } from '@/components/ui/date-picker';
 import {
     Dialog,
     DialogContent,
@@ -152,13 +153,10 @@ export default function SprintEdit({ project, sprint }: Props) {
                         <div className="grid gap-4 sm:grid-cols-2">
                             <div className="space-y-2">
                                 <Label htmlFor="start_date">Start Date</Label>
-                                <Input
-                                    id="start_date"
-                                    type="date"
+                                <DatePicker
                                     value={data.start_date}
-                                    onChange={(e) =>
-                                        setData('start_date', e.target.value)
-                                    }
+                                    onChange={(value) => setData('start_date', value)}
+                                    placeholder="Select start date"
                                     className={
                                         errors.start_date ? 'border-destructive' : ''
                                     }
@@ -171,13 +169,10 @@ export default function SprintEdit({ project, sprint }: Props) {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="end_date">End Date</Label>
-                                <Input
-                                    id="end_date"
-                                    type="date"
+                                <DatePicker
                                     value={data.end_date}
-                                    onChange={(e) =>
-                                        setData('end_date', e.target.value)
-                                    }
+                                    onChange={(value) => setData('end_date', value)}
+                                    placeholder="Select end date"
                                     className={
                                         errors.end_date ? 'border-destructive' : ''
                                     }

@@ -19,6 +19,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskDependencyController;
 use App\Http\Controllers\TimeEntryController;
 use App\Http\Controllers\WorkspaceController;
+use App\Http\Controllers\ZenController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -31,6 +32,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('zen', [ZenController::class, 'index'])->name('zen');
     Route::get('search', [SearchController::class, 'search'])->name('search');
 
     // Workspace routes

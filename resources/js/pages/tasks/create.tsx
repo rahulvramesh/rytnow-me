@@ -3,6 +3,7 @@ import { EstimatedHoursInput } from '@/components/estimate-progress-bar';
 import { ExplainTaskDialog } from '@/components/explain-task-dialog';
 import { StoryPointsSelect, type StoryPoints } from '@/components/story-points-select';
 import { Button } from '@/components/ui/button';
+import { DatePicker } from '@/components/ui/date-picker';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -530,17 +531,12 @@ export default function TaskCreate({ project, workspaceMembers, sprints }: Props
                                     >
                                         Due Date
                                     </Label>
-                                    <Input
-                                        id="due_date"
-                                        type="date"
+                                    <DatePicker
                                         value={data.due_date}
-                                        onChange={(e) =>
-                                            updateData(
-                                                'due_date',
-                                                e.target.value,
-                                            )
+                                        onChange={(value) =>
+                                            updateData('due_date', value)
                                         }
-                                        className="h-11"
+                                        placeholder="Select due date"
                                     />
                                     {errors.due_date && (
                                         <p className="text-sm text-destructive">

@@ -7,6 +7,7 @@ import { Table } from '@tiptap/extension-table';
 import { TableCell } from '@tiptap/extension-table-cell';
 import { TableHeader } from '@tiptap/extension-table-header';
 import { TableRow } from '@tiptap/extension-table-row';
+import { TableOfContents, type TableOfContentsStorage } from '@tiptap/extension-table-of-contents';
 import { TaskItem } from '@tiptap/extension-task-item';
 import { TaskList } from '@tiptap/extension-task-list';
 import { EditorContent, useEditor } from '@tiptap/react';
@@ -28,17 +29,26 @@ import {
     List,
     ListChecks,
     ListOrdered,
+    Merge,
     Minus,
     Plus,
     Quote,
     Redo,
     Rows,
+    Split,
     Strikethrough,
     Table as TableIcon,
     Trash2,
     Undo,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { TableGridSelector } from './table-grid-selector';
+import { TableQuickInsertButtons } from './table-controls';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from './ui/popover';
 
 const lowlight = createLowlight(common);
 
@@ -410,10 +420,19 @@ function SlashCommandMenu({
     );
 }
 
+export interface TocItem {
+    id: string;
+    level: number;
+    text: string;
+    isActive: boolean;
+    isScrolledOver: boolean;
+}
+
 interface DocumentEditorProps {
     content: string;
     onChange: (html: string) => void;
     onImageUpload: (file: File) => Promise<string>;
+    onTocUpdate?: (items: TocItem[]) => void;
     placeholder?: string;
     className?: string;
 }
@@ -422,6 +441,7 @@ export function DocumentEditor({
     content,
     onChange,
     onImageUpload,
+    onTocUpdate,
     placeholder = 'Type "/" for commands...',
     className = '',
 }: DocumentEditorProps) {
@@ -431,6 +451,8 @@ export function DocumentEditor({
         left: 0,
     });
     const [isInTable, setIsInTable] = useState(false);
+    const [tableElement, setTableElement] = useState<HTMLTableElement | null>(null);
+    const [tablePopoverOpen, setTablePopoverOpen] = useState(false);
     const [contextMenu, setContextMenu] = useState<{
         x: number;
         y: number;
@@ -467,6 +489,20 @@ export function DocumentEditor({
                 },
             }),
             MarkdownPaste,
+            TableOfContents.configure({
+                onUpdate: (headings) => {
+                    if (onTocUpdate) {
+                        const tocItems: TocItem[] = headings.map((heading) => ({
+                            id: heading.id,
+                            level: heading.level,
+                            text: heading.textContent,
+                            isActive: heading.isActive,
+                            isScrolledOver: heading.isScrolledOver,
+                        }));
+                        onTocUpdate(tocItems);
+                    }
+                },
+            }),
         ],
         content,
         editorProps: {
@@ -495,14 +531,30 @@ export function DocumentEditor({
             onChange(editor.getHTML());
         },
         onSelectionUpdate: ({ editor }) => {
-            setIsInTable(editor.isActive('table'));
+            const inTable = editor.isActive('table');
+            setIsInTable(inTable);
+
+            // Track the current table element for quick insert buttons
+            if (inTable) {
+                const { $from } = editor.state.selection;
+                const tableNode = $from.node(-1);
+                if (tableNode) {
+                    const tablePos = $from.before(-1);
+                    const dom = editor.view.nodeDOM(tablePos);
+                    if (dom instanceof HTMLTableElement) {
+                        setTableElement(dom);
+                    }
+                }
+            } else {
+                setTableElement(null);
+            }
         },
     });
 
     // Update content when prop changes
     useEffect(() => {
         if (editor && content !== editor.getHTML()) {
-            editor.commands.setContent(content, false);
+            editor.commands.setContent(content, { emitUpdate: false });
         }
     }, [content, editor]);
 
@@ -564,8 +616,9 @@ export function DocumentEditor({
     useEffect(() => {
         if (!editor) return;
 
-        const handleDrop = async (event: DragEvent) => {
-            const files = event.dataTransfer?.files;
+        const handleDrop = async (event: Event) => {
+            const dragEvent = event as DragEvent;
+            const files = dragEvent.dataTransfer?.files;
             if (!files) return;
 
             for (const file of files) {
@@ -583,12 +636,8 @@ export function DocumentEditor({
         };
 
         const editorElement = document.querySelector('.ProseMirror');
-        editorElement?.addEventListener('drop', handleDrop as EventListener);
-        return () =>
-            editorElement?.removeEventListener(
-                'drop',
-                handleDrop as EventListener,
-            );
+        editorElement?.addEventListener('drop', handleDrop);
+        return () => editorElement?.removeEventListener('drop', handleDrop);
     }, [editor, onImageUpload]);
 
     const setLink = useCallback(() => {
@@ -770,22 +819,33 @@ export function DocumentEditor({
                 >
                     <Quote className="size-4" />
                 </ToolbarButton>
-                <ToolbarButton
-                    onClick={() =>
-                        editor
-                            .chain()
-                            .focus()
-                            .insertTable({
-                                rows: 3,
-                                cols: 3,
-                                withHeaderRow: true,
-                            })
-                            .run()
-                    }
-                    title="Insert Table"
-                >
-                    <TableIcon className="size-4" />
-                </ToolbarButton>
+                <Popover open={tablePopoverOpen} onOpenChange={setTablePopoverOpen}>
+                    <PopoverTrigger asChild>
+                        <button
+                            type="button"
+                            title="Insert Table"
+                            className="rounded p-1.5 text-muted-foreground transition-colors hover:bg-muted"
+                        >
+                            <TableIcon className="size-4" />
+                        </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                        <TableGridSelector
+                            onSelect={(rows, cols) => {
+                                editor
+                                    .chain()
+                                    .focus()
+                                    .insertTable({
+                                        rows,
+                                        cols,
+                                        withHeaderRow: true,
+                                    })
+                                    .run();
+                                setTablePopoverOpen(false);
+                            }}
+                        />
+                    </PopoverContent>
+                </Popover>
                 <ToolbarButton onClick={handleImageSelect} title="Insert Image">
                     <ImageIcon className="size-4" />
                 </ToolbarButton>
@@ -884,6 +944,29 @@ export function DocumentEditor({
 
                     <div className="mx-1 h-4 w-px bg-border" />
 
+                    {editor.can().mergeCells() && (
+                        <ToolbarButton
+                            onClick={() =>
+                                editor.chain().focus().mergeCells().run()
+                            }
+                            title="Merge cells"
+                        >
+                            <Merge className="size-4" />
+                        </ToolbarButton>
+                    )}
+                    {editor.can().splitCell() && (
+                        <ToolbarButton
+                            onClick={() =>
+                                editor.chain().focus().splitCell().run()
+                            }
+                            title="Split cell"
+                        >
+                            <Split className="size-4" />
+                        </ToolbarButton>
+                    )}
+
+                    <div className="mx-1 h-4 w-px bg-border" />
+
                     <ToolbarButton
                         onClick={() =>
                             editor.chain().focus().deleteTable().run()
@@ -902,10 +985,14 @@ export function DocumentEditor({
             <div className="relative" ref={editorContainerRef}>
                 <EditorContent editor={editor} />
 
+                {/* Table Quick Insert Buttons - appear when hovering near table edges */}
+                {isInTable && tableElement && (
+                    <TableQuickInsertButtons editor={editor} tableElement={tableElement} />
+                )}
+
                 {/* Floating Menu - appears on empty lines */}
                 <FloatingMenu
                     editor={editor}
-                    tippyOptions={{ duration: 100, placement: 'left' }}
                     className="flex items-center gap-1 rounded-lg border bg-background p-1 shadow-lg"
                 >
                     <button

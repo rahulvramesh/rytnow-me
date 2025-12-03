@@ -1,5 +1,5 @@
 import { DocsSidebar } from '@/components/docs-sidebar';
-import { DocumentEditor } from '@/components/document-editor';
+import { DocumentEditor, type TocItem } from '@/components/document-editor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
@@ -9,7 +9,7 @@ import type { BreadcrumbItem } from '@/types';
 import type { DocFolder, Document, DocumentSummary } from '@/types/document';
 import type { Project } from '@/types/project';
 import { Head, usePage } from '@inertiajs/react';
-import { AlignCenter, AlignJustify, Check, Loader2, Maximize2 } from 'lucide-react';
+import { AlignCenter, AlignJustify, Check, List, Loader2, Maximize2, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface Props {
@@ -45,6 +45,21 @@ export default function DocShow({
     const pendingSaveRef = useRef<{ title: string; content: string } | null>(
         null,
     );
+    const [tocItems, setTocItems] = useState<TocItem[]>([]);
+    const [showToc, setShowToc] = useState(false);
+
+    // Handle TOC update from editor
+    const handleTocUpdate = useCallback((items: TocItem[]) => {
+        setTocItems(items);
+    }, []);
+
+    // Scroll to heading when clicking TOC item
+    const scrollToHeading = useCallback((id: string) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, []);
 
     // Update document width preference
     const updateWidth = useCallback(async (width: DocumentWidth) => {
@@ -205,6 +220,16 @@ export default function DocShow({
                             className="h-auto border-none px-0 text-xl font-semibold shadow-none focus-visible:ring-0"
                         />
                         <div className="flex items-center gap-3">
+                            {/* TOC Toggle */}
+                            <Button
+                                variant={showToc ? 'secondary' : 'ghost'}
+                                size="sm"
+                                className="h-7 px-2"
+                                onClick={() => setShowToc(!showToc)}
+                                title={showToc ? 'Hide Table of Contents' : 'Show Table of Contents'}
+                            >
+                                <List className="size-4" />
+                            </Button>
                             {/* Width Toggle */}
                             <div className="flex items-center rounded-lg border p-0.5">
                                 {(Object.keys(widthConfig) as DocumentWidth[]).map((width) => {
@@ -241,16 +266,63 @@ export default function DocShow({
                         </div>
                     </div>
 
-                    {/* Editor */}
-                    <div className="flex-1 overflow-y-auto">
-                        <div className={cn('transition-all duration-200', widthConfig[documentWidth].class)}>
-                            <DocumentEditor
-                                content={content}
-                                onChange={handleContentChange}
-                                onImageUpload={handleImageUpload}
-                                placeholder="Type '/' for commands, or start writing..."
-                                className="rounded-none border-0"
-                            />
+                    {/* Editor with optional TOC */}
+                    <div className="flex flex-1 overflow-hidden">
+                        {/* TOC Panel */}
+                        {showToc && (
+                            <div className="w-64 shrink-0 border-r bg-muted/20">
+                                <div className="flex items-center justify-between border-b px-4 py-3">
+                                    <h3 className="text-sm font-medium">Table of Contents</h3>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-6 w-6 p-0"
+                                        onClick={() => setShowToc(false)}
+                                    >
+                                        <X className="size-4" />
+                                    </Button>
+                                </div>
+                                <div className="overflow-y-auto p-2">
+                                    {tocItems.length === 0 ? (
+                                        <p className="px-2 py-4 text-center text-sm text-muted-foreground">
+                                            Add headings to see the table of contents
+                                        </p>
+                                    ) : (
+                                        <nav className="space-y-1">
+                                            {tocItems.map((item) => (
+                                                <button
+                                                    key={item.id}
+                                                    type="button"
+                                                    onClick={() => scrollToHeading(item.id)}
+                                                    className={cn(
+                                                        'block w-full truncate rounded px-2 py-1.5 text-left text-sm transition-colors hover:bg-muted',
+                                                        item.isActive && 'bg-muted font-medium text-primary',
+                                                        item.isScrolledOver && !item.isActive && 'text-muted-foreground',
+                                                        item.level === 1 && 'font-medium',
+                                                        item.level === 2 && 'pl-4',
+                                                        item.level === 3 && 'pl-6 text-xs'
+                                                    )}
+                                                >
+                                                    {item.text}
+                                                </button>
+                                            ))}
+                                        </nav>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                        {/* Editor */}
+                        <div className="flex-1 overflow-y-auto">
+                            <div className={cn('transition-all duration-200', widthConfig[documentWidth].class)}>
+                                <DocumentEditor
+                                    content={content}
+                                    onChange={handleContentChange}
+                                    onImageUpload={handleImageUpload}
+                                    onTocUpdate={handleTocUpdate}
+                                    placeholder="Type '/' for commands, or start writing..."
+                                    className="rounded-none border-0"
+                                />
+                            </div>
                         </div>
                     </div>
 

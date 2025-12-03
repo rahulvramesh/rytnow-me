@@ -218,7 +218,7 @@ registerForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 register.form = registerForm
 
 /**
-* @see routes/web.php:26
+* @see routes/web.php:27
 * @route '/'
 */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -232,7 +232,7 @@ home.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:26
+* @see routes/web.php:27
 * @route '/'
 */
 home.url = (options?: RouteQueryOptions) => {
@@ -240,7 +240,7 @@ home.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:26
+* @see routes/web.php:27
 * @route '/'
 */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -249,7 +249,7 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:26
+* @see routes/web.php:27
 * @route '/'
 */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -258,7 +258,7 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see routes/web.php:26
+* @see routes/web.php:27
 * @route '/'
 */
 const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -267,7 +267,7 @@ const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:26
+* @see routes/web.php:27
 * @route '/'
 */
 homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -276,7 +276,7 @@ homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:26
+* @see routes/web.php:27
 * @route '/'
 */
 homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -371,6 +371,87 @@ dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 })
 
 dashboard.form = dashboardForm
+
+/**
+* @see \App\Http\Controllers\ZenController::zen
+* @see app/Http/Controllers/ZenController.php:16
+* @route '/zen'
+*/
+export const zen = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: zen.url(options),
+    method: 'get',
+})
+
+zen.definition = {
+    methods: ["get","head"],
+    url: '/zen',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\ZenController::zen
+* @see app/Http/Controllers/ZenController.php:16
+* @route '/zen'
+*/
+zen.url = (options?: RouteQueryOptions) => {
+    return zen.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\ZenController::zen
+* @see app/Http/Controllers/ZenController.php:16
+* @route '/zen'
+*/
+zen.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: zen.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ZenController::zen
+* @see app/Http/Controllers/ZenController.php:16
+* @route '/zen'
+*/
+zen.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: zen.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\ZenController::zen
+* @see app/Http/Controllers/ZenController.php:16
+* @route '/zen'
+*/
+const zenForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: zen.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ZenController::zen
+* @see app/Http/Controllers/ZenController.php:16
+* @route '/zen'
+*/
+zenForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: zen.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ZenController::zen
+* @see app/Http/Controllers/ZenController.php:16
+* @route '/zen'
+*/
+zenForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: zen.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+zen.form = zenForm
 
 /**
 * @see \App\Http\Controllers\SearchController::search

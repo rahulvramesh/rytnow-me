@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { InlineDatePicker } from '@/components/ui/date-picker';
 import { Input } from '@/components/ui/input';
 import {
     Select,
@@ -17,7 +18,6 @@ import {
     Plus,
     Trash2,
     User,
-    X,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -140,8 +140,7 @@ function SubtaskItem({
         );
     };
 
-    const handleDueDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const dueDate = e.target.value || null;
+    const handleDueDateChange = (dueDate: string | null) => {
         form.transform((data) => ({
             ...data,
             due_date: dueDate,
@@ -246,17 +245,15 @@ function SubtaskItem({
             </Select>
 
             {/* Due Date */}
-            <div className="relative">
-                <input
-                    type="date"
-                    value={subtask.due_date ?? ''}
+            <div className="relative flex items-center">
+                <InlineDatePicker
+                    value={subtask.due_date}
                     onChange={handleDueDateChange}
-                    className={`h-7 w-auto cursor-pointer border-none bg-transparent text-xs ${
-                        overdue ? 'text-red-500' : 'text-muted-foreground'
-                    }`}
+                    placeholder="Set date"
+                    isOverdue={overdue}
                 />
                 {overdue && (
-                    <AlertTriangle className="absolute top-1/2 -right-4 size-3 -translate-y-1/2 text-red-500" />
+                    <AlertTriangle className="ml-1 size-3 text-red-500" />
                 )}
             </div>
 

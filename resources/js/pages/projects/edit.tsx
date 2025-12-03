@@ -1,5 +1,6 @@
 import { EditorWrapper } from '@/components/editor-wrapper';
 import { Button } from '@/components/ui/button';
+import { DatePicker } from '@/components/ui/date-picker';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -267,17 +268,12 @@ export default function ProjectEdit({ project }: Props) {
                                     >
                                         Start Date
                                     </Label>
-                                    <Input
-                                        id="start_date"
-                                        type="date"
+                                    <DatePicker
                                         value={data.start_date}
-                                        onChange={(e) =>
-                                            setData(
-                                                'start_date',
-                                                e.target.value,
-                                            )
+                                        onChange={(value) =>
+                                            setData('start_date', value)
                                         }
-                                        className="h-11"
+                                        placeholder="Select start date"
                                     />
                                     {errors.start_date && (
                                         <p className="text-sm text-destructive">
@@ -293,14 +289,12 @@ export default function ProjectEdit({ project }: Props) {
                                     >
                                         Due Date
                                     </Label>
-                                    <Input
-                                        id="due_date"
-                                        type="date"
+                                    <DatePicker
                                         value={data.due_date}
-                                        onChange={(e) =>
-                                            setData('due_date', e.target.value)
+                                        onChange={(value) =>
+                                            setData('due_date', value)
                                         }
-                                        className="h-11"
+                                        placeholder="Select due date"
                                     />
                                     {errors.due_date && (
                                         <p className="text-sm text-destructive">

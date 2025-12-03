@@ -53,6 +53,13 @@ export function KeyboardProvider({ children }: KeyboardProviderProps) {
                 return;
             }
 
+            // Ctrl+Shift+Z or Cmd+Shift+Z - Enter Zen Mode
+            if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'z') {
+                e.preventDefault();
+                router.visit('/zen');
+                return;
+            }
+
             // Don't handle other shortcuts when in input
             if (isInput) return;
 
@@ -103,6 +110,13 @@ export function KeyboardProvider({ children }: KeyboardProviderProps) {
             if (seq === 'gp') {
                 e.preventDefault();
                 router.visit('/projects');
+                setKeySequence([]);
+                return;
+            }
+
+            if (seq === 'gz') {
+                e.preventDefault();
+                router.visit('/zen');
                 setKeySequence([]);
                 return;
             }

@@ -1,5 +1,6 @@
 import Api from './Api'
 import DashboardController from './DashboardController'
+import ZenController from './ZenController'
 import SearchController from './SearchController'
 import WorkspaceController from './WorkspaceController'
 import InvitationController from './InvitationController'
@@ -23,6 +24,7 @@ import Settings from './Settings'
 const Controllers = {
     Api: Object.assign(Api, Api),
     DashboardController: Object.assign(DashboardController, DashboardController),
+    ZenController: Object.assign(ZenController, ZenController),
     SearchController: Object.assign(SearchController, SearchController),
     WorkspaceController: Object.assign(WorkspaceController, WorkspaceController),
     InvitationController: Object.assign(InvitationController, InvitationController),

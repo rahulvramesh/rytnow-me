@@ -32,7 +32,7 @@ import { cn, isSameUrl, resolveUrl } from '@/lib/utils';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Menu, Search, Sparkles } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -186,6 +186,30 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
 
                     <div className="ml-auto flex items-center space-x-2">
                         <div className="relative flex items-center space-x-1">
+                            <TooltipProvider delayDuration={0}>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Link
+                                            href="/zen"
+                                            className="group relative inline-flex h-9 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-indigo-500/10 to-purple-500/10 px-3 text-sm font-medium text-accent-foreground ring-offset-background transition-all hover:from-indigo-500/20 hover:to-purple-500/20 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
+                                        >
+                                            <Sparkles className="size-4 text-indigo-500" />
+                                            <span className="hidden text-xs font-medium lg:inline">
+                                                Zen Mode
+                                            </span>
+                                            <kbd className="hidden rounded border border-indigo-500/30 bg-indigo-500/10 px-1.5 py-0.5 font-mono text-[10px] text-indigo-600 dark:text-indigo-400 lg:inline">
+                                                ⌘⇧Z
+                                            </kbd>
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="bottom" className="flex flex-col gap-1">
+                                        <p className="font-medium">Enter Zen Mode</p>
+                                        <p className="text-xs text-muted-foreground">
+                                            Distraction-free focus on today's tasks
+                                        </p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                             <Button
                                 variant="ghost"
                                 size="icon"
