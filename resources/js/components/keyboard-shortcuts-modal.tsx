@@ -19,6 +19,7 @@ const shortcutGroups: ShortcutGroup[] = [
         title: 'Navigation',
         shortcuts: [
             { keys: ['G', 'D'], description: 'Go to Dashboard' },
+            { keys: ['G', 'H'], description: 'Go to My Hub' },
             { keys: ['G', 'P'], description: 'Go to Projects' },
             { keys: ['G', 'Z'], description: 'Enter Zen Mode' },
         ],

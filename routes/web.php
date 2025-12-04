@@ -3,6 +3,7 @@
 use App\Http\Controllers\AudioRecordingController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HubController;
 use App\Http\Controllers\DocFolderController;
 use App\Http\Controllers\DocumentCommentController;
 use App\Http\Controllers\DocumentController;
@@ -33,6 +34,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('hub', [HubController::class, 'index'])->name('hub');
     Route::get('zen', [ZenController::class, 'index'])->name('zen');
     Route::get('search', [SearchController::class, 'search'])->name('search');
 

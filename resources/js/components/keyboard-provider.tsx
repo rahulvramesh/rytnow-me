@@ -121,6 +121,13 @@ export function KeyboardProvider({ children }: KeyboardProviderProps) {
                 return;
             }
 
+            if (seq === 'gh') {
+                e.preventDefault();
+                router.visit('/hub');
+                setKeySequence([]);
+                return;
+            }
+
             // Single key shortcuts
             if (newSequence.length === 1) {
                 // N - New task (only on project page)
