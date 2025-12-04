@@ -21,7 +21,6 @@ import {
     FileText,
     Folder,
     FolderKanban,
-    Home,
     LayoutGrid,
     Lightbulb,
     Search,
@@ -32,11 +31,6 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
-    },
-    {
-        title: 'My Hub',
-        href: '/hub',
-        icon: Home,
     },
     {
         title: 'Quick Thoughts',

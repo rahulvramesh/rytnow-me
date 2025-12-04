@@ -10,7 +10,7 @@ import { SidebarMenuButton } from '@/components/ui/sidebar';
 import { type SharedData } from '@/types';
 import { type Workspace } from '@/types/workspace';
 import { Link, router, usePage } from '@inertiajs/react';
-import { Check, ChevronsUpDown, Plus, Settings, Users } from 'lucide-react';
+import { Check, ChevronsUpDown, Home, Plus, Settings, Users } from 'lucide-react';
 
 export function WorkspaceSwitcher() {
     const { currentWorkspace, workspaces } = usePage<SharedData>().props;
@@ -66,6 +66,21 @@ export function WorkspaceSwitcher() {
                 side="bottom"
                 sideOffset={4}
             >
+                {/* My Hub - Cross-workspace view */}
+                <DropdownMenuItem asChild className="gap-2 p-2">
+                    <Link href="/hub" className="flex items-center">
+                        <div className="flex size-6 items-center justify-center rounded-md bg-gradient-to-br from-primary to-primary/70 text-primary-foreground">
+                            <Home className="size-3.5" />
+                        </div>
+                        <div className="flex-1">
+                            <span className="font-medium">My Hub</span>
+                            <p className="text-[10px] text-muted-foreground">
+                                All workspaces
+                            </p>
+                        </div>
+                    </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuLabel className="text-xs text-muted-foreground">
                     Workspaces
                 </DropdownMenuLabel>
