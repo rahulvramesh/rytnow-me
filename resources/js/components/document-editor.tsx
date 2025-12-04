@@ -11,11 +11,12 @@ import { TableOfContents, type TableOfContentsStorage } from '@tiptap/extension-
 import { TaskItem } from '@tiptap/extension-task-item';
 import { TaskList } from '@tiptap/extension-task-list';
 import { EditorContent, useEditor } from '@tiptap/react';
-import { FloatingMenu } from '@tiptap/react/menus';
+import { BubbleMenu, FloatingMenu } from '@tiptap/react/menus';
 import StarterKit from '@tiptap/starter-kit';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { common, createLowlight } from 'lowlight';
 import { marked } from 'marked';
+import { CommentMark } from '@/extensions/comment-mark';
 import {
     Bold,
     Code,
@@ -30,6 +31,7 @@ import {
     ListChecks,
     ListOrdered,
     Merge,
+    MessageSquarePlus,
     Minus,
     Plus,
     Quote,
@@ -428,11 +430,19 @@ export interface TocItem {
     isScrolledOver: boolean;
 }
 
+export interface CommentSelectionInfo {
+    highlightId: string;
+    selectedText: string;
+    selectionStart: number;
+    selectionEnd: number;
+}
+
 interface DocumentEditorProps {
     content: string;
     onChange: (html: string) => void;
     onImageUpload: (file: File) => Promise<string>;
     onTocUpdate?: (items: TocItem[]) => void;
+    onAddComment?: (info: CommentSelectionInfo) => void;
     placeholder?: string;
     className?: string;
 }
@@ -442,6 +452,7 @@ export function DocumentEditor({
     onChange,
     onImageUpload,
     onTocUpdate,
+    onAddComment,
     placeholder = 'Type "/" for commands...',
     className = '',
 }: DocumentEditorProps) {
@@ -489,6 +500,7 @@ export function DocumentEditor({
                 },
             }),
             MarkdownPaste,
+            CommentMark,
             TableOfContents.configure({
                 onUpdate: (headings) => {
                     if (onTocUpdate) {
@@ -658,6 +670,30 @@ export function DocumentEditor({
             .setLink({ href: url })
             .run();
     }, [editor]);
+
+    // Handle adding a comment
+    const handleAddComment = useCallback(() => {
+        if (!editor || !onAddComment) return;
+
+        const { from, to } = editor.state.selection;
+        const selectedText = editor.state.doc.textBetween(from, to);
+
+        if (!selectedText.trim()) return;
+
+        // Generate a unique highlight ID
+        const highlightId = `comment-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+        // Apply the comment mark to the selection
+        editor.chain().focus().setComment(highlightId).run();
+
+        // Call the callback with selection info
+        onAddComment({
+            highlightId,
+            selectedText,
+            selectionStart: from,
+            selectionEnd: to,
+        });
+    }, [editor, onAddComment]);
 
     // Handle right-click context menu for tables
     useEffect(() => {
@@ -989,6 +1025,77 @@ export function DocumentEditor({
                 {isInTable && tableElement && (
                     <TableQuickInsertButtons editor={editor} tableElement={tableElement} />
                 )}
+
+                {/* Bubble Menu - appears when text is selected */}
+                <BubbleMenu
+                    editor={editor}
+                    className="flex items-center gap-1 rounded-lg border bg-background p-1 shadow-lg"
+                >
+                    <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleBold().run()}
+                        className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                            editor.isActive('bold') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                        }`}
+                        title="Bold (Ctrl+B)"
+                    >
+                        <Bold className="size-4" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleItalic().run()}
+                        className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                            editor.isActive('italic') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                        }`}
+                        title="Italic (Ctrl+I)"
+                    >
+                        <Italic className="size-4" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleStrike().run()}
+                        className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                            editor.isActive('strike') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                        }`}
+                        title="Strikethrough"
+                    >
+                        <Strikethrough className="size-4" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleCode().run()}
+                        className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                            editor.isActive('code') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                        }`}
+                        title="Inline Code"
+                    >
+                        <Code className="size-4" />
+                    </button>
+                    <div className="mx-0.5 h-5 w-px bg-border" />
+                    <button
+                        type="button"
+                        onClick={setLink}
+                        className={`rounded p-1.5 transition-colors hover:bg-muted ${
+                            editor.isActive('link') ? 'bg-muted text-primary' : 'text-muted-foreground'
+                        }`}
+                        title="Add Link"
+                    >
+                        <LinkIcon className="size-4" />
+                    </button>
+                    {onAddComment && (
+                        <>
+                            <div className="mx-0.5 h-5 w-px bg-border" />
+                            <button
+                                type="button"
+                                onClick={handleAddComment}
+                                className="rounded p-1.5 text-muted-foreground transition-colors hover:bg-muted"
+                                title="Add Comment"
+                            >
+                                <MessageSquarePlus className="size-4" />
+                            </button>
+                        </>
+                    )}
+                </BubbleMenu>
 
                 {/* Floating Menu - appears on empty lines */}
                 <FloatingMenu

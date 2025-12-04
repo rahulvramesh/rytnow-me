@@ -16,6 +16,7 @@ import SubtaskController from './SubtaskController'
 import TaskDependencyController from './TaskDependencyController'
 import SprintController from './SprintController'
 import DocumentController from './DocumentController'
+import DocumentCommentController from './DocumentCommentController'
 import DocFolderController from './DocFolderController'
 import QuickThoughtController from './QuickThoughtController'
 import QuickThoughtRecordingController from './QuickThoughtRecordingController'
@@ -40,6 +41,7 @@ const Controllers = {
     TaskDependencyController: Object.assign(TaskDependencyController, TaskDependencyController),
     SprintController: Object.assign(SprintController, SprintController),
     DocumentController: Object.assign(DocumentController, DocumentController),
+    DocumentCommentController: Object.assign(DocumentCommentController, DocumentCommentController),
     DocFolderController: Object.assign(DocFolderController, DocFolderController),
     QuickThoughtController: Object.assign(QuickThoughtController, QuickThoughtController),
     QuickThoughtRecordingController: Object.assign(QuickThoughtRecordingController, QuickThoughtRecordingController),

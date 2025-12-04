@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Document;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
@@ -66,4 +67,16 @@ Broadcast::channel('presence-workspace.{workspaceId}.task.{taskId}', function (U
         'name' => $user->name,
         'email' => $user->email,
     ] : false;
+});
+
+// Document channel - document comment events
+Broadcast::channel('workspace.{workspaceId}.document.{documentId}', function (User $user, int $workspaceId, int $documentId) {
+    $workspace = Workspace::find($workspaceId);
+    if (! $workspace?->hasMember($user)) {
+        return false;
+    }
+
+    return Document::whereHas('project', fn ($q) => $q->where('workspace_id', $workspaceId))
+        ->where('id', $documentId)
+        ->exists();
 });

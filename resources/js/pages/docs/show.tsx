@@ -1,15 +1,20 @@
 import { DocsSidebar } from '@/components/docs-sidebar';
-import { DocumentEditor, type TocItem } from '@/components/document-editor';
+import { CommentsPanel } from '@/components/document-comments';
+import { CommentForm } from '@/components/document-comments/comment-form';
+import { DocumentEditor, type TocItem, type CommentSelectionInfo } from '@/components/document-editor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useDocumentCommentsChannel } from '@/hooks/use-document-comments-channel';
 import AppLayout from '@/layouts/app-layout';
 import { fetchHeaders } from '@/lib/csrf';
 import { cn } from '@/lib/utils';
+import { useDocumentCommentsStore } from '@/stores/document-comments-store';
 import type { BreadcrumbItem } from '@/types';
 import type { DocFolder, Document, DocumentSummary } from '@/types/document';
+import type { DocumentComment } from '@/types/document-comment';
 import type { Project } from '@/types/project';
 import { Head, usePage } from '@inertiajs/react';
-import { AlignCenter, AlignJustify, Check, List, Loader2, Maximize2, X } from 'lucide-react';
+import { AlignCenter, AlignJustify, Check, List, Loader2, Maximize2, MessageSquare, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface Props {
@@ -47,6 +52,11 @@ export default function DocShow({
     );
     const [tocItems, setTocItems] = useState<TocItem[]>([]);
     const [showToc, setShowToc] = useState(false);
+    const [pendingComment, setPendingComment] = useState<CommentSelectionInfo | null>(null);
+
+    // Comments store and channel
+    const { isPanelOpen, setPanelOpen, comments, addComment } = useDocumentCommentsStore();
+    useDocumentCommentsChannel(project.workspace_id, doc.id);
 
     // Handle TOC update from editor
     const handleTocUpdate = useCallback((items: TocItem[]) => {
@@ -60,6 +70,18 @@ export default function DocShow({
             element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }, []);
+
+    // Handle adding a comment from the editor
+    const handleAddComment = useCallback((info: CommentSelectionInfo) => {
+        setPendingComment(info);
+        setPanelOpen(true);
+    }, [setPanelOpen]);
+
+    // Handle when a new comment is created
+    const handleCommentCreated = useCallback((comment: DocumentComment) => {
+        addComment(comment);
+        setPendingComment(null);
+    }, [addComment]);
 
     // Update document width preference
     const updateWidth = useCallback(async (width: DocumentWidth) => {
@@ -220,6 +242,19 @@ export default function DocShow({
                             className="h-auto border-none px-0 text-xl font-semibold shadow-none focus-visible:ring-0"
                         />
                         <div className="flex items-center gap-3">
+                            {/* Comments Toggle */}
+                            <Button
+                                variant={isPanelOpen ? 'secondary' : 'ghost'}
+                                size="sm"
+                                className="h-7 gap-1.5 px-2"
+                                onClick={() => setPanelOpen(!isPanelOpen)}
+                                title={isPanelOpen ? 'Hide Comments' : 'Show Comments'}
+                            >
+                                <MessageSquare className="size-4" />
+                                {comments.length > 0 && (
+                                    <span className="text-xs">{comments.length}</span>
+                                )}
+                            </Button>
                             {/* TOC Toggle */}
                             <Button
                                 variant={showToc ? 'secondary' : 'ghost'}
@@ -319,9 +354,33 @@ export default function DocShow({
                                     onChange={handleContentChange}
                                     onImageUpload={handleImageUpload}
                                     onTocUpdate={handleTocUpdate}
+                                    onAddComment={handleAddComment}
                                     placeholder="Type '/' for commands, or start writing..."
                                     className="rounded-none border-0"
                                 />
+
+                                {/* Pending comment form - appears below editor when user selects text to comment */}
+                                {pendingComment && (
+                                    <div className="border-t bg-muted/30 p-4">
+                                        <div className="mx-auto max-w-2xl">
+                                            <h4 className="mb-3 text-sm font-medium">Add a comment</h4>
+                                            <p className="mb-3 rounded border-l-2 border-yellow-500 bg-yellow-50 px-2 py-1 text-sm italic text-muted-foreground dark:bg-yellow-950/20">
+                                                "{pendingComment.selectedText}"
+                                            </p>
+                                            <CommentForm
+                                                projectId={project.id}
+                                                documentId={doc.id}
+                                                highlightId={pendingComment.highlightId}
+                                                selectionStart={pendingComment.selectionStart}
+                                                selectionEnd={pendingComment.selectionEnd}
+                                                selectedText={pendingComment.selectedText}
+                                                onCommentCreated={handleCommentCreated}
+                                                onCancel={() => setPendingComment(null)}
+                                                autoFocus
+                                            />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -346,6 +405,13 @@ export default function DocShow({
                         </div>
                     </div>
                 </div>
+
+                {/* Comments Panel */}
+                <CommentsPanel
+                    projectId={project.id}
+                    documentId={doc.id}
+                    workspaceId={project.workspace_id}
+                />
             </div>
         </AppLayout>
     );

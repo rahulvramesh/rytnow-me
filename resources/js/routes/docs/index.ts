@@ -1,4 +1,5 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
+import comments from './comments'
 import folders from './folders'
 /**
 * @see \App\Http\Controllers\MergedDocsController::workspace
@@ -796,6 +797,7 @@ const docs = {
     move: Object.assign(move, move),
     reorder: Object.assign(reorder, reorder),
     uploadImage: Object.assign(uploadImage, uploadImage),
+    comments: Object.assign(comments, comments),
     folders: Object.assign(folders, folders),
 }
 

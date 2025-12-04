@@ -4,6 +4,7 @@ use App\Http\Controllers\AudioRecordingController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocFolderController;
+use App\Http\Controllers\DocumentCommentController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\LabelController;
@@ -139,6 +140,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('{document}/move', [DocumentController::class, 'move'])->name('move');
         Route::post('reorder', [DocumentController::class, 'reorder'])->name('reorder');
         Route::post('{document}/upload-image', [DocumentController::class, 'uploadImage'])->name('upload-image');
+
+        // Comments
+        Route::prefix('{document}/comments')->name('comments.')->group(function () {
+            Route::get('/', [DocumentCommentController::class, 'index'])->name('index');
+            Route::post('/', [DocumentCommentController::class, 'store'])->name('store');
+            Route::put('{comment}', [DocumentCommentController::class, 'update'])->name('update');
+            Route::delete('{comment}', [DocumentCommentController::class, 'destroy'])->name('destroy');
+            Route::patch('{comment}/resolve', [DocumentCommentController::class, 'resolve'])->name('resolve');
+            Route::patch('{comment}/unresolve', [DocumentCommentController::class, 'unresolve'])->name('unresolve');
+        });
 
         // Folders
         Route::post('folders', [DocFolderController::class, 'store'])->name('folders.store');
