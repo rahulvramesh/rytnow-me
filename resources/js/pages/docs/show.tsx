@@ -370,6 +370,7 @@ export default function DocShow({
                                             <CommentForm
                                                 projectId={project.id}
                                                 documentId={doc.id}
+                                                workspaceId={project.workspace_id}
                                                 highlightId={pendingComment.highlightId}
                                                 selectionStart={pendingComment.selectionStart}
                                                 selectionEnd={pendingComment.selectionEnd}

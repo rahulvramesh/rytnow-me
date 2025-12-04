@@ -12,6 +12,7 @@ import { MentionPicker } from './mention-picker';
 interface CommentFormProps {
     projectId: number;
     documentId: number;
+    workspaceId?: number;
     parentId?: number;
     highlightId?: string;
     selectionStart?: number;
@@ -26,6 +27,7 @@ interface CommentFormProps {
 export function CommentForm({
     projectId,
     documentId,
+    workspaceId,
     parentId,
     highlightId,
     selectionStart,
@@ -213,6 +215,7 @@ export function CommentForm({
                         onSelect={handleMentionSelect}
                         onClose={() => setShowMentionPicker(false)}
                         position={mentionPosition}
+                        workspaceId={workspaceId}
                     />
                 )}
             </div>

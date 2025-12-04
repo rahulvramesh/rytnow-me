@@ -9,6 +9,7 @@ interface CommentThreadProps {
     comment: DocumentComment;
     projectId: number;
     documentId: number;
+    workspaceId?: number;
     onHighlightClick?: (highlightId: string) => void;
 }
 
@@ -16,6 +17,7 @@ export function CommentThread({
     comment,
     projectId,
     documentId,
+    workspaceId,
     onHighlightClick,
 }: CommentThreadProps) {
     const [showReplyForm, setShowReplyForm] = useState(false);
@@ -118,6 +120,7 @@ export function CommentThread({
                     <CommentForm
                         projectId={projectId}
                         documentId={documentId}
+                        workspaceId={workspaceId}
                         parentId={comment.id}
                         placeholder="Write a reply..."
                         onCommentCreated={handleReplyCreated}

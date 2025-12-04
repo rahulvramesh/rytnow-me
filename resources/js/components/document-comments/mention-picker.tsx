@@ -8,9 +8,10 @@ interface MentionPickerProps {
     onSelect: (user: User) => void;
     onClose: () => void;
     position?: { top: number; left: number };
+    workspaceId?: number;
 }
 
-export function MentionPicker({ query, onSelect, onClose, position }: MentionPickerProps) {
+export function MentionPicker({ query, onSelect, onClose, position, workspaceId }: MentionPickerProps) {
     const [users, setUsers] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -21,7 +22,11 @@ export function MentionPicker({ query, onSelect, onClose, position }: MentionPic
         const fetchUsers = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(`/api/users/search?q=${encodeURIComponent(query)}`, {
+                const params = new URLSearchParams({ q: query });
+                if (workspaceId) {
+                    params.append('workspace_id', String(workspaceId));
+                }
+                const response = await fetch(`/api/users/search?${params.toString()}`, {
                     headers: fetchHeaders(),
                 });
                 if (response.ok) {
@@ -39,7 +44,7 @@ export function MentionPicker({ query, onSelect, onClose, position }: MentionPic
 
         const debounceTimer = setTimeout(fetchUsers, 150);
         return () => clearTimeout(debounceTimer);
-    }, [query]);
+    }, [query, workspaceId]);
 
     // Keyboard navigation
     useEffect(() => {

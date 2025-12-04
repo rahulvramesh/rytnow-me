@@ -160,6 +160,7 @@ export function CommentsPanel({
                                 comment={comment}
                                 projectId={projectId}
                                 documentId={documentId}
+                                workspaceId={workspaceId}
                                 onHighlightClick={onHighlightClick}
                             />
                         ))

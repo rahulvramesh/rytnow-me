@@ -38,17 +38,31 @@ class UserController extends Controller
 
     /**
      * Search users by name (for @mentions).
+     * Optionally filter by workspace membership.
      */
     public function search(Request $request)
     {
         $query = $request->input('q', '');
+        $workspaceId = $request->input('workspace_id');
 
         if (strlen($query) < 1) {
             return response()->json([]);
         }
 
-        $users = User::where('name', 'like', "%{$query}%")
-            ->orWhere('email', 'like', "%{$query}%")
+        $usersQuery = User::query();
+
+        // If workspace_id is provided, filter to only workspace members
+        if ($workspaceId) {
+            $usersQuery->whereHas('workspaces', function ($q) use ($workspaceId) {
+                $q->where('workspaces.id', $workspaceId);
+            });
+        }
+
+        $users = $usersQuery
+            ->where(function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                    ->orWhere('email', 'like', "%{$query}%");
+            })
             ->limit(10)
             ->get(['id', 'name', 'email'])
             ->map(function ($user) {
