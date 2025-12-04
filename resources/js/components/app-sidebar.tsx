@@ -2,6 +2,7 @@ import { useKeyboard } from '@/components/keyboard-provider';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
+import { SidebarThemeToggle } from '@/components/sidebar-theme-toggle';
 import {
     Sidebar,
     SidebarContent,
@@ -98,6 +99,7 @@ export function AppSidebar() {
 
             <SidebarFooter>
                 <NavFooter items={footerNavItems} className="mt-auto" />
+                <SidebarThemeToggle />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

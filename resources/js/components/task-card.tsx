@@ -94,7 +94,7 @@ export function TaskCard({
 
     return (
         <div
-            className={`rounded-md border border-l-2 bg-background px-2.5 py-2 transition-all ${priorityConfig[task.priority].border} ${
+            className={`rounded-md border border-l-2 bg-card px-2.5 py-2 transition-all ${priorityConfig[task.priority].border} ${
                 isDragging
                     ? 'opacity-90 shadow-lg ring-2 ring-primary/20'
                     : 'hover:border-primary/20 hover:shadow-sm'
