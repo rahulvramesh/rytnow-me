@@ -14,7 +14,7 @@ COPY public ./public
 ENV DOCKER_BUILD=true
 
 # Reverb/WebSocket config (baked into JS at build time)
-ARG VITE_REVERB_APP_KEY=trakx-app-key
+ARG VITE_REVERB_APP_KEY=tmmtltrcy9fmzj74kqvw
 ENV VITE_REVERB_APP_KEY=${VITE_REVERB_APP_KEY}
 ENV VITE_REVERB_HOST=rytnow.me
 ENV VITE_REVERB_PORT=443

@@ -21,6 +21,13 @@ spec:
                 name: trakx
                 port:
                   number: 8080
+          - path: /apps
+            pathType: Prefix
+            backend:
+              service:
+                name: trakx
+                port:
+                  number: 8080
           - path: /
             pathType: Prefix
             backend:
