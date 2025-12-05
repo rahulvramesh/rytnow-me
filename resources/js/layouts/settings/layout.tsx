@@ -46,6 +46,11 @@ const sidebarNavItems: NavItem[] = [
         href: '/settings/llm-providers',
         icon: null,
     },
+    {
+        title: 'Integrations',
+        href: '/settings/integrations',
+        icon: null,
+    },
 ];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {

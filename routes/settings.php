@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Settings\ApiTokenController;
 use App\Http\Controllers\Settings\EditorController;
+use App\Http\Controllers\Settings\IntegrationsController;
 use App\Http\Controllers\Settings\LlmProviderController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
@@ -45,4 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::post('settings/llm-providers/{provider}/default', [LlmProviderController::class, 'setDefault'])->name('llm-providers.default');
     Route::post('settings/llm-providers/{provider}/test', [LlmProviderController::class, 'testConnection'])->name('llm-providers.test');
     Route::get('settings/llm-providers/{provider}/models', [LlmProviderController::class, 'fetchModels'])->name('llm-providers.models');
+
+    // Integrations
+    Route::get('settings/integrations', [IntegrationsController::class, 'index'])->name('integrations.index');
 });
