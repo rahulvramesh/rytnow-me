@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\LiveblocksController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CommentController;
+use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\LabelController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\SubtaskController;
@@ -63,6 +64,10 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
         // Labels (scoped to project)
         Route::apiResource('projects/{project}/labels', LabelController::class)
             ->names('api.labels');
+
+        // Documents (scoped to project)
+        Route::apiResource('projects/{project}/documents', DocumentController::class)
+            ->names('api.documents');
 
         // Subtasks
         Route::apiResource('tasks/{task}/subtasks', SubtaskController::class);
