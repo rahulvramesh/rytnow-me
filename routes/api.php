@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CommentController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\LabelController;
+use App\Http\Controllers\Api\V1\PlanController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\SubtaskController;
 use App\Http\Controllers\Api\V1\TaskController;
@@ -68,6 +69,18 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
         // Documents (scoped to project)
         Route::apiResource('projects/{project}/documents', DocumentController::class)
             ->names('api.documents');
+
+        // Plans (scoped to project)
+        Route::apiResource('projects/{project}/plans', PlanController::class)
+            ->names('api.plans');
+        Route::get('projects/{project}/plans/{plan}/tasks', [PlanController::class, 'tasks'])
+            ->name('api.plans.tasks');
+        Route::post('projects/{project}/plans/{plan}/tasks/{task}/link', [PlanController::class, 'linkTask'])
+            ->name('api.plans.linkTask');
+        Route::delete('projects/{project}/plans/{plan}/tasks/{task}/unlink', [PlanController::class, 'unlinkTask'])
+            ->name('api.plans.unlinkTask');
+        Route::patch('projects/{project}/plans/{plan}/status', [PlanController::class, 'updateStatus'])
+            ->name('api.plans.updateStatus');
 
         // Subtasks
         Route::apiResource('tasks/{task}/subtasks', SubtaskController::class);
