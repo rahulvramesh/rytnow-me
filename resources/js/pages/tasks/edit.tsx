@@ -231,7 +231,6 @@ export default function TaskEdit({ project, task, workspaceMembers, sprints }: P
                                         updateData('description', html)
                                     }
                                     placeholder="Add more details about this task..."
-                                    roomId={`task-${task.id}-description`}
                                 />
                                 {errors.description && (
                                     <p className="text-sm text-destructive">
