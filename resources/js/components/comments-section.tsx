@@ -2,7 +2,27 @@ import { Button } from '@/components/ui/button';
 import { type Comment } from '@/types/comment';
 import { useForm, usePage } from '@inertiajs/react';
 import { Clock, Edit2, MessageSquare, Send, Trash2, X } from 'lucide-react';
-import { useState } from 'react';
+import { marked } from 'marked';
+import { useMemo, useState } from 'react';
+
+// Configure marked for safe rendering
+marked.setOptions({
+    gfm: true,
+    breaks: true,
+});
+
+function MarkdownContent({ content }: { content: string }) {
+    const html = useMemo(() => {
+        return marked.parse(content) as string;
+    }, [content]);
+
+    return (
+        <div
+            className="prose prose-sm dark:prose-invert max-w-none mt-1 text-muted-foreground [&>p]:my-1 [&>ul]:my-1 [&>ol]:my-1 [&>pre]:my-2 [&>blockquote]:my-1"
+            dangerouslySetInnerHTML={{ __html: html }}
+        />
+    );
+}
 
 interface CommentsSectionProps {
     projectId: number;
@@ -174,9 +194,7 @@ function CommentItem({
                         </div>
                     </form>
                 ) : (
-                    <p className="mt-1 text-sm whitespace-pre-wrap text-muted-foreground">
-                        {comment.content}
-                    </p>
+                    <MarkdownContent content={comment.content} />
                 )}
             </div>
         </div>
