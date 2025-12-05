@@ -1,5 +1,6 @@
 import Api from './Api'
 import DashboardController from './DashboardController'
+import HubController from './HubController'
 import ZenController from './ZenController'
 import SearchController from './SearchController'
 import WorkspaceController from './WorkspaceController'
@@ -15,6 +16,7 @@ import LabelController from './LabelController'
 import SubtaskController from './SubtaskController'
 import TaskDependencyController from './TaskDependencyController'
 import SprintController from './SprintController'
+import PlanController from './PlanController'
 import DocumentController from './DocumentController'
 import DocumentCommentController from './DocumentCommentController'
 import DocFolderController from './DocFolderController'
@@ -25,6 +27,7 @@ import Settings from './Settings'
 const Controllers = {
     Api: Object.assign(Api, Api),
     DashboardController: Object.assign(DashboardController, DashboardController),
+    HubController: Object.assign(HubController, HubController),
     ZenController: Object.assign(ZenController, ZenController),
     SearchController: Object.assign(SearchController, SearchController),
     WorkspaceController: Object.assign(WorkspaceController, WorkspaceController),
@@ -40,6 +43,7 @@ const Controllers = {
     SubtaskController: Object.assign(SubtaskController, SubtaskController),
     TaskDependencyController: Object.assign(TaskDependencyController, TaskDependencyController),
     SprintController: Object.assign(SprintController, SprintController),
+    PlanController: Object.assign(PlanController, PlanController),
     DocumentController: Object.assign(DocumentController, DocumentController),
     DocumentCommentController: Object.assign(DocumentCommentController, DocumentCommentController),
     DocFolderController: Object.assign(DocFolderController, DocFolderController),

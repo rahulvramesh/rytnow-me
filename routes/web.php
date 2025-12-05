@@ -4,6 +4,7 @@ use App\Http\Controllers\AudioRecordingController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HubController;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\DocFolderController;
 use App\Http\Controllers\DocumentCommentController;
 use App\Http\Controllers\DocumentController;
@@ -130,6 +131,30 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('{sprint}', [SprintController::class, 'destroy'])->name('destroy');
         Route::post('{sprint}/tasks', [SprintController::class, 'addTasks'])->name('tasks.add');
         Route::delete('{sprint}/tasks', [SprintController::class, 'removeTasks'])->name('tasks.remove');
+    });
+
+    // Project plans
+    Route::prefix('projects/{project}/plans')->name('plans.')->group(function () {
+        Route::get('/', [PlanController::class, 'index'])->name('index');
+        Route::get('create', [PlanController::class, 'create'])->name('create');
+        Route::post('/', [PlanController::class, 'store'])->name('store');
+        Route::get('{plan}', [PlanController::class, 'show'])->name('show');
+        Route::get('{plan}/edit', [PlanController::class, 'edit'])->name('edit');
+        Route::put('{plan}', [PlanController::class, 'update'])->name('update');
+        Route::delete('{plan}', [PlanController::class, 'destroy'])->name('destroy');
+        Route::post('reorder', [PlanController::class, 'reorder'])->name('reorder');
+        Route::post('{plan}/upload-image', [PlanController::class, 'uploadImage'])->name('upload-image');
+
+        // Status actions
+        Route::post('{plan}/start', [PlanController::class, 'start'])->name('start');
+        Route::post('{plan}/complete', [PlanController::class, 'complete'])->name('complete');
+        Route::post('{plan}/hold', [PlanController::class, 'hold'])->name('hold');
+        Route::post('{plan}/cancel', [PlanController::class, 'cancel'])->name('cancel');
+
+        // Task linking
+        Route::post('{plan}/tasks', [PlanController::class, 'createTask'])->name('tasks.create');
+        Route::post('{plan}/tasks/{task}/link', [PlanController::class, 'linkTask'])->name('tasks.link');
+        Route::delete('{plan}/tasks/{task}/unlink', [PlanController::class, 'unlinkTask'])->name('tasks.unlink');
     });
 
     // Project documents

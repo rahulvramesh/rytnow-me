@@ -41,6 +41,7 @@ import {
     CheckCircle2,
     Circle,
     FileText,
+    GitBranch,
     GripVertical,
     Kanban,
     List,
@@ -459,6 +460,12 @@ export default function ProjectShow({ project, workspaceMembers }: Props) {
                         <Link href={`/projects/${project.id}/sprints`}>
                             <Target className="mr-1.5 size-4" />
                             Sprints
+                        </Link>
+                    </Button>
+                    <Button variant="outline" size="sm" asChild>
+                        <Link href={`/projects/${project.id}/plans`}>
+                            <GitBranch className="mr-1.5 size-4" />
+                            Plans
                         </Link>
                     </Button>
                     <Button variant="outline" size="sm" asChild>

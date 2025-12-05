@@ -121,4 +121,9 @@ class Project extends Model
     {
         return $this->hasMany(Document::class);
     }
+
+    public function plans(): HasMany
+    {
+        return $this->hasMany(Plan::class)->orderBy('position');
+    }
 }

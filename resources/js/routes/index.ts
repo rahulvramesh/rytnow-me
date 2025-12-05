@@ -218,7 +218,7 @@ registerForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 register.form = registerForm
 
 /**
-* @see routes/web.php:28
+* @see routes/web.php:30
 * @route '/'
 */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -232,7 +232,7 @@ home.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:28
+* @see routes/web.php:30
 * @route '/'
 */
 home.url = (options?: RouteQueryOptions) => {
@@ -240,7 +240,7 @@ home.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:28
+* @see routes/web.php:30
 * @route '/'
 */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -249,7 +249,7 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:28
+* @see routes/web.php:30
 * @route '/'
 */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -258,7 +258,7 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see routes/web.php:28
+* @see routes/web.php:30
 * @route '/'
 */
 const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -267,7 +267,7 @@ const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:28
+* @see routes/web.php:30
 * @route '/'
 */
 homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -276,7 +276,7 @@ homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:28
+* @see routes/web.php:30
 * @route '/'
 */
 homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -371,6 +371,87 @@ dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 })
 
 dashboard.form = dashboardForm
+
+/**
+* @see \App\Http\Controllers\HubController::hub
+* @see app/Http/Controllers/HubController.php:17
+* @route '/hub'
+*/
+export const hub = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: hub.url(options),
+    method: 'get',
+})
+
+hub.definition = {
+    methods: ["get","head"],
+    url: '/hub',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\HubController::hub
+* @see app/Http/Controllers/HubController.php:17
+* @route '/hub'
+*/
+hub.url = (options?: RouteQueryOptions) => {
+    return hub.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\HubController::hub
+* @see app/Http/Controllers/HubController.php:17
+* @route '/hub'
+*/
+hub.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: hub.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\HubController::hub
+* @see app/Http/Controllers/HubController.php:17
+* @route '/hub'
+*/
+hub.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: hub.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\HubController::hub
+* @see app/Http/Controllers/HubController.php:17
+* @route '/hub'
+*/
+const hubForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: hub.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\HubController::hub
+* @see app/Http/Controllers/HubController.php:17
+* @route '/hub'
+*/
+hubForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: hub.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\HubController::hub
+* @see app/Http/Controllers/HubController.php:17
+* @route '/hub'
+*/
+hubForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: hub.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+hub.form = hubForm
 
 /**
 * @see \App\Http\Controllers\ZenController::zen
