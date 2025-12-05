@@ -294,7 +294,7 @@ store.form = storeForm
 * @see app/Http/Controllers/PlanController.php:73
 * @route '/projects/{project}/plans/{plan}'
 */
-export const show = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -309,7 +309,7 @@ show.definition = {
 * @see app/Http/Controllers/PlanController.php:73
 * @route '/projects/{project}/plans/{plan}'
 */
-show.url = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+show.url = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -339,7 +339,7 @@ show.url = (args: { project: number | { id: number }, plan: string | number | { 
 * @see app/Http/Controllers/PlanController.php:73
 * @route '/projects/{project}/plans/{plan}'
 */
-show.get = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -349,7 +349,7 @@ show.get = (args: { project: number | { id: number }, plan: string | number | { 
 * @see app/Http/Controllers/PlanController.php:73
 * @route '/projects/{project}/plans/{plan}'
 */
-show.head = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
@@ -359,7 +359,7 @@ show.head = (args: { project: number | { id: number }, plan: string | number | {
 * @see app/Http/Controllers/PlanController.php:73
 * @route '/projects/{project}/plans/{plan}'
 */
-const showForm = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -369,7 +369,7 @@ const showForm = (args: { project: number | { id: number }, plan: string | numbe
 * @see app/Http/Controllers/PlanController.php:73
 * @route '/projects/{project}/plans/{plan}'
 */
-showForm.get = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -379,7 +379,7 @@ showForm.get = (args: { project: number | { id: number }, plan: string | number 
 * @see app/Http/Controllers/PlanController.php:73
 * @route '/projects/{project}/plans/{plan}'
 */
-showForm.head = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -396,7 +396,7 @@ show.form = showForm
 * @see app/Http/Controllers/PlanController.php:112
 * @route '/projects/{project}/plans/{plan}/edit'
 */
-export const edit = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const edit = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -411,7 +411,7 @@ edit.definition = {
 * @see app/Http/Controllers/PlanController.php:112
 * @route '/projects/{project}/plans/{plan}/edit'
 */
-edit.url = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+edit.url = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -441,7 +441,7 @@ edit.url = (args: { project: number | { id: number }, plan: string | number | { 
 * @see app/Http/Controllers/PlanController.php:112
 * @route '/projects/{project}/plans/{plan}/edit'
 */
-edit.get = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+edit.get = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -451,7 +451,7 @@ edit.get = (args: { project: number | { id: number }, plan: string | number | { 
 * @see app/Http/Controllers/PlanController.php:112
 * @route '/projects/{project}/plans/{plan}/edit'
 */
-edit.head = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+edit.head = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: edit.url(args, options),
     method: 'head',
 })
@@ -461,7 +461,7 @@ edit.head = (args: { project: number | { id: number }, plan: string | number | {
 * @see app/Http/Controllers/PlanController.php:112
 * @route '/projects/{project}/plans/{plan}/edit'
 */
-const editForm = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const editForm = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, options),
     method: 'get',
 })
@@ -471,7 +471,7 @@ const editForm = (args: { project: number | { id: number }, plan: string | numbe
 * @see app/Http/Controllers/PlanController.php:112
 * @route '/projects/{project}/plans/{plan}/edit'
 */
-editForm.get = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+editForm.get = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, options),
     method: 'get',
 })
@@ -481,7 +481,7 @@ editForm.get = (args: { project: number | { id: number }, plan: string | number 
 * @see app/Http/Controllers/PlanController.php:112
 * @route '/projects/{project}/plans/{plan}/edit'
 */
-editForm.head = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+editForm.head = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: edit.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -498,7 +498,7 @@ edit.form = editForm
 * @see app/Http/Controllers/PlanController.php:126
 * @route '/projects/{project}/plans/{plan}'
 */
-export const update = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -513,7 +513,7 @@ update.definition = {
 * @see app/Http/Controllers/PlanController.php:126
 * @route '/projects/{project}/plans/{plan}'
 */
-update.url = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+update.url = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -543,7 +543,7 @@ update.url = (args: { project: number | { id: number }, plan: string | number | 
 * @see app/Http/Controllers/PlanController.php:126
 * @route '/projects/{project}/plans/{plan}'
 */
-update.put = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -553,7 +553,7 @@ update.put = (args: { project: number | { id: number }, plan: string | number | 
 * @see app/Http/Controllers/PlanController.php:126
 * @route '/projects/{project}/plans/{plan}'
 */
-const updateForm = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const updateForm = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -568,7 +568,7 @@ const updateForm = (args: { project: number | { id: number }, plan: string | num
 * @see app/Http/Controllers/PlanController.php:126
 * @route '/projects/{project}/plans/{plan}'
 */
-updateForm.put = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+updateForm.put = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PUT',
@@ -585,7 +585,7 @@ update.form = updateForm
 * @see app/Http/Controllers/PlanController.php:158
 * @route '/projects/{project}/plans/{plan}'
 */
-export const destroy = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -600,7 +600,7 @@ destroy.definition = {
 * @see app/Http/Controllers/PlanController.php:158
 * @route '/projects/{project}/plans/{plan}'
 */
-destroy.url = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+destroy.url = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -630,7 +630,7 @@ destroy.url = (args: { project: number | { id: number }, plan: string | number |
 * @see app/Http/Controllers/PlanController.php:158
 * @route '/projects/{project}/plans/{plan}'
 */
-destroy.delete = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -640,7 +640,7 @@ destroy.delete = (args: { project: number | { id: number }, plan: string | numbe
 * @see app/Http/Controllers/PlanController.php:158
 * @route '/projects/{project}/plans/{plan}'
 */
-const destroyForm = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -655,7 +655,7 @@ const destroyForm = (args: { project: number | { id: number }, plan: string | nu
 * @see app/Http/Controllers/PlanController.php:158
 * @route '/projects/{project}/plans/{plan}'
 */
-destroyForm.delete = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -752,7 +752,7 @@ reorder.form = reorderForm
 * @see app/Http/Controllers/PlanController.php:322
 * @route '/projects/{project}/plans/{plan}/upload-image'
 */
-export const uploadImage = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const uploadImage = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: uploadImage.url(args, options),
     method: 'post',
 })
@@ -767,7 +767,7 @@ uploadImage.definition = {
 * @see app/Http/Controllers/PlanController.php:322
 * @route '/projects/{project}/plans/{plan}/upload-image'
 */
-uploadImage.url = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+uploadImage.url = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -797,7 +797,7 @@ uploadImage.url = (args: { project: number | { id: number }, plan: string | numb
 * @see app/Http/Controllers/PlanController.php:322
 * @route '/projects/{project}/plans/{plan}/upload-image'
 */
-uploadImage.post = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+uploadImage.post = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: uploadImage.url(args, options),
     method: 'post',
 })
@@ -807,7 +807,7 @@ uploadImage.post = (args: { project: number | { id: number }, plan: string | num
 * @see app/Http/Controllers/PlanController.php:322
 * @route '/projects/{project}/plans/{plan}/upload-image'
 */
-const uploadImageForm = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const uploadImageForm = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: uploadImage.url(args, options),
     method: 'post',
 })
@@ -817,7 +817,7 @@ const uploadImageForm = (args: { project: number | { id: number }, plan: string 
 * @see app/Http/Controllers/PlanController.php:322
 * @route '/projects/{project}/plans/{plan}/upload-image'
 */
-uploadImageForm.post = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+uploadImageForm.post = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: uploadImage.url(args, options),
     method: 'post',
 })
@@ -829,7 +829,7 @@ uploadImage.form = uploadImageForm
 * @see app/Http/Controllers/PlanController.php:268
 * @route '/projects/{project}/plans/{plan}/start'
 */
-export const start = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const start = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: start.url(args, options),
     method: 'post',
 })
@@ -844,7 +844,7 @@ start.definition = {
 * @see app/Http/Controllers/PlanController.php:268
 * @route '/projects/{project}/plans/{plan}/start'
 */
-start.url = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+start.url = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -874,7 +874,7 @@ start.url = (args: { project: number | { id: number }, plan: string | number | {
 * @see app/Http/Controllers/PlanController.php:268
 * @route '/projects/{project}/plans/{plan}/start'
 */
-start.post = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+start.post = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: start.url(args, options),
     method: 'post',
 })
@@ -884,7 +884,7 @@ start.post = (args: { project: number | { id: number }, plan: string | number | 
 * @see app/Http/Controllers/PlanController.php:268
 * @route '/projects/{project}/plans/{plan}/start'
 */
-const startForm = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const startForm = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: start.url(args, options),
     method: 'post',
 })
@@ -894,7 +894,7 @@ const startForm = (args: { project: number | { id: number }, plan: string | numb
 * @see app/Http/Controllers/PlanController.php:268
 * @route '/projects/{project}/plans/{plan}/start'
 */
-startForm.post = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+startForm.post = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: start.url(args, options),
     method: 'post',
 })
@@ -906,7 +906,7 @@ start.form = startForm
 * @see app/Http/Controllers/PlanController.php:281
 * @route '/projects/{project}/plans/{plan}/complete'
 */
-export const complete = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const complete = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: complete.url(args, options),
     method: 'post',
 })
@@ -921,7 +921,7 @@ complete.definition = {
 * @see app/Http/Controllers/PlanController.php:281
 * @route '/projects/{project}/plans/{plan}/complete'
 */
-complete.url = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+complete.url = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -951,7 +951,7 @@ complete.url = (args: { project: number | { id: number }, plan: string | number 
 * @see app/Http/Controllers/PlanController.php:281
 * @route '/projects/{project}/plans/{plan}/complete'
 */
-complete.post = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+complete.post = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: complete.url(args, options),
     method: 'post',
 })
@@ -961,7 +961,7 @@ complete.post = (args: { project: number | { id: number }, plan: string | number
 * @see app/Http/Controllers/PlanController.php:281
 * @route '/projects/{project}/plans/{plan}/complete'
 */
-const completeForm = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const completeForm = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: complete.url(args, options),
     method: 'post',
 })
@@ -971,7 +971,7 @@ const completeForm = (args: { project: number | { id: number }, plan: string | n
 * @see app/Http/Controllers/PlanController.php:281
 * @route '/projects/{project}/plans/{plan}/complete'
 */
-completeForm.post = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+completeForm.post = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: complete.url(args, options),
     method: 'post',
 })
@@ -983,7 +983,7 @@ complete.form = completeForm
 * @see app/Http/Controllers/PlanController.php:294
 * @route '/projects/{project}/plans/{plan}/hold'
 */
-export const hold = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const hold = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: hold.url(args, options),
     method: 'post',
 })
@@ -998,7 +998,7 @@ hold.definition = {
 * @see app/Http/Controllers/PlanController.php:294
 * @route '/projects/{project}/plans/{plan}/hold'
 */
-hold.url = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+hold.url = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -1028,7 +1028,7 @@ hold.url = (args: { project: number | { id: number }, plan: string | number | { 
 * @see app/Http/Controllers/PlanController.php:294
 * @route '/projects/{project}/plans/{plan}/hold'
 */
-hold.post = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+hold.post = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: hold.url(args, options),
     method: 'post',
 })
@@ -1038,7 +1038,7 @@ hold.post = (args: { project: number | { id: number }, plan: string | number | {
 * @see app/Http/Controllers/PlanController.php:294
 * @route '/projects/{project}/plans/{plan}/hold'
 */
-const holdForm = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const holdForm = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: hold.url(args, options),
     method: 'post',
 })
@@ -1048,7 +1048,7 @@ const holdForm = (args: { project: number | { id: number }, plan: string | numbe
 * @see app/Http/Controllers/PlanController.php:294
 * @route '/projects/{project}/plans/{plan}/hold'
 */
-holdForm.post = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+holdForm.post = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: hold.url(args, options),
     method: 'post',
 })
@@ -1060,7 +1060,7 @@ hold.form = holdForm
 * @see app/Http/Controllers/PlanController.php:307
 * @route '/projects/{project}/plans/{plan}/cancel'
 */
-export const cancel = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const cancel = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: cancel.url(args, options),
     method: 'post',
 })
@@ -1075,7 +1075,7 @@ cancel.definition = {
 * @see app/Http/Controllers/PlanController.php:307
 * @route '/projects/{project}/plans/{plan}/cancel'
 */
-cancel.url = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+cancel.url = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -1105,7 +1105,7 @@ cancel.url = (args: { project: number | { id: number }, plan: string | number | 
 * @see app/Http/Controllers/PlanController.php:307
 * @route '/projects/{project}/plans/{plan}/cancel'
 */
-cancel.post = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+cancel.post = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: cancel.url(args, options),
     method: 'post',
 })
@@ -1115,7 +1115,7 @@ cancel.post = (args: { project: number | { id: number }, plan: string | number |
 * @see app/Http/Controllers/PlanController.php:307
 * @route '/projects/{project}/plans/{plan}/cancel'
 */
-const cancelForm = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const cancelForm = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: cancel.url(args, options),
     method: 'post',
 })
@@ -1125,7 +1125,7 @@ const cancelForm = (args: { project: number | { id: number }, plan: string | num
 * @see app/Http/Controllers/PlanController.php:307
 * @route '/projects/{project}/plans/{plan}/cancel'
 */
-cancelForm.post = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+cancelForm.post = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: cancel.url(args, options),
     method: 'post',
 })
@@ -1137,7 +1137,7 @@ cancel.form = cancelForm
 * @see app/Http/Controllers/PlanController.php:233
 * @route '/projects/{project}/plans/{plan}/tasks'
 */
-export const createTask = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const createTask = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: createTask.url(args, options),
     method: 'post',
 })
@@ -1152,7 +1152,7 @@ createTask.definition = {
 * @see app/Http/Controllers/PlanController.php:233
 * @route '/projects/{project}/plans/{plan}/tasks'
 */
-createTask.url = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+createTask.url = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -1182,7 +1182,7 @@ createTask.url = (args: { project: number | { id: number }, plan: string | numbe
 * @see app/Http/Controllers/PlanController.php:233
 * @route '/projects/{project}/plans/{plan}/tasks'
 */
-createTask.post = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+createTask.post = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: createTask.url(args, options),
     method: 'post',
 })
@@ -1192,7 +1192,7 @@ createTask.post = (args: { project: number | { id: number }, plan: string | numb
 * @see app/Http/Controllers/PlanController.php:233
 * @route '/projects/{project}/plans/{plan}/tasks'
 */
-const createTaskForm = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const createTaskForm = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: createTask.url(args, options),
     method: 'post',
 })
@@ -1202,7 +1202,7 @@ const createTaskForm = (args: { project: number | { id: number }, plan: string |
 * @see app/Http/Controllers/PlanController.php:233
 * @route '/projects/{project}/plans/{plan}/tasks'
 */
-createTaskForm.post = (args: { project: number | { id: number }, plan: string | number | { id: string | number } } | [project: number | { id: number }, plan: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+createTaskForm.post = (args: { project: number | { id: number }, plan: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: createTask.url(args, options),
     method: 'post',
 })
@@ -1214,7 +1214,7 @@ createTask.form = createTaskForm
 * @see app/Http/Controllers/PlanController.php:202
 * @route '/projects/{project}/plans/{plan}/tasks/{task}/link'
 */
-export const linkTask = (args: { project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } } | [project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const linkTask = (args: { project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: linkTask.url(args, options),
     method: 'post',
 })
@@ -1229,7 +1229,7 @@ linkTask.definition = {
 * @see app/Http/Controllers/PlanController.php:202
 * @route '/projects/{project}/plans/{plan}/tasks/{task}/link'
 */
-linkTask.url = (args: { project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } } | [project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } ], options?: RouteQueryOptions) => {
+linkTask.url = (args: { project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -1264,7 +1264,7 @@ linkTask.url = (args: { project: number | { id: number }, plan: string | number 
 * @see app/Http/Controllers/PlanController.php:202
 * @route '/projects/{project}/plans/{plan}/tasks/{task}/link'
 */
-linkTask.post = (args: { project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } } | [project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+linkTask.post = (args: { project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: linkTask.url(args, options),
     method: 'post',
 })
@@ -1274,7 +1274,7 @@ linkTask.post = (args: { project: number | { id: number }, plan: string | number
 * @see app/Http/Controllers/PlanController.php:202
 * @route '/projects/{project}/plans/{plan}/tasks/{task}/link'
 */
-const linkTaskForm = (args: { project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } } | [project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const linkTaskForm = (args: { project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: linkTask.url(args, options),
     method: 'post',
 })
@@ -1284,7 +1284,7 @@ const linkTaskForm = (args: { project: number | { id: number }, plan: string | n
 * @see app/Http/Controllers/PlanController.php:202
 * @route '/projects/{project}/plans/{plan}/tasks/{task}/link'
 */
-linkTaskForm.post = (args: { project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } } | [project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+linkTaskForm.post = (args: { project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: linkTask.url(args, options),
     method: 'post',
 })
@@ -1296,7 +1296,7 @@ linkTask.form = linkTaskForm
 * @see app/Http/Controllers/PlanController.php:219
 * @route '/projects/{project}/plans/{plan}/tasks/{task}/unlink'
 */
-export const unlinkTask = (args: { project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } } | [project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const unlinkTask = (args: { project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: unlinkTask.url(args, options),
     method: 'delete',
 })
@@ -1311,7 +1311,7 @@ unlinkTask.definition = {
 * @see app/Http/Controllers/PlanController.php:219
 * @route '/projects/{project}/plans/{plan}/tasks/{task}/unlink'
 */
-unlinkTask.url = (args: { project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } } | [project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } ], options?: RouteQueryOptions) => {
+unlinkTask.url = (args: { project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             project: args[0],
@@ -1346,7 +1346,7 @@ unlinkTask.url = (args: { project: number | { id: number }, plan: string | numbe
 * @see app/Http/Controllers/PlanController.php:219
 * @route '/projects/{project}/plans/{plan}/tasks/{task}/unlink'
 */
-unlinkTask.delete = (args: { project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } } | [project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+unlinkTask.delete = (args: { project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: unlinkTask.url(args, options),
     method: 'delete',
 })
@@ -1356,7 +1356,7 @@ unlinkTask.delete = (args: { project: number | { id: number }, plan: string | nu
 * @see app/Http/Controllers/PlanController.php:219
 * @route '/projects/{project}/plans/{plan}/tasks/{task}/unlink'
 */
-const unlinkTaskForm = (args: { project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } } | [project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const unlinkTaskForm = (args: { project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: unlinkTask.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -1371,7 +1371,7 @@ const unlinkTaskForm = (args: { project: number | { id: number }, plan: string |
 * @see app/Http/Controllers/PlanController.php:219
 * @route '/projects/{project}/plans/{plan}/tasks/{task}/unlink'
 */
-unlinkTaskForm.delete = (args: { project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } } | [project: number | { id: number }, plan: string | number | { id: string | number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+unlinkTaskForm.delete = (args: { project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } } | [project: number | { id: number }, plan: number | { id: number }, task: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: unlinkTask.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

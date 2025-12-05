@@ -82,7 +82,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\Api\UserController::search
-* @see app/Http/Controllers/Api/UserController.php:42
+* @see app/Http/Controllers/Api/UserController.php:43
 * @route '/api/users/search'
 */
 export const search = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -97,7 +97,7 @@ search.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\UserController::search
-* @see app/Http/Controllers/Api/UserController.php:42
+* @see app/Http/Controllers/Api/UserController.php:43
 * @route '/api/users/search'
 */
 search.url = (options?: RouteQueryOptions) => {
@@ -106,7 +106,7 @@ search.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\UserController::search
-* @see app/Http/Controllers/Api/UserController.php:42
+* @see app/Http/Controllers/Api/UserController.php:43
 * @route '/api/users/search'
 */
 search.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -116,7 +116,7 @@ search.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\UserController::search
-* @see app/Http/Controllers/Api/UserController.php:42
+* @see app/Http/Controllers/Api/UserController.php:43
 * @route '/api/users/search'
 */
 search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -126,7 +126,7 @@ search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\UserController::search
-* @see app/Http/Controllers/Api/UserController.php:42
+* @see app/Http/Controllers/Api/UserController.php:43
 * @route '/api/users/search'
 */
 const searchForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -136,7 +136,7 @@ const searchForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\Api\UserController::search
-* @see app/Http/Controllers/Api/UserController.php:42
+* @see app/Http/Controllers/Api/UserController.php:43
 * @route '/api/users/search'
 */
 searchForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -146,7 +146,7 @@ searchForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Api\UserController::search
-* @see app/Http/Controllers/Api/UserController.php:42
+* @see app/Http/Controllers/Api/UserController.php:43
 * @route '/api/users/search'
 */
 searchForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
