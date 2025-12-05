@@ -6,6 +6,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import type { DocFolder, DocumentSummary } from '@/types/document';
 import { router } from '@inertiajs/react';
 import {
@@ -19,7 +20,7 @@ import {
     Plus,
     Trash2,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, type DragEvent } from 'react';
 
 interface DocsSidebarProps {
     projectId: number;
@@ -41,6 +42,8 @@ export function DocsSidebar({
     const [isCreatingFolder, setIsCreatingFolder] = useState(false);
     const [editingFolderId, setEditingFolderId] = useState<number | null>(null);
     const [editingFolderName, setEditingFolderName] = useState('');
+    const [draggedDocId, setDraggedDocId] = useState<number | null>(null);
+    const [dropTargetFolderId, setDropTargetFolderId] = useState<number | null | 'root'>(null);
 
     const toggleFolder = (folderId: number) => {
         setExpandedFolders((prev) => {
@@ -112,6 +115,47 @@ export function DocsSidebar({
         });
     };
 
+    // Drag and drop handlers
+    const handleDragStart = (e: DragEvent, documentId: number) => {
+        setDraggedDocId(documentId);
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', String(documentId));
+    };
+
+    const handleDragEnd = () => {
+        setDraggedDocId(null);
+        setDropTargetFolderId(null);
+    };
+
+    const handleDragOver = (e: DragEvent, folderId: number | 'root') => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        setDropTargetFolderId(folderId);
+    };
+
+    const handleDragLeave = () => {
+        setDropTargetFolderId(null);
+    };
+
+    const handleDrop = (e: DragEvent, targetFolderId: number | null) => {
+        e.preventDefault();
+        const documentId = draggedDocId;
+
+        if (!documentId) return;
+
+        router.patch(
+            `/projects/${projectId}/docs/${documentId}/move`,
+            { doc_folder_id: targetFolderId },
+            {
+                preserveScroll: true,
+                onFinish: () => {
+                    setDraggedDocId(null);
+                    setDropTargetFolderId(null);
+                },
+            }
+        );
+    };
+
     return (
         <div className="flex h-full w-64 flex-shrink-0 flex-col border-r bg-muted/20">
             {/* Header */}
@@ -166,7 +210,15 @@ export function DocsSidebar({
                 {folders.map((folder) => (
                     <div key={folder.id}>
                         {/* Folder Header */}
-                        <div className="group flex items-center gap-1 rounded-md px-2 py-1.5 hover:bg-muted/50">
+                        <div
+                            className={cn(
+                                'group flex items-center gap-1 rounded-md px-2 py-1.5 hover:bg-muted/50 transition-colors',
+                                dropTargetFolderId === folder.id && 'bg-primary/20 ring-2 ring-primary/50'
+                            )}
+                            onDragOver={(e) => handleDragOver(e, folder.id)}
+                            onDragLeave={handleDragLeave}
+                            onDrop={(e) => handleDrop(e, folder.id)}
+                        >
                             <button
                                 onClick={() => toggleFolder(folder.id)}
                                 className="rounded p-0.5 hover:bg-muted"
@@ -253,9 +305,10 @@ export function DocsSidebar({
                                         document={doc}
                                         projectId={projectId}
                                         isActive={doc.id === activeDocumentId}
-                                        onDelete={() =>
-                                            handleDeleteDocument(doc.id)
-                                        }
+                                        onDelete={() => handleDeleteDocument(doc.id)}
+                                        onDragStart={(e) => handleDragStart(e, doc.id)}
+                                        onDragEnd={handleDragEnd}
+                                        isDragging={draggedDocId === doc.id}
                                     />
                                 ))}
                                 {folder.documents.length === 0 && (
@@ -268,23 +321,42 @@ export function DocsSidebar({
                     </div>
                 ))}
 
-                {/* Root Documents */}
-                {rootDocuments.length > 0 && (
-                    <>
-                        {folders.length > 0 && (
-                            <div className="my-2 h-px bg-border" />
-                        )}
-                        {rootDocuments.map((doc) => (
-                            <DocumentItem
-                                key={doc.id}
-                                document={doc}
-                                projectId={projectId}
-                                isActive={doc.id === activeDocumentId}
-                                onDelete={() => handleDeleteDocument(doc.id)}
-                            />
-                        ))}
-                    </>
-                )}
+                {/* Root Documents Drop Zone */}
+                <div
+                    className={cn(
+                        'min-h-[20px] rounded-md transition-colors',
+                        folders.length > 0 && rootDocuments.length === 0 && draggedDocId && 'my-2 border-2 border-dashed border-muted-foreground/30 p-2',
+                        dropTargetFolderId === 'root' && 'bg-primary/20 ring-2 ring-primary/50'
+                    )}
+                    onDragOver={(e) => handleDragOver(e, 'root')}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => handleDrop(e, null)}
+                >
+                    {rootDocuments.length > 0 && (
+                        <>
+                            {folders.length > 0 && (
+                                <div className="my-2 h-px bg-border" />
+                            )}
+                            {rootDocuments.map((doc) => (
+                                <DocumentItem
+                                    key={doc.id}
+                                    document={doc}
+                                    projectId={projectId}
+                                    isActive={doc.id === activeDocumentId}
+                                    onDelete={() => handleDeleteDocument(doc.id)}
+                                    onDragStart={(e) => handleDragStart(e, doc.id)}
+                                    onDragEnd={handleDragEnd}
+                                    isDragging={draggedDocId === doc.id}
+                                />
+                            ))}
+                        </>
+                    )}
+                    {folders.length > 0 && rootDocuments.length === 0 && draggedDocId && (
+                        <p className="text-center text-xs text-muted-foreground">
+                            Drop here to move to root
+                        </p>
+                    )}
+                </div>
 
                 {/* Empty State */}
                 {folders.length === 0 && rootDocuments.length === 0 && (
@@ -311,6 +383,9 @@ interface DocumentItemProps {
     projectId: number;
     isActive: boolean;
     onDelete: () => void;
+    onDragStart?: (e: DragEvent<HTMLDivElement>) => void;
+    onDragEnd?: () => void;
+    isDragging?: boolean;
 }
 
 function DocumentItem({
@@ -318,12 +393,20 @@ function DocumentItem({
     projectId,
     isActive,
     onDelete,
+    onDragStart,
+    onDragEnd,
+    isDragging,
 }: DocumentItemProps) {
     return (
         <div
-            className={`group flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 ${
-                isActive ? 'bg-primary/10 text-primary' : 'hover:bg-muted/50'
-            }`}
+            draggable
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            className={cn(
+                'group flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 transition-all',
+                isActive ? 'bg-primary/10 text-primary' : 'hover:bg-muted/50',
+                isDragging && 'opacity-50 ring-2 ring-primary'
+            )}
             onClick={() =>
                 router.visit(`/projects/${projectId}/docs/${document.id}`)
             }

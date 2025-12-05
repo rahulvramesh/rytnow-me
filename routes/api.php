@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\LiveblocksController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CommentController;
+use App\Http\Controllers\Api\V1\DocFolderController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\LabelController;
 use App\Http\Controllers\Api\V1\PlanController;
@@ -66,9 +67,19 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
         Route::apiResource('projects/{project}/labels', LabelController::class)
             ->names('api.labels');
 
+        // Doc Folders (scoped to project)
+        Route::apiResource('projects/{project}/folders', DocFolderController::class)
+            ->names('api.folders');
+        Route::post('projects/{project}/folders/reorder', [DocFolderController::class, 'reorder'])
+            ->name('api.folders.reorder');
+
         // Documents (scoped to project)
         Route::apiResource('projects/{project}/documents', DocumentController::class)
             ->names('api.documents');
+        Route::patch('projects/{project}/documents/{document}/move', [DocumentController::class, 'move'])
+            ->name('api.documents.move');
+        Route::post('projects/{project}/documents/reorder', [DocumentController::class, 'reorder'])
+            ->name('api.documents.reorder');
 
         // Plans (scoped to project)
         Route::apiResource('projects/{project}/plans', PlanController::class)

@@ -128,4 +128,84 @@ class DocumentController extends Controller
 
         return response()->noContent();
     }
+
+    /**
+     * Move a document to a different folder
+     */
+    public function move(Request $request, Project $project, Document $document)
+    {
+        if (! $project->workspace->hasMember($request->user())) {
+            return $this->error('Forbidden', 403);
+        }
+
+        if ($document->project_id !== $project->id) {
+            return $this->error('Not found', 404);
+        }
+
+        $validated = $request->validate([
+            'doc_folder_id' => 'nullable|integer|exists:doc_folders,id',
+            'position' => 'nullable|integer|min:0',
+        ]);
+
+        $folderId = $validated['doc_folder_id'] ?? null;
+
+        // Verify folder belongs to project if specified
+        if ($folderId) {
+            $folderExists = $project->docFolders()
+                ->where('id', $folderId)
+                ->exists();
+            if (! $folderExists) {
+                return $this->error('Invalid folder', 422);
+            }
+        }
+
+        // If moving to a new folder, get max position in that folder
+        if ($folderId !== $document->doc_folder_id) {
+            $maxPosition = $project->documents()
+                ->where('doc_folder_id', $folderId)
+                ->max('position') ?? -1;
+            $position = $validated['position'] ?? ($maxPosition + 1);
+        } else {
+            $position = $validated['position'] ?? $document->position;
+        }
+
+        $document->update([
+            'doc_folder_id' => $folderId,
+            'position' => $position,
+            'updated_by' => $request->user()->id,
+        ]);
+
+        return $this->success([
+            'message' => 'Document moved',
+            'document' => $document->load('folder:id,name'),
+        ]);
+    }
+
+    /**
+     * Reorder documents within a folder
+     */
+    public function reorder(Request $request, Project $project)
+    {
+        if (! $project->workspace->hasMember($request->user())) {
+            return $this->error('Forbidden', 403);
+        }
+
+        $validated = $request->validate([
+            'documents' => 'required|array',
+            'documents.*.id' => 'required|integer|exists:documents,id',
+            'documents.*.position' => 'required|integer|min:0',
+            'documents.*.doc_folder_id' => 'nullable|integer|exists:doc_folders,id',
+        ]);
+
+        foreach ($validated['documents'] as $docData) {
+            Document::where('id', $docData['id'])
+                ->where('project_id', $project->id)
+                ->update([
+                    'position' => $docData['position'],
+                    'doc_folder_id' => $docData['doc_folder_id'] ?? null,
+                ]);
+        }
+
+        return $this->success(['message' => 'Documents reordered']);
+    }
 }
