@@ -418,7 +418,8 @@
 
 /* Code Block Styles with Syntax Highlighting */
 .tiptap pre,
-.ProseMirror pre {
+.ProseMirror pre,
+.prose pre {
     background: #282c34;
     border-radius: var(--radius);
     font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Menlo', monospace;
@@ -429,7 +430,8 @@
 }
 
 .tiptap pre code,
-.ProseMirror pre code {
+.ProseMirror pre code,
+.prose pre code {
     background: none;
     color: inherit;
     font-size: 0.875rem;
@@ -439,7 +441,8 @@
 
 /* Code block language label */
 .tiptap pre code::before,
-.ProseMirror pre code::before {
+.ProseMirror pre code::before,
+.prose pre code::before {
     content: attr(data-language);
     display: block;
     font-size: 0.7rem;
@@ -450,7 +453,8 @@
 }
 
 .tiptap code,
-.ProseMirror code {
+.ProseMirror code,
+.prose code {
     background-color: var(--muted);
     border-radius: 0.25rem;
     font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Menlo', monospace;
@@ -460,7 +464,8 @@
 
 /* Ensure code inside pre doesn't have muted background */
 .tiptap pre code,
-.ProseMirror pre code {
+.ProseMirror pre code,
+.prose pre code {
     background-color: transparent;
 }
 

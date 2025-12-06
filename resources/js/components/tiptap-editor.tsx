@@ -1,3 +1,4 @@
+import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 import { Placeholder } from '@tiptap/extension-placeholder';
 import { Table } from '@tiptap/extension-table';
 import { TableCell } from '@tiptap/extension-table-cell';
@@ -5,8 +6,10 @@ import { TableHeader } from '@tiptap/extension-table-header';
 import { TableRow } from '@tiptap/extension-table-row';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { common, createLowlight } from 'lowlight';
 import {
     Bold,
+    Code,
     Italic,
     List,
     ListOrdered,
@@ -15,6 +18,8 @@ import {
     Table as TableIcon,
     Undo,
 } from 'lucide-react';
+
+const lowlight = createLowlight(common);
 import { useCallback, useEffect } from 'react';
 
 interface ToolbarButtonProps {
@@ -66,6 +71,10 @@ export function TipTapEditor({
                 heading: {
                     levels: [1, 2, 3],
                 },
+                codeBlock: false, // Disable default code block in favor of CodeBlockLowlight
+            }),
+            CodeBlockLowlight.configure({
+                lowlight,
             }),
             Table.configure({
                 resizable: true,
@@ -160,6 +169,15 @@ export function TipTapEditor({
 
                 <div className="mx-1 h-5 w-px bg-border" />
 
+                <ToolbarButton
+                    onClick={() =>
+                        editor.chain().focus().toggleCodeBlock().run()
+                    }
+                    isActive={editor.isActive('codeBlock')}
+                    title="Code Block"
+                >
+                    <Code className="size-4" />
+                </ToolbarButton>
                 <ToolbarButton onClick={insertTable} title="Insert Table (3x3)">
                     <TableIcon className="size-4" />
                 </ToolbarButton>
